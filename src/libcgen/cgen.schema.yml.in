@@ -1,0 +1,101 @@
+R"(
+
+settings:
+  ignore_attributes: true
+
+types:
+  list<T>: [T]
+  map<K;V>: { $K: V }
+
+  visibility<T>:
+    - T
+    - default: !optional T
+      public: !optional T
+      private: !optional T
+      interface: !optional T
+
+  configurations<T>:
+    - T
+    - global: !optional T
+      configurations: !optional map<string;T>
+
+  project:
+    - string
+    - name: string
+      version: !optional scalar
+
+  includes:
+    - [string]
+    - - paths: [string]
+        parameters: !optional map<string;scalar>
+
+  option:
+    description: string
+    default: !optional string
+
+  definition:
+    - string
+    - map<string;scalar>
+
+  target_settings:
+    if: !optional string
+    path: !optional string
+    options: !optional map<string;option>
+    settings: !optional map<string;scalar>
+    sources: !optional visibility<configurations<list<string>>>
+    includes: !optional visibility<configurations<list<string>>>
+    pchs: !optional visibility<configurations<list<string>>>
+    dependencies: !optional visibility<configurations<list<string>>>
+    definitions: !optional visibility<configurations<list<definition>>>
+    properties: !optional configurations<map<string;scalar>>
+    compile_options: !optional visibility<configurations<list<string>>>
+    link_options: !optional visibility<configurations<list<string>>>
+
+  fetch_strategy: !variant
+    - submodule
+    - clone
+
+  package:
+    - external: string
+      if: !optional string
+      url: string
+      version: !optional scalar
+      strategy: !optional fetch_strategy
+      options: !optional map<string;scalar>
+    - system: string
+      if: !optional string
+      version: !optional scalar
+      required: !optional boolean
+
+  library_type: !variant
+    - static
+    - shared
+    - interface
+    - object
+
+  templates:
+    - [string]
+    - - names: [string]
+        parameters: !optional map<string;scalar>
+
+  target:
+    - library: string
+      type: !optional library_type
+      aliases: !optional [string]
+      templates: !optional templates
+      _: !embed target_settings
+    - executable: string
+      templates: !optional templates
+      _: !embed target_settings
+
+root:
+  version: !optional scalar
+  project: project
+  includes: !optional includes
+  templates: !optional map<string;target_settings>
+  options: !optional map<string;option>
+  settings: !optional map<string;scalar>
+  packages: !optional [package]
+  targets: !optional [target]
+
+)"

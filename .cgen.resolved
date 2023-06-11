@@ -1,0 +1,5 @@
+format	1
+s	"external/doctest"	https://github.com/doctest/doctest	ae7a13539fb71f270b87eb2e874fbac80bc8dda2	HEAD
+s	"external/miroir"	https://gitlab.com/madyanov/miroir	45c4c7ebb78b07cef8ede5eee37917e52bde2a93	HEAD
+s	"external/poost"	https://gitlab.com/madyanov/poost	25b275b26da7bf10d5a4294e800293d7a5d8710f	HEAD
+s	"external/yaml-cpp"	https://github.com/jbeder/yaml-cpp	0e6e28d1a38224fc8172fae0109ea7f673c096db	HEAD

@@ -1,0 +1,164 @@
+project: cgen
+
+templates:
+  common:
+    includes:
+      public:
+        - include
+      private:
+        - include/libcgen
+    properties:
+      CXX_STANDARD: 20
+      CXX_STANDARD_REQUIRED: ON
+    compile_options:
+      global:
+        - -Wall
+        - -Wextra
+        - -Wpedantic
+      configurations:
+        Release:
+          - -Werror
+
+  asan:
+    compile_options:
+      configurations:
+        Asan:
+          - ${CMAKE_CXX_FLAGS_DEBUG}
+          - -O1
+          - -fno-omit-frame-pointer
+          - -fno-optimize-sibling-calls
+          - -fsanitize=address
+    link_options:
+      configurations:
+        Asan:
+          - ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+          - -g
+          - -fsanitize=address
+
+  ubsan:
+    compile_options:
+      configurations:
+        Ubsan:
+          - ${CMAKE_CXX_FLAGS_DEBUG}
+          - -O1
+          - -fno-omit-frame-pointer
+          - -fno-optimize-sibling-calls
+          - -fsanitize=undefined
+          - -fno-sanitize-recover
+    link_options:
+      configurations:
+        Ubsan:
+          - ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+          - -g
+          - -fsanitize=undefined
+
+packages:
+  - external: external/doctest
+    url: https://github.com/doctest/doctest
+    options:
+      DOCTEST_NO_INSTALL: ON
+
+  - external: external/yaml-cpp
+    url: https://github.com/jbeder/yaml-cpp
+    options:
+      YAML_BUILD_SHARED_LIBS: OFF
+      YAML_CPP_BUILD_CONTRIB: OFF
+      YAML_CPP_BUILD_TOOLS: OFF
+      YAML_CPP_FORMAT_SOURCE: OFF
+
+  - external: external/miroir
+    url: https://gitlab.com/madyanov/miroir
+
+  - external: external/poost
+    url: https://gitlab.com/madyanov/poost
+
+targets:
+  - library: libcgen_obj
+    type: object
+    templates:
+      - common
+    sources:
+      - include/libcgen/version.hpp
+      - src/libcgen/version.cpp
+
+      - include/libcgen/error.hpp
+      - src/libcgen/error.cpp
+
+      - include/libcgen/config.hpp
+      - src/libcgen/config.cpp
+      - src/libcgen/cgen.schema.yml.in
+
+      - include/libcgen/packages.hpp
+      - src/libcgen/packages.cpp
+
+      - include/libcgen/codegen.hpp
+      - src/libcgen/codegen.cpp
+
+      - src/libcgen/exec.hpp
+
+      - src/libcgen/debug.hpp
+      - src/libcgen/debug.cpp
+
+      - src/libcgen/fs.hpp
+      - src/libcgen/fs.cpp
+
+      - src/libcgen/preproc.hpp
+      - src/libcgen/preproc.cpp
+
+      - src/libcgen/versions.hpp
+      - src/libcgen/versions.cpp
+
+      - src/libcgen/git.hpp
+      - src/libcgen/git.cpp
+    dependencies:
+      public:
+        - yaml-cpp
+      private:
+        - poost::poost
+        - miroir::miroir
+
+  - library: libcgen
+    templates:
+      - common
+    aliases:
+      - cgen::libcgen
+    sources:
+      - src/libcgen/fs_impl.cpp
+      - src/libcgen/exec_impl.cpp
+    dependencies:
+      public:
+        - poost::poost
+        - libcgen_obj
+
+  - executable: libcgen_test
+    if: PROJECT_IS_TOP_LEVEL
+    templates:
+      - common
+      - asan
+      - ubsan
+    sources:
+      - src/libcgen/doctest_main.cpp
+
+      - src/libcgen/mocks.hpp
+      - src/libcgen/fs_mock.cpp
+      - src/libcgen/exec_mock.cpp
+
+      - src/libcgen/fs_test.cpp
+      - src/libcgen/preproc_test.cpp
+      - src/libcgen/config_test.cpp
+      - src/libcgen/versions_test.cpp
+      - src/libcgen/packages_test.cpp
+      - src/libcgen/codegen_test.cpp
+    dependencies:
+      - doctest::doctest
+      - poost::poost
+      - libcgen_obj
+
+  - executable: cgen
+    templates:
+      - common
+    sources:
+      - src/cgen/main.cpp
+    dependencies:
+      - cgen::libcgen
+      - poost::poost
