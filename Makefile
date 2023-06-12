@@ -17,7 +17,6 @@ default: $(BUILD_DIR)/cgen ## Build cgen (default)
 
 $(CHECK_BUILD_TYPE):
 	$(RM) "$(BUILD_DIR)"/BUILD.*
-	$(RM) "$(CMAKE_CACHE)"
 	mkdir -p "$(BUILD_DIR)"
 	touch "$@"
 
@@ -28,7 +27,6 @@ $(CMAKE_CACHE): CMakeLists.txt $(CHECK_BUILD_TYPE) $(CHECK_FORMAT)
 		-G "Unix Makefiles" \
 		-D CMAKE_BUILD_TYPE="$(BUILD_TYPE)" \
 		-D CMAKE_EXPORT_COMPILE_COMMANDS=ON
-	touch "$@"
 
 $(BUILD_DIR)/cgen: $(CMAKE_CACHE) $(SOURCES)
 	cmake \
@@ -36,7 +34,6 @@ $(BUILD_DIR)/cgen: $(CMAKE_CACHE) $(SOURCES)
 		--config "$(BUILD_TYPE)" \
 		--target cgen \
 		--parallel
-	touch "$@"
 
 $(BUILD_DIR)/libcgen_test: $(CMAKE_CACHE) $(SOURCES)
 	cmake \
@@ -44,7 +41,6 @@ $(BUILD_DIR)/libcgen_test: $(CMAKE_CACHE) $(SOURCES)
 		--config "$(BUILD_TYPE)" \
 		--target libcgen_test \
 		--parallel
-	touch "$@"
 
 # Helpers
 
