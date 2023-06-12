@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <functional>
 #include <istream>
+#include <iterator>
 #include <map>
 #include <string>
 #include <vector>
@@ -110,6 +111,14 @@ template <typename T> struct Configs {
                (global.empty() &&
                 std::all_of(configurations.cbegin(), configurations.cend(),
                             [](const auto &it) -> bool { return it.second.empty(); }));
+    }
+
+    void move_merge(const Configs<T> &configs) {
+        is_defined = is_defined || configs.is_defined;
+        global.insert(global.end(), std::make_move_iterator(configs.global.cbegin()),
+                      std::make_move_iterator(configs.global.cend()));
+        configurations.insert(std::make_move_iterator(configs.configurations.cbegin()),
+                              std::make_move_iterator(configs.configurations.cend()));
     }
 };
 

@@ -489,16 +489,11 @@ template <> struct convert<cgen::config::TargetSettings> {
         switch (type) {
         case cgen::config::LibraryType::Interface:
             // for interface libraries everything is interface
-            if (!visibility.interface.is_defined) {
-                visibility.interface = visibility.default_;
-            }
-
+            visibility.interface.move_merge(visibility.default_);
             break;
         default:
             // by default everything is private
-            if (!visibility.private_.is_defined) {
-                visibility.private_ = visibility.default_;
-            }
+            visibility.private_.move_merge(visibility.default_);
         }
 
         return visibility;

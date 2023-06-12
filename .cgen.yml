@@ -155,8 +155,7 @@ targets:
       - tests/packages_test.cpp
       - tests/codegen_test.cpp
     includes:
-      private:
-        - src/libcgen
+      - src/libcgen
     dependencies:
       - doctest::doctest
       - poost::poost

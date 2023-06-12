@@ -170,8 +170,8 @@ function(cgen_target_libcgen_test)
         PUBLIC
             include
         PRIVATE
-            src/libcgen
             include/libcgen
+            src/libcgen
     )
     target_link_libraries(libcgen_test
         PRIVATE

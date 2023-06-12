@@ -1461,9 +1461,17 @@ TEST_CASE("target templates merging") {
             sources:
               configurations:REPLACE:
                 Release: [ path/to/source/file4 ]
+          template5:
+            sources:
+              private: [ path/to/source/file5 ]
         targets:
           - library: library name
-            templates: [ template1, template2, template3, template4 ]
+            templates:
+              - template1
+              - template2
+              - template3
+              - template4
+              - template5
             sources: [ path/to/source/file ]
         )"};
 
@@ -1486,8 +1494,10 @@ TEST_CASE("target templates merging") {
         CHECK(config.targets[0]
                   .library.target_settings.sources.private_.configurations.at("Release")[0]
                   .value == "path/to/source/file4");
-        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 2);
         CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file5");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[1].value ==
               "path/to/source/file");
     }
 
