@@ -155,21 +155,22 @@ function(cgen_target_libcgen_test)
     add_executable(libcgen_test)
     target_sources(libcgen_test
         PRIVATE
-            src/libcgen/doctest_main.cpp
-            src/libcgen/mocks.hpp
-            src/libcgen/fs_mock.cpp
-            src/libcgen/exec_mock.cpp
-            src/libcgen/fs_test.cpp
-            src/libcgen/preproc_test.cpp
-            src/libcgen/config_test.cpp
-            src/libcgen/versions_test.cpp
-            src/libcgen/packages_test.cpp
-            src/libcgen/codegen_test.cpp
+            tests/doctest_main.cpp
+            tests/mocks.hpp
+            tests/fs_mock.cpp
+            tests/exec_mock.cpp
+            tests/fs_test.cpp
+            tests/preproc_test.cpp
+            tests/config_test.cpp
+            tests/versions_test.cpp
+            tests/packages_test.cpp
+            tests/codegen_test.cpp
     )
     target_include_directories(libcgen_test
         PUBLIC
             include
         PRIVATE
+            src/libcgen
             include/libcgen
     )
     target_link_libraries(libcgen_test
@@ -232,10 +233,8 @@ function(cgen_target_cgen)
             src/cgen/main.cpp
     )
     target_include_directories(cgen
-        PUBLIC
-            include
         PRIVATE
-            include/libcgen
+            src/cgen
     )
     target_link_libraries(cgen
         PRIVATE

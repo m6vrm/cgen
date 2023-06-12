@@ -2,11 +2,6 @@ project: cgen
 
 templates:
   common:
-    includes:
-      public:
-        - include
-      private:
-        - include/libcgen
     properties:
       CXX_STANDARD: 20
       CXX_STANDARD_REQUIRED: ON
@@ -18,6 +13,13 @@ templates:
       configurations:
         Release:
           - -Werror
+
+  includes:
+    includes:
+      public:
+        - include
+      private:
+        - include/libcgen
 
   asan:
     compile_options:
@@ -77,6 +79,7 @@ targets:
     type: object
     templates:
       - common
+      - includes
     sources:
       - include/libcgen/version.hpp
       - src/libcgen/version.cpp
@@ -120,6 +123,7 @@ targets:
   - library: libcgen
     templates:
       - common
+      - includes
     aliases:
       - cgen::libcgen
     sources:
@@ -134,21 +138,25 @@ targets:
     if: PROJECT_IS_TOP_LEVEL
     templates:
       - common
+      - includes
       - asan
       - ubsan
     sources:
-      - src/libcgen/doctest_main.cpp
+      - tests/doctest_main.cpp
 
-      - src/libcgen/mocks.hpp
-      - src/libcgen/fs_mock.cpp
-      - src/libcgen/exec_mock.cpp
+      - tests/mocks.hpp
+      - tests/fs_mock.cpp
+      - tests/exec_mock.cpp
 
-      - src/libcgen/fs_test.cpp
-      - src/libcgen/preproc_test.cpp
-      - src/libcgen/config_test.cpp
-      - src/libcgen/versions_test.cpp
-      - src/libcgen/packages_test.cpp
-      - src/libcgen/codegen_test.cpp
+      - tests/fs_test.cpp
+      - tests/preproc_test.cpp
+      - tests/config_test.cpp
+      - tests/versions_test.cpp
+      - tests/packages_test.cpp
+      - tests/codegen_test.cpp
+    includes:
+      private:
+        - src/libcgen
     dependencies:
       - doctest::doctest
       - poost::poost
@@ -159,6 +167,8 @@ targets:
       - common
     sources:
       - src/cgen/main.cpp
+    includes:
+      - src/cgen
     dependencies:
       - cgen::libcgen
       - poost::poost

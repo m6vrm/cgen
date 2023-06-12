@@ -4,7 +4,9 @@ BUILD_TYPE ?= Release
 BUILD_DIR := build
 
 BIN_DIR := $(DESTDIR)$(PREFIX)/bin/
-CMAKE_CACHE := $(BUILD_DIR)/CMakeCache.txt
+CMAKE_CACHE := $(BUILD_DIR)/CMakeCache.txt \
+			   $(BUILD_DIR)/Makefile \
+			   $(BUILD_DIR)/compile_commands.json
 
 GIT_SOURCES := git ls-files -- "*.?pp"
 SOURCES := $(shell $(GIT_SOURCES))
