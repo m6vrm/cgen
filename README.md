@@ -28,13 +28,14 @@ $ make install
 ## Usage
 
 - Create `.cgen.yml` configuration file in the root of the project
+    - [Configuration specification](docs/Spec.md)
     - [Configuration example](https://gitlab.com/madyanov/cgen/-/blob/master/.cgen.yml) and [generated `CMakeLists.txt`](https://gitlab.com/madyanov/cgen/-/blob/master/CMakeLists.txt)
 - Generate `CMakeLists.txt` with `cgen -g`
 - See help with `cgen -h`
 
 ## Configuration specification
 
-...
+See [docs/Spec.md](docs/Spec.md).
 
 ## Contributing
 
