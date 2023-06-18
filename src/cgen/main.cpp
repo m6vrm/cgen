@@ -36,7 +36,7 @@ enum class ArgumentsParseResult {
 };
 
 enum class Command {
-    Unknown,
+    Unspecified,
     Generate,
     Update,
 };
@@ -103,6 +103,7 @@ auto main(int argc, char *argv[]) -> int {
     case Command::Update:
         return command_update(opts.packages) ? EXIT_SUCCESS : EXIT_FAILURE;
     default:
+        POOST_ERROR_EX(log_common, "please specify command");
         print_usage(argv[0]);
         break;
     }
