@@ -15,7 +15,7 @@ CHECK_BUILD_TYPE := $(BUILD_DIR)/BUILD.$(shell echo $(BUILD_TYPE))
 CHECK_FORMAT := $(BUILD_DIR)/FORMAT
 
 .PHONY: default
-default: $(BUILD_DIR)/cgen ## Build cgen (default)
+default: $(BUILD_DIR)/cgen ## Build cgen
 
 $(CHECK_BUILD_TYPE):
 	$(RM) "$(BUILD_DIR)"/BUILD.*
@@ -52,6 +52,7 @@ clean: ## Remove $(BUILD_DIR)
 
 .PHONY: install
 install: ## Install cgen into $(DESTDIR)$(PREFIX)/bin (/usr/local/bin by default)
+	strip "$(BUILD_DIR)/cgen"
 	install -d "$(BIN_DIR)"
 	install -m 755 "$(BUILD_DIR)/cgen" "$(BIN_DIR)"
 
