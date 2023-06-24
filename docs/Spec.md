@@ -27,40 +27,37 @@ project:
   version: 0.1.0
 ```
 
-## Preprocessing
+Generated configuration:
 
-### Includes
+```cmake
+project(project_name VERSION 0.1.0)
+```
 
-Paths to included and merged configuration files.
+## Options
+
+CMake options.
 
 Schema:
 
 ```yml
-includes:
-  - [string]
-  - - paths: [string]
-      parameters: !optional map<string;scalar>
+options:
+  $string:
+    description: string
+    default: !optional string
 ```
 
 Examples:
 
 ```yml
-includes:
-  - path/to/file.yml
-  - ...
+options:
+  MY_OPTION:
+    description: "My option"
+    default: "default value"
 ```
 
-```yml
-includes:
-  paths:
-    - path/to/file.yml
-    - ...
-  parameters:
-    key: value
-    ...
+Generated configuration:
+
+```cmake
+option(MY_OPTION "My option" "default value")
 ```
-
-### Templates
-
-...
 
