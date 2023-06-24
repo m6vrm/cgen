@@ -22,7 +22,7 @@ project:
     version: !optional scalar   # version
 ```
 
-**Examples**
+**Example**
 
 ```yml
 project: project_name
@@ -53,7 +53,7 @@ options: !optional
     default: !optional string   # default value (default: NO)
 ```
 
-**Examples**
+**Example**
 
 ```yml
 options:
@@ -79,7 +79,7 @@ settings: !optional
   $string: scalar
 ```
 
-**Examples**
+**Example**
 
 ```yml
 settings:
@@ -118,7 +118,7 @@ packages: !optional
       required: !optional boolean   # default: true
 ```
 
-**Examples**
+**Example**
 
 ```yml
 packages:
@@ -198,7 +198,7 @@ compile_options: !optional      # compile options
 link_options: !optional         # link options
 ```
 
-**Examples**
+**Example**
 
 <details>
 <summary>Click to expand</summary>
