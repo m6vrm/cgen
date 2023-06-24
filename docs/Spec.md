@@ -2,6 +2,11 @@
 
 [[_TOC_]]
 
+- [Configuration example](../.cgen.yml)
+- [Generated CMake configuration](../CMakeLists.txt)
+- [Full configuration schema](../src/libcgen/cgen.schema.yml.in)
+- [How to read schema file](https://gitlab.com/madyanov/miroir/-/blob/master/README.md#schema-specification)
+
 ## Project
 
 Project name and version.
@@ -157,33 +162,38 @@ targets: !optional
       - interface
       - object
     aliases: !optional [string]     # CMake library aliases
-    templates: !optional templates  # target templates, see below
+    templates: !optional            # target templates
+      - [string]                    # template names
+      - - names: [string]           # template names
+          parameters: !optional     # template parameters, e.g. $(MY_PARAMETER)
+            $string: string
     ...                             # target settings, see below
 
   - executable: string              # executable target name
-    templates: !optional templates  # target templates, see below
+    templates: !optional            # target templates, same as above
+      ...
     ...                             # target settings, see below
 ```
 
 Target settings schema:
 
 ```yml
-if: !optional string
-path: !optional string
-options: !optional
-  $string:                      # option name
-    description: string         # description
-    default: !optional string   # default value (default: NO)
-settings: !optional
+if: !optional string            # condition (any CMake expression)
+path: !optional string          # prefix path to the target sources
+options: !optional              # target options
+  $string:
+    description: string
+    default: !optional string
+settings: !optional             # target variables
   $string: scalar
-sources: !optional visibility<configurations<list<string>>>
-includes: !optional visibility<configurations<list<string>>>
-pchs: !optional visibility<configurations<list<string>>>
-dependencies: !optional visibility<configurations<list<string>>>
-definitions: !optional visibility<configurations<list<definition>>>
-properties: !optional configurations<map<string;scalar>>
-compile_options: !optional visibility<configurations<list<string>>>
-link_options: !optional visibility<configurations<list<string>>>
+sources: !optional              # source files
+includes: !optional             # include paths
+pchs: !optional                 # precompiled headers
+dependencies: !optional         # dependency library names
+definitions: !optional          # preprocessor definitions
+properties: !optional           # target properties
+compile_options: !optional      # compile options
+link_options: !optional         # link options
 ```
 
 **Examples**
