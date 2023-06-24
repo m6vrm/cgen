@@ -68,7 +68,8 @@ CMake variables.
 **Schema**
 
 ```yml
-settings: !optional map<string;scalar>  # variable name -> value map
+settings: !optional
+  $string: scalar
 ```
 
 **Examples**
@@ -101,7 +102,8 @@ packages: !optional
       strategy: !optional !variant          # fetch strategy, default: submodule
         - submodule                         # fetch as git submodule
         - clone                             # fetch as raw files
-      options: !optional map<string;scalar> # CMake options overrides for the package
+      options: !optional                    # CMake option overrides for the package
+        $string: scalar
 
     - system: string                # name of the system CMake package
       if: !optional string          # condition
@@ -138,4 +140,54 @@ if(PROJECT_IS_TOP_LEVEL)
 endif()
 
 find_package(OpenGL REQUIRED)
+```
+
+## Targets
+
+Project targets.
+
+**Schema**
+
+```yml
+targets: !optional
+  - library: string                 # library target name
+    type: !optional !variant        # library type, default: static
+      - static
+      - shared
+      - interface
+      - object
+    aliases: !optional [string]     # CMake library aliases
+    templates: !optional templates  # target templates, see below
+    ...                             # target settings, see below
+
+  - executable: string              # executable target name
+    templates: !optional templates  # target templates, see below
+    ...                             # target settings, see below
+```
+
+Target settings schema:
+
+```yml
+if: !optional string
+path: !optional string
+options: !optional
+  $string:                      # option name
+    description: string         # description
+    default: !optional string   # default value (default: NO)
+settings: !optional
+  $string: scalar
+sources: !optional visibility<configurations<list<string>>>
+includes: !optional visibility<configurations<list<string>>>
+pchs: !optional visibility<configurations<list<string>>>
+dependencies: !optional visibility<configurations<list<string>>>
+definitions: !optional visibility<configurations<list<definition>>>
+properties: !optional configurations<map<string;scalar>>
+compile_options: !optional visibility<configurations<list<string>>>
+link_options: !optional visibility<configurations<list<string>>>
+```
+
+**Examples**
+
+```yml
+
 ```
