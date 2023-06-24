@@ -6,7 +6,20 @@
 
 Project name and version.
 
-Schema:
+<table>
+<tr>
+<th>
+Schema
+</th>
+<th>
+Examples
+</th>
+<th>
+Generated
+</th>
+</tr>
+<tr>
+<td>
 
 ```yml
 project:
@@ -15,7 +28,8 @@ project:
     version: !optional scalar
 ```
 
-Examples:
+</td>
+<td>
 
 ```yml
 project: project_name
@@ -27,17 +41,35 @@ project:
   version: 0.1.0
 ```
 
-Generated configuration:
+</td>
+<td>
 
 ```cmake
 project(project_name VERSION 0.1.0)
 ```
 
+</td>
+</tr>
+</table>
+
 ## Options
 
 CMake options.
 
-Schema:
+<table>
+<tr>
+<th>
+Schema
+</th>
+<th>
+Examples
+</th>
+<th>
+Generated
+</th>
+</tr>
+<tr>
+<td>
 
 ```yml
 options:
@@ -46,7 +78,8 @@ options:
     default: !optional string
 ```
 
-Examples:
+</td>
+<td>
 
 ```yml
 options:
@@ -55,9 +88,13 @@ options:
     default: "default value"
 ```
 
-Generated configuration:
+</td>
+<td>
 
 ```cmake
 option(MY_OPTION "My option" "default value")
 ```
 
+</td>
+</tr>
+</table>
