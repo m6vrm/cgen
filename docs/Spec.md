@@ -1,6 +1,8 @@
-# Configuration specification
+# Configuration specification (WIP)
 
 [[_TOC_]]
+
+## Useful links
 
 - [Configuration example](../.cgen.yml)
 - [Generated CMake configuration](../CMakeLists.txt)
@@ -198,6 +200,193 @@ link_options: !optional         # link options
 
 **Examples**
 
-```yml
+<details>
+<summary>Click to expand</summary>
 
+```yml
+templates:
+  common:
+    properties:
+      CXX_STANDARD: 20
+      CXX_STANDARD_REQUIRED: ON
+    compile_options:
+      global:
+        - -Wall
+        - -Wextra
+        - -Wpedantic
+      configurations:
+        Release:
+          - -Werror
+
+  asan:
+    compile_options:
+      configurations:
+        Asan:
+          - ${CMAKE_CXX_FLAGS_DEBUG}
+          - -O1
+          - -fno-omit-frame-pointer
+          - -fno-optimize-sibling-calls
+          - -fsanitize=address
+    link_options:
+      configurations:
+        Asan:
+          - ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+          - -g
+          - -fsanitize=address
+
+  ubsan:
+    compile_options:
+      configurations:
+        Ubsan:
+          - ${CMAKE_CXX_FLAGS_DEBUG}
+          - -O1
+          - -fno-omit-frame-pointer
+          - -fno-optimize-sibling-calls
+          - -fsanitize=undefined
+          - -fno-sanitize-recover
+    link_options:
+      configurations:
+        Ubsan:
+          - ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+          - -g
+          - -fsanitize=undefined
+
+targets:
+  - library: poost
+    templates:
+      - common
+    aliases:
+      - poost::poost
+    sources:
+      - include/poost/args.hpp
+      - src/poost/args.cpp
+
+      - include/poost/log.hpp
+      - src/poost/log.cpp
+
+      - include/poost/assert.hpp
+    includes:
+      public:
+        - include
+      private:
+        - include/poost
+
+  - executable: poost_test
+    if: PROJECT_IS_TOP_LEVEL
+    templates:
+      - common
+      - asan
+      - ubsan
+    sources:
+      - tests/args_test.cpp
+    includes:
+      - src/poost
+    dependencies:
+      - doctest::doctest_with_main
+      - poost::poost
 ```
+
+</details>
+
+**Generated configuration**
+
+<details>
+<summary>Click to expand</summary>
+
+```cmake
+function(cgen_target_poost)
+    add_library(poost STATIC)
+    add_library(poost::poost ALIAS poost)
+    target_sources(poost
+        PRIVATE
+            include/poost/args.hpp
+            src/poost/args.cpp
+            include/poost/log.hpp
+            src/poost/log.cpp
+            include/poost/assert.hpp
+    )
+    target_include_directories(poost
+        PUBLIC
+            include
+        PRIVATE
+            include/poost
+    )
+    set_target_properties(poost PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED ON
+    )
+    target_compile_options(poost
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+            $<$<CONFIG:Release>:
+                -Werror
+            >
+    )
+endfunction()
+cgen_target_poost()
+
+function(cgen_target_poost_test)
+    add_executable(poost_test)
+    target_sources(poost_test
+        PRIVATE
+            tests/args_test.cpp
+    )
+    target_include_directories(poost_test
+        PRIVATE
+            src/poost
+    )
+    target_link_libraries(poost_test
+        PRIVATE
+            doctest::doctest_with_main
+            poost::poost
+    )
+    set_target_properties(poost_test PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED ON
+    )
+    target_compile_options(poost_test
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+            $<$<CONFIG:Asan>:
+                ${CMAKE_CXX_FLAGS_DEBUG}
+                -O1
+                -fno-omit-frame-pointer
+                -fno-optimize-sibling-calls
+                -fsanitize=address
+            >
+            $<$<CONFIG:Release>:
+                -Werror
+            >
+            $<$<CONFIG:Ubsan>:
+                ${CMAKE_CXX_FLAGS_DEBUG}
+                -O1
+                -fno-omit-frame-pointer
+                -fno-optimize-sibling-calls
+                -fsanitize=undefined
+                -fno-sanitize-recover
+            >
+    )
+    target_link_options(poost_test
+        PRIVATE
+            $<$<CONFIG:Asan>:
+                ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+                -g
+                -fsanitize=address
+            >
+            $<$<CONFIG:Ubsan>:
+                ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+                -g
+                -fsanitize=undefined
+            >
+    )
+endfunction()
+if(PROJECT_IS_TOP_LEVEL)
+    cgen_target_poost_test()
+endif()
+```
+
+</details>
