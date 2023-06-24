@@ -6,20 +6,7 @@
 
 Project name and version.
 
-<table>
-<tr>
-<th>
-Schema
-</th>
-<th>
-Examples
-</th>
-<th>
-Generated
-</th>
-</tr>
-<tr>
-<td>
+**Schema**
 
 ```yml
 project:
@@ -28,8 +15,7 @@ project:
     version: !optional scalar   # version
 ```
 
-</td>
-<td>
+**Examples**
 
 ```yml
 project: project_name
@@ -41,35 +27,17 @@ project:
   version: 0.1.0
 ```
 
-</td>
-<td>
+**Generated configuration**
 
 ```cmake
 project(project_name VERSION 0.1.0)
 ```
 
-</td>
-</tr>
-</table>
-
 ## Options
 
 CMake options.
 
-<table>
-<tr>
-<th>
-Schema
-</th>
-<th>
-Examples
-</th>
-<th>
-Generated
-</th>
-</tr>
-<tr>
-<td>
+**Schema**
 
 ```yml
 options: !optional
@@ -78,8 +46,7 @@ options: !optional
     default: !optional string   # default value (default: NO)
 ```
 
-</td>
-<td>
+**Examples**
 
 ```yml
 options:
@@ -88,42 +55,23 @@ options:
     default: "default value"
 ```
 
-</td>
-<td>
+**Generated configuration**
 
 ```cmake
 option(MY_OPTION "My option" "default value")
 ```
 
-</td>
-</tr>
-</table>
-
 ## Settings
 
 CMake variables.
 
-<table>
-<tr>
-<th>
-Schema
-</th>
-<th>
-Examples
-</th>
-<th>
-Generated
-</th>
-</tr>
-<tr>
-<td>
+**Schema**
 
 ```yml
 settings: !optional map<string;scalar>  # variable name -> value map
 ```
 
-</td>
-<td>
+**Examples**
 
 ```yml
 settings:
@@ -131,36 +79,18 @@ settings:
   MY_VAR2: 42
 ```
 
-</td>
-<td>
+**Generated configuration**
 
 ```cmake
 set(MY_VAR1 "some value")
 set(MY_VAR2 42)
 ```
 
-</td>
-</tr>
-</table>
-
 ## Packages
 
 System and external dependencies.
 
-<table>
-<tr>
-<th>
-Schema
-</th>
-<th>
-Examples
-</th>
-<th>
-Generated
-</th>
-</tr>
-<tr>
-<td>
+**Schema**
 
 ```yml
 packages: !optional
@@ -179,8 +109,7 @@ packages: !optional
       required: !optional boolean   # default: true
 ```
 
-</td>
-<td>
+**Examples**
 
 ```yml
 packages:
@@ -193,8 +122,7 @@ packages:
   - system: OpenGL
 ```
 
-</td>
-<td>
+**Generated configuration**
 
 ```cmake
 function(cgen_package_0)
@@ -211,7 +139,3 @@ endif()
 
 find_package(OpenGL REQUIRED)
 ```
-
-</td>
-</tr>
-</table>
