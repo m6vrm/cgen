@@ -61,6 +61,7 @@ run: $(BUILD_DIR)/cgen ## Run cgen executable
 	"./$(BUILD_DIR)/cgen"
 
 .PHONY: test
+test: export BUILD_TYPE=Debug
 test: $(BUILD_DIR)/libcgen_test ## Run test executable
 	"./$(BUILD_DIR)/libcgen_test"
 

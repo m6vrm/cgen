@@ -1,4 +1,4 @@
-# Generated using cgen 0.1.0 — https://gitlab.com/madyanov/cgen
+# Generated using cgen 0.1.1 — https://gitlab.com/madyanov/cgen
 # DO NOT EDIT
 
 cmake_minimum_required(VERSION 3.24)
@@ -58,7 +58,7 @@ cgen_package_3()
 #
 
 # target libcgen_obj
-function(cgen_target_libcgen_obj)
+function(cgen_target_0)
     add_library(libcgen_obj OBJECT)
     target_sources(libcgen_obj
         PRIVATE
@@ -112,10 +112,10 @@ function(cgen_target_libcgen_obj)
             >
     )
 endfunction()
-cgen_target_libcgen_obj()
+cgen_target_0()
 
 # target libcgen
-function(cgen_target_libcgen)
+function(cgen_target_1)
     add_library(libcgen STATIC)
     add_library(cgen::libcgen ALIAS libcgen)
     target_sources(libcgen
@@ -148,10 +148,10 @@ function(cgen_target_libcgen)
             >
     )
 endfunction()
-cgen_target_libcgen()
+cgen_target_1()
 
 # target libcgen_test
-function(cgen_target_libcgen_test)
+function(cgen_target_2)
     add_executable(libcgen_test)
     target_sources(libcgen_test
         PRIVATE
@@ -222,11 +222,11 @@ function(cgen_target_libcgen_test)
     )
 endfunction()
 if(PROJECT_IS_TOP_LEVEL)
-    cgen_target_libcgen_test()
+    cgen_target_2()
 endif()
 
 # target cgen
-function(cgen_target_cgen)
+function(cgen_target_3)
     add_executable(cgen)
     target_sources(cgen
         PRIVATE
@@ -255,4 +255,4 @@ function(cgen_target_cgen)
             >
     )
 endfunction()
-cgen_target_cgen()
+cgen_target_3()

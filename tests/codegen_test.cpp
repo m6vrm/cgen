@@ -7,7 +7,7 @@
 #include <sstream>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(
-# Generated using cgen 0.1.0 — https://gitlab.com/madyanov/cgen
+# Generated using cgen 0.1.1 — https://gitlab.com/madyanov/cgen
 # DO NOT EDIT
 
 cmake_minimum_required(VERSION 3.24)
@@ -230,10 +230,10 @@ option(OPTION2 "Description" "Quoted")
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     add_library(library STATIC)
 endfunction()
-cgen_target_library()
+cgen_target_0()
 )");
     }
 
@@ -256,12 +256,12 @@ project(name)
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     set(VAR1 Value)
     set(VAR2 "Quoted")
     add_library(library STATIC)
 endfunction()
-cgen_target_library()
+cgen_target_0()
 )");
     }
 
@@ -295,27 +295,27 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_sources(library1
         PRIVATE
             path/to/file
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_sources(library2
         PUBLIC
             path/to/file
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_sources(library3
         PUBLIC
@@ -325,7 +325,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -359,27 +359,27 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_include_directories(library1
         PRIVATE
             path/to/file
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_include_directories(library2
         PUBLIC
             path/to/file
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_include_directories(library3
         PUBLIC
@@ -389,7 +389,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -423,27 +423,27 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_precompiled_headers(library1
         PRIVATE
             path/to/file
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_precompiled_headers(library2
         PUBLIC
             path/to/file
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_precompiled_headers(library3
         PUBLIC
@@ -453,7 +453,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -487,27 +487,27 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_link_libraries(library1
         PRIVATE
             dependency
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_link_libraries(library2
         PUBLIC
             dependency
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_link_libraries(library3
         PUBLIC
@@ -517,7 +517,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -555,7 +555,7 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_compile_definitions(library1
         PRIVATE
@@ -563,10 +563,10 @@ function(cgen_target_library1)
             KEY=VALUE
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_compile_definitions(library2
         PUBLIC
@@ -574,10 +574,10 @@ function(cgen_target_library2)
             KEY=VALUE
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_compile_definitions(library3
         PUBLIC
@@ -589,7 +589,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -621,25 +621,25 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     set_target_properties(library1 PROPERTIES
         KEY VALUE
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     set_target_properties(library2 PROPERTIES
         KEY VALUE
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     set_target_properties(library3 PROPERTIES
         KEY VALUE
@@ -648,7 +648,7 @@ function(cgen_target_library3)
         >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -682,27 +682,27 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_compile_options(library1
         PRIVATE
             option
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_compile_options(library2
         PUBLIC
             option
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_compile_options(library3
         PUBLIC
@@ -712,7 +712,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -746,27 +746,27 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
     target_link_options(library1
         PRIVATE
             option
     )
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
     target_link_options(library2
         PUBLIC
             option
     )
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
     target_link_options(library3
         PUBLIC
@@ -776,7 +776,7 @@ function(cgen_target_library3)
             >
     )
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 
@@ -803,7 +803,7 @@ project(name)
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     add_library(library STATIC)
     target_sources(library
         PRIVATE
@@ -818,7 +818,7 @@ function(cgen_target_library)
             prefix/path/to/file
     )
 endfunction()
-cgen_target_library()
+cgen_target_0()
 )");
     }
 
@@ -848,22 +848,22 @@ project(name)
 #
 
 # target library1
-function(cgen_target_library1)
+function(cgen_target_0)
     add_library(library1 STATIC)
 endfunction()
-cgen_target_library1()
+cgen_target_0()
 
 # target library2
-function(cgen_target_library2)
+function(cgen_target_1)
     add_library(library2 STATIC)
 endfunction()
-cgen_target_library2()
+cgen_target_1()
 
 # target library3
-function(cgen_target_library3)
+function(cgen_target_2)
     add_library(library3 STATIC)
 endfunction()
-cgen_target_library3()
+cgen_target_2()
 )");
     }
 }
@@ -885,10 +885,10 @@ project(name)
 #
 
 # target executable
-function(cgen_target_executable)
+function(cgen_target_0)
     add_executable(executable)
 endfunction()
-cgen_target_executable()
+cgen_target_0()
 )");
     }
 
@@ -913,13 +913,13 @@ project(name)
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     add_library(library STATIC)
     add_library(alias1 ALIAS library)
     add_library(alias2 ALIAS library)
 endfunction()
 if(condition)
-    cgen_target_library()
+    cgen_target_0()
 endif()
 )");
     }
@@ -941,10 +941,10 @@ project(name)
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     add_library(library SHARED)
 endfunction()
-cgen_target_library()
+cgen_target_0()
 )");
     }
 
@@ -981,7 +981,7 @@ project(name)
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     add_library(library INTERFACE)
     target_sources(library
         INTERFACE
@@ -1015,7 +1015,7 @@ function(cgen_target_library)
             option
     )
 endfunction()
-cgen_target_library()
+cgen_target_0()
 )");
     }
 
@@ -1036,10 +1036,10 @@ project(name)
 #
 
 # target library
-function(cgen_target_library)
+function(cgen_target_0)
     add_library(library OBJECT)
 endfunction()
-cgen_target_library()
+cgen_target_0()
 )");
     }
 }

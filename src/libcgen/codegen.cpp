@@ -115,11 +115,12 @@ void CMakeGenerator::write(const Config &config) {
     if (!config.targets.empty()) {
         POOST_TRACE("write targets");
         section("Targets");
+        int target_idx = 0;
         for (const config::Target &target : config.targets) {
             // clang-format off
             blank();
             comment("target " + target.name);
-            const std::string func_name = "cgen_target_" + target.name;
+            const std::string func_name = "cgen_target_" + std::to_string(target_idx++);
             function_begin(func_name);
                 switch (target.type) {
                 case config::TargetType::Library:
