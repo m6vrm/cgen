@@ -232,6 +232,10 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
 auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
                     const std::vector<cgen::Package> &new_resolved_pkgs) -> bool {
 
+    if (old_resolved_pkgs.empty() && new_resolved_pkgs.empty()) {
+        return true;
+    }
+
     POOST_INFO_EX(log_common, "write resolved file: %s", resolved_file);
     std::ofstream out{resolved_file, std::ostream::trunc};
     const std::vector<cgen::Package> resolved_pkgs =
