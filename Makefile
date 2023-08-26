@@ -11,7 +11,7 @@ CMAKE_CACHE := $(BUILD_DIR)/CMakeCache.txt \
 GIT_SOURCES := git ls-files -- "*.?pp"
 SOURCES := $(shell $(GIT_SOURCES))
 
-CHECK_BUILD_TYPE := $(BUILD_DIR)/BUILD.$(shell echo $(BUILD_TYPE))
+CHECK_BUILD_TYPE := $(BUILD_DIR)/BUILD.$(BUILD_TYPE)
 CHECK_FORMAT := $(BUILD_DIR)/FORMAT
 
 .PHONY: default
