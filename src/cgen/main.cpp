@@ -241,7 +241,7 @@ auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
     const std::vector<cgen::Package> resolved_pkgs =
         cgen::packages_merge(old_resolved_pkgs, new_resolved_pkgs);
     cgen::resolved_write(out, resolved_pkgs);
-    return true;
+    return !!out;
 }
 
 auto cmake_write(const cgen::Config &config) -> bool {
@@ -249,7 +249,7 @@ auto cmake_write(const cgen::Config &config) -> bool {
     std::ofstream out{cmake_file, std::ostream::trunc};
     cgen::CMakeGenerator cmake{out};
     cmake.write(config);
-    return true;
+    return !!out;
 }
 
 void errors_print(const std::vector<cgen::Error> &errors) {

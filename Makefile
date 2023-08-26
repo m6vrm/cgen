@@ -105,12 +105,14 @@ lint: ## Run all linters
 lint/cppcheck: $(CMAKE_CACHE) ## Run `cppcheck`
 	cppcheck \
 		--cppcheck-build-dir="$(BUILD_DIR)" \
+		--check-level=exhaustive \
 		--error-exitcode=1 \
 		--enable=all \
 		--language=c++ \
 		--std=c++20 \
 		--inline-suppr \
 		--suppress=unmatchedSuppression \
+		--suppress=missingInclude \
 		--suppress=missingIncludeSystem \
 		--suppress=unusedStructMember \
 		--suppress=unusedFunction \
