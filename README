@@ -16,7 +16,7 @@ Requirements:
     *   CMake 3.11
     *   C++20 compatible compiler
 
-    $ git clone --recurse-submodule https://m6v.ru/git/cgen
+    $ git clone --recurse-submodules https://m6v.ru/git/cgen
     $ cd cgen
     $ make
     $ sudo make install
