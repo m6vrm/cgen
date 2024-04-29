@@ -6,7 +6,7 @@
 	url = https://github.com/jbeder/yaml-cpp
 [submodule "external/miroir"]
 	path = external/miroir
-	url = https://gitlab.com/madyanov/miroir
+	url = https://m6v.ru/git/miroir
 [submodule "external/poost"]
 	path = external/poost
-	url = https://gitlab.com/madyanov/poost
+	url = https://m6v.ru/git/poost

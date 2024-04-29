@@ -69,10 +69,10 @@ packages:
       YAML_CPP_FORMAT_SOURCE: OFF
 
   - external: external/miroir
-    url: https://gitlab.com/madyanov/miroir
+    url: https://m6v.ru/git/miroir
 
   - external: external/poost
-    url: https://gitlab.com/madyanov/poost
+    url: https://m6v.ru/git/poost
 
 targets:
   - library: libcgen_obj
