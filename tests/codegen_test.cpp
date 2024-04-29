@@ -10,7 +10,7 @@ inline const std::string CMAKE_LISTS_HEADER = R"(
 # Generated using cgen 0.1.1 — https://gitlab.com/madyanov/cgen
 # DO NOT EDIT
 
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.11)
 )";
 
 auto config_generate(std::istream &in) -> std::string {
