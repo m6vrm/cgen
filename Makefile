@@ -93,3 +93,10 @@ asan: test
 
 ubsan: export CMAKE_BUILD_TYPE=Ubsan
 ubsan: test
+
+.PHONY: release debug
+.PHONY: configure build clean
+.PHONY: install uninstall
+.PHONY: run test
+.PHONY: format check
+.PHONY: asan ubsan
