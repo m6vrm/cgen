@@ -14,7 +14,9 @@
 namespace cgen {
 
 // todo: consider exec(3) family of functions
-auto exec(std::string &out, std::initializer_list<std::string> cmd_parts) -> int {
+auto exec(std::string &out,
+          std::initializer_list<std::string> cmd_parts) -> int {
+
     std::string cmd;
     for (const std::string &part : cmd_parts) {
         cmd += part + " ";

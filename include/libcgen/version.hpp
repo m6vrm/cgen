@@ -17,7 +17,7 @@ inline constexpr int patch = 1;
 inline constexpr int resolved = 1;
 
 // cmake version
-inline constexpr char cmake[] = "3.24";
+inline constexpr char cmake[] = "3.11";
 
 } // namespace version
 

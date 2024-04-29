@@ -7,11 +7,13 @@
 auto version_tag(const std::string &ver, const std::vector<std::string> &tags,
                  bool ignore_rc = false) -> std::optional<std::string> {
 
-    const std::optional<std::string> tag = cgen::version_tag(ver, tags, ignore_rc);
+    const std::optional<std::string> tag =
+        cgen::version_tag(ver, tags, ignore_rc);
 
     std::vector<std::string> reversed_tags{tags};
     std::reverse(reversed_tags.begin(), reversed_tags.end());
-    const std::optional<std::string> reversed_tag = cgen::version_tag(ver, tags, ignore_rc);
+    const std::optional<std::string> reversed_tag =
+        cgen::version_tag(ver, tags, ignore_rc);
 
     CHECK(tag == reversed_tag);
 
@@ -122,9 +124,13 @@ TEST_CASE("version matching") {
 }
 
 TEST_CASE("version comparison") {
-    SUBCASE("prefixed version is preferred") { CHECK(version_less("1.0.0", "v1.0.0")); }
+    SUBCASE("prefixed version is preferred") {
+        CHECK(version_less("1.0.0", "v1.0.0"));
+    }
 
-    SUBCASE("longest version is preferred") { CHECK(version_less("1.0", "1.0.0")); }
+    SUBCASE("longest version is preferred") {
+        CHECK(version_less("1.0", "1.0.0"));
+    }
 
     SUBCASE("semver comparison") {
         // see https://semver.org/spec/v2.0.0-rc.1.html

@@ -10,12 +10,15 @@
 namespace cgen {
 
 auto node_clone(const YAML::Node &node) -> YAML::Node;
-auto node_find(const YAML::Node &map, const std::string &key) -> std::pair<YAML::Node, std::string>;
+auto node_find(const YAML::Node &map,
+               const std::string &key) -> std::pair<YAML::Node, std::string>;
 
-auto string_key_attribute(const std::string &key) -> std::pair<std::string, std::string_view>;
-auto string_replace_parameters(const std::string &str,
-                               const std::map<std::string, std::string, std::less<void>> &params,
-                               std::vector<std::string> &undefined_params) -> std::string;
+auto string_key_attribute(const std::string &key)
+    -> std::pair<std::string, std::string_view>;
+auto string_replace_parameters(
+    const std::string &str,
+    const std::map<std::string, std::string, std::less<void>> &params,
+    std::vector<std::string> &undefined_params) -> std::string;
 
 auto node_is_defined(const YAML::Node &node, const std::string &key) -> bool;
 void node_wrap_configs(YAML::Node node);
@@ -46,13 +49,15 @@ void node_merge(const YAML::Node &from_node, YAML::Node &to_node) {
                 to_node[from_key_attr_pair.first] = node_clone(from_val_node);
             } else {
                 // merge
-                YAML::Node to_val_node =
-                    to_node_attr_pair.first.IsDefined() ? to_node_attr_pair.first : YAML::Node();
+                YAML::Node to_val_node = to_node_attr_pair.first.IsDefined()
+                                             ? to_node_attr_pair.first
+                                             : YAML::Node();
                 node_merge(from_val_node, to_val_node);
                 to_node[from_key_attr_pair.first] = to_val_node;
             }
         }
-    } else if (to_node.IsDefined() && from_node.IsSequence() && to_node.IsSequence()) {
+    } else if (to_node.IsDefined() && from_node.IsSequence() &&
+               to_node.IsSequence()) {
         // append if both nodes are lists
         for (const auto &it : from_node) {
             to_node.push_back(node_clone(it));
@@ -63,9 +68,10 @@ void node_merge(const YAML::Node &from_node, YAML::Node &to_node) {
     }
 }
 
-void node_replace_parameters(YAML::Node &node,
-                             const std::map<std::string, std::string, std::less<void>> &params,
-                             std::vector<std::string> &undefined_params) {
+void node_replace_parameters(
+    YAML::Node &node,
+    const std::map<std::string, std::string, std::less<void>> &params,
+    std::vector<std::string> &undefined_params) {
 
     if (node.IsMap()) {
         for (auto it : node) {
@@ -126,8 +132,8 @@ auto node_clone(const YAML::Node &node) -> YAML::Node {
     }
 }
 
-auto node_find(const YAML::Node &map, const std::string &key)
-    -> std::pair<YAML::Node, std::string> {
+auto node_find(const YAML::Node &map,
+               const std::string &key) -> std::pair<YAML::Node, std::string> {
 
     POOST_ASSERT(map.IsMap(), "node is not a map: %s", node_dump(map).c_str());
 
@@ -145,28 +151,32 @@ auto node_find(const YAML::Node &map, const std::string &key)
             string_key_attribute(node_key);
 
         if (node_key_attr_pair.first == key) {
-            return std::pair<YAML::Node, std::string>(val_node,
-                                                      std::string{node_key_attr_pair.second});
+            return std::pair<YAML::Node, std::string>(
+                val_node, std::string{node_key_attr_pair.second});
         }
     }
 
     return std::pair<YAML::Node, std::string>(node, "");
 }
 
-auto string_key_attribute(const std::string &key) -> std::pair<std::string, std::string_view> {
+auto string_key_attribute(const std::string &key)
+    -> std::pair<std::string, std::string_view> {
+
     const std::string::size_type pos = key.find(':');
 
     if (pos != std::string::npos) {
-        return std::pair<std::string, std::string_view>(key.substr(0, pos),
-                                                        std::string_view{key}.substr(pos + 1));
+        return std::pair<std::string, std::string_view>(
+            key.substr(0, pos), std::string_view{key}.substr(pos + 1));
     } else {
-        return std::pair<std::string, std::string_view>(key, std::string_view{});
+        return std::pair<std::string, std::string_view>(key,
+                                                        std::string_view{});
     }
 }
 
-auto string_replace_parameters(const std::string &str,
-                               const std::map<std::string, std::string, std::less<void>> &params,
-                               std::vector<std::string> &undefined_params) -> std::string {
+auto string_replace_parameters(
+    const std::string &str,
+    const std::map<std::string, std::string, std::less<void>> &params,
+    std::vector<std::string> &undefined_params) -> std::string {
 
     if (str.empty()) {
         return str;
@@ -221,8 +231,8 @@ auto string_replace_parameters(const std::string &str,
                 state = ST_NONE;
                 param = std::string_view{};
             } else {
-                param =
-                    std::string_view{!param.empty() ? param.cbegin() : &(*it), param.size() + 1};
+                param = std::string_view{
+                    !param.empty() ? param.cbegin() : &(*it), param.size() + 1};
             }
 
             break;
@@ -231,7 +241,8 @@ auto string_replace_parameters(const std::string &str,
         }
     }
 
-    POOST_ASSERT(state == ST_NONE, "invalid params replacer end state: %d", state);
+    POOST_ASSERT(state == ST_NONE, "invalid params replacer end state: %d",
+                 state);
 
     return result;
 }
@@ -245,7 +256,8 @@ void node_wrap_configs(YAML::Node node) {
         return;
     }
 
-    if (node_is_defined(node, "global") || node_is_defined(node, "configurations")) {
+    if (node_is_defined(node, "global") ||
+        node_is_defined(node, "configurations")) {
         return;
     }
 
@@ -260,7 +272,8 @@ void node_wrap_visibility(YAML::Node node) {
     }
 
     if (node_is_defined(node, "default") || node_is_defined(node, "public") ||
-        node_is_defined(node, "private") || node_is_defined(node, "interface")) {
+        node_is_defined(node, "private") ||
+        node_is_defined(node, "interface")) {
 
         node_wrap_configs(node, "default");
         node_wrap_configs(node, "public");

@@ -27,7 +27,9 @@ auto version_is_valid(const std::string &ver) -> bool {
     return true;
 }
 
-auto version_match(const std::string &ver, const std::string &tag, bool ignore_rc) -> bool {
+auto version_match(const std::string &ver, const std::string &tag,
+                   bool ignore_rc) -> bool {
+
     // use only normal parts for matching
     const Version tag_ver = version_parse(tag);
     const std::vector<int> ver_parts = version_parse(ver).normal;
@@ -77,8 +79,9 @@ auto version_less(const std::string &lhs, const std::string &rhs) -> bool {
 
     if (lhs_parts.normal != rhs_parts.normal) {
         // compare by normal parts
-        return std::lexicographical_compare(lhs_parts.normal.cbegin(), lhs_parts.normal.cend(),
-                                            rhs_parts.normal.cbegin(), rhs_parts.normal.cend());
+        return std::lexicographical_compare(
+            lhs_parts.normal.cbegin(), lhs_parts.normal.cend(),
+            rhs_parts.normal.cbegin(), rhs_parts.normal.cend());
     } else if (lhs_parts.has_rc && !rhs_parts.has_rc) {
         // prefer version without pre-release parts
         return true;
@@ -87,22 +90,24 @@ auto version_less(const std::string &lhs, const std::string &rhs) -> bool {
         return false;
     } else if (lhs_parts.rc != rhs_parts.rc) {
         // compare by pre-release parts
-        return std::lexicographical_compare(lhs_parts.rc.cbegin(), lhs_parts.rc.cend(),
-                                            rhs_parts.rc.cbegin(), rhs_parts.rc.cend());
+        return std::lexicographical_compare(
+            lhs_parts.rc.cbegin(), lhs_parts.rc.cend(), rhs_parts.rc.cbegin(),
+            rhs_parts.rc.cend());
     } else if (lhs_parts.build != rhs_parts.build) {
         // compare by build parts
-        // note: not according to the semver spec where build version has higher precedence even
-        // than the associated normal version
-        return std::lexicographical_compare(lhs_parts.build.cbegin(), lhs_parts.build.cend(),
-                                            rhs_parts.build.cbegin(), rhs_parts.build.cend());
+        // note: not according to the semver spec where build version has higher
+        // precedence even than the associated normal version
+        return std::lexicographical_compare(
+            lhs_parts.build.cbegin(), lhs_parts.build.cend(),
+            rhs_parts.build.cbegin(), rhs_parts.build.cend());
     }
 
     // prefer longest version (prefixed or with more parts)
     return lhs.size() < rhs.size();
 }
 
-auto version_tag(const std::string &ver, const std::vector<std::string> &tags, bool ignore_rc)
-    -> std::optional<std::string> {
+auto version_tag(const std::string &ver, const std::vector<std::string> &tags,
+                 bool ignore_rc) -> std::optional<std::string> {
 
     std::vector<std::string> sorted_tags{tags};
     std::sort(sorted_tags.rbegin(), sorted_tags.rend(), version_less);
@@ -122,7 +127,8 @@ auto version_tag(const std::string &ver, const std::vector<std::string> &tags, b
 
 void vector_remove_trailing_zeros(std::vector<int> &vector) {
     const auto zeroes_it =
-        std::find_if(vector.crbegin(), vector.crend(), [](int val) -> bool { return val != 0; });
+        std::find_if(vector.crbegin(), vector.crend(),
+                     [](int val) -> bool { return val != 0; });
     vector.erase(zeroes_it.base(), vector.end());
 }
 

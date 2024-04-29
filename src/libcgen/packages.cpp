@@ -14,9 +14,10 @@
 
 namespace cgen {
 
-auto packages_find(const std::vector<Package> &pkgs, const Package &pkg)
-    -> std::vector<Package>::const_iterator;
-auto packages_contains(const std::vector<Package> &pkgs, const Package &pkg) -> bool;
+auto packages_find(const std::vector<Package> &pkgs,
+                   const Package &pkg) -> std::vector<Package>::const_iterator;
+auto packages_contains(const std::vector<Package> &pkgs,
+                       const Package &pkg) -> bool;
 
 void package_remove(const Package &pkg);
 auto package_tag(const Package &pkg, std::vector<Error> &errors) -> std::string;
@@ -26,14 +27,17 @@ void package_backup(const Package &pkg);
 void package_backup_remove(const Package &pkg);
 void package_backup_restore(const Package &pkg);
 
-auto operator>>(std::istream &in, packages::FetchStrategy &strategy) -> std::istream &;
+auto operator>>(std::istream &in,
+                packages::FetchStrategy &strategy) -> std::istream &;
 
 static const std::filesystem::path git_modules_path = ".git/modules";
 static const std::string backup_suffix = ".bak";
 
 /// Packages
 
-auto packages_cleanup(const std::vector<Package> &pkgs, const std::vector<Package> &resolved_pkgs)
+auto packages_cleanup(const std::vector<Package> &pkgs,
+                      const std::vector<Package> &resolved_pkgs)
+
     -> std::vector<Package> {
 
     std::vector<Package> result;
@@ -50,7 +54,8 @@ auto packages_cleanup(const std::vector<Package> &pkgs, const std::vector<Packag
     return result;
 }
 
-auto packages_resolve(const std::vector<Package> &pkgs, const std::vector<Package> &resolved_pkgs,
+auto packages_resolve(const std::vector<Package> &pkgs,
+                      const std::vector<Package> &resolved_pkgs,
                       std::vector<Error> &errors) -> std::vector<Package> {
 
     std::vector<Package> result;
@@ -82,7 +87,8 @@ auto packages_resolve(const std::vector<Package> &pkgs, const std::vector<Packag
             }
         } else {
             // package already resolved and exists
-            POOST_DEBUG("package already resolved and exists: %s", resolved_it->path.c_str());
+            POOST_DEBUG("package already resolved and exists: %s",
+                        resolved_it->path.c_str());
             result.push_back(*resolved_it);
         }
     }
@@ -91,8 +97,8 @@ auto packages_resolve(const std::vector<Package> &pkgs, const std::vector<Packag
 }
 
 auto packages_update(const std::vector<Package> &pkgs,
-                     const std::vector<std::filesystem::path> &paths, std::vector<Error> &errors)
-    -> std::vector<Package> {
+                     const std::vector<std::filesystem::path> &paths,
+                     std::vector<Error> &errors) -> std::vector<Package> {
 
     std::vector<Package> result;
 
@@ -134,8 +140,8 @@ auto packages_update(const std::vector<Package> &pkgs,
     return result;
 }
 
-auto packages_merge(const std::vector<Package> &from, const std::vector<Package> &to)
-    -> std::vector<Package> {
+auto packages_merge(const std::vector<Package> &from,
+                    const std::vector<Package> &to) -> std::vector<Package> {
 
     std::vector<Package> result = to;
 
@@ -163,19 +169,23 @@ auto resolved_read(std::istream &in) -> std::vector<Package> {
     }
 
     Package pkg{};
-    while (in >> pkg.strategy >> pkg.path >> pkg.url >> pkg.version >> pkg.original_version) {
+    while (in >> pkg.strategy >> pkg.path >> pkg.url >> pkg.version >>
+           pkg.original_version) {
         resolved.push_back(pkg);
     }
 
     return resolved;
 }
 
-void resolved_write(std::ostream &out, const std::vector<Package> &resolved_pkgs) {
+void resolved_write(std::ostream &out,
+                    const std::vector<Package> &resolved_pkgs) {
+
     // sort packages to get rid of unnecessary changes in the diff
     std::vector<Package> sorted_pkgs = resolved_pkgs;
-    std::sort(
-        sorted_pkgs.begin(), sorted_pkgs.end(),
-        [](const Package &pkg1, const Package &pkg2) -> bool { return pkg1.path < pkg2.path; });
+    std::sort(sorted_pkgs.begin(), sorted_pkgs.end(),
+              [](const Package &pkg1, const Package &pkg2) -> bool {
+                  return pkg1.path < pkg2.path;
+              });
 
     out << "format\t" << version::resolved << "\n";
 
@@ -190,15 +200,17 @@ void resolved_write(std::ostream &out, const std::vector<Package> &resolved_pkgs
 
 /// Private
 
-auto packages_find(const std::vector<Package> &pkgs, const Package &pkg)
-    -> std::vector<Package>::const_iterator {
+auto packages_find(const std::vector<Package> &pkgs,
+                   const Package &pkg) -> std::vector<Package>::const_iterator {
 
     const std::filesystem::path path = pkg.path;
-    return std::find_if(pkgs.cbegin(), pkgs.cend(),
-                        [&path](const Package &pkg) -> bool { return pkg.path == path; });
+    return std::find_if(
+        pkgs.cbegin(), pkgs.cend(),
+        [&path](const Package &pkg) -> bool { return pkg.path == path; });
 }
 
-auto packages_contains(const std::vector<Package> &pkgs, const Package &pkg) -> bool {
+auto packages_contains(const std::vector<Package> &pkgs,
+                       const Package &pkg) -> bool {
     return packages_find(pkgs, pkg) != pkgs.cend();
 }
 
@@ -214,7 +226,9 @@ void package_remove(const Package &pkg) {
     path_remove(pkg.path);
 }
 
-auto package_tag(const Package &pkg, std::vector<Error> &errors) -> std::string {
+auto package_tag(const Package &pkg,
+                 std::vector<Error> &errors) -> std::string {
+
     POOST_TRACE("get all remote tags: %s", pkg.url.c_str());
     std::vector<std::string> tags;
     const int status = git_remote_tags(pkg.url, tags);
@@ -253,7 +267,8 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     Package resolved_pkg = pkg;
 
     if (!path_is_sub(pkg.path, std::filesystem::current_path())) {
-        POOST_FATAL("fetching packages into the paths outside of the current working dir is "
+        POOST_FATAL("fetching packages into the paths outside of the current "
+                    "working dir is "
                     "prohibited: %s",
                     pkg.path.c_str());
         return resolved_pkg;
@@ -347,7 +362,8 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     }
 
     // get commit hash of current HEAD
-    POOST_TRACE("resolve commit hash of the current HEAD: %s", pkg.path.c_str());
+    POOST_TRACE("resolve commit hash of the current HEAD: %s",
+                pkg.path.c_str());
     status = git_resolve_ref(pkg.path, "HEAD", resolved_pkg.version) | status;
     if (status != EXIT_SUCCESS) {
         POOST_ERROR("can't resolve commit hash of current HEAD: %s"
@@ -374,8 +390,8 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
                 "\n\tpath: %s"
                 "\n\turl: %s"
                 "\n\tcommit: %s",
-                resolved_pkg.strategy, resolved_pkg.path.c_str(), resolved_pkg.url.c_str(),
-                resolved_pkg.version.c_str());
+                resolved_pkg.strategy, resolved_pkg.path.c_str(),
+                resolved_pkg.url.c_str(), resolved_pkg.version.c_str());
 
     package_backup_remove(pkg);
     return resolved_pkg;
@@ -400,7 +416,8 @@ void package_backup_restore(const Package &pkg) {
     path_rename(pkg.path.string() + backup_suffix, pkg.path);
 }
 
-auto operator>>(std::istream &in, packages::FetchStrategy &strategy) -> std::istream & {
+auto operator>>(std::istream &in,
+                packages::FetchStrategy &strategy) -> std::istream & {
     char raw = 0;
     if (in >> raw) {
         strategy = static_cast<packages::FetchStrategy>(raw);
