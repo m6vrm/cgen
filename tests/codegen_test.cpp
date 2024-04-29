@@ -7,7 +7,7 @@
 #include <sstream>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(
-# Generated using cgen 0.1.1 — https://gitlab.com/madyanov/cgen
+# Generated using cgen 1.1.0 — https://gitlab.com/madyanov/cgen
 # DO NOT EDIT
 
 cmake_minimum_required(VERSION 3.11)
