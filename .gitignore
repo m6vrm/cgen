@@ -1,8 +1,3 @@
 .DS_Store
-.vscode/
 build/
-.cache/
-tags
-coverage.info
-coverage/
-CMakeLists.txt.user
+.vscode/
