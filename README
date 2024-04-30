@@ -24,19 +24,16 @@ Requirements:
 Usage
 =====
 
-    1.  Create .cgen.yml configuration file in the root of the project
-    2.  Generate CMakeLists.txt:
+Create .cgen.yml configuration file in the root of the project and generate
+CMakeLists.txt with following command:
 
-        $ cgen -g
+    $ cgen -g
 
-    3.  Show help:
-
-        $ cgen -h
 
 Specification
 =============
 
-See docs directory.
+See docs/spec.txt.
 
 Contribution
 ============
