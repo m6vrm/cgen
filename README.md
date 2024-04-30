@@ -1,10 +1,10 @@
 Features
 ========
 
-    *   Declarative CMake configuration with YAML
-    *   Dependency resolution and version pinning
-    *   Different target types support
-    *   Configuration reuse with includes and templates
+*   Declarative CMake configuration with YAML
+*   Dependency resolution and version pinning
+*   Different target types support
+*   Configuration reuse with includes and templates
 
 NOTE: A very limited subset of CMake features is supported.
 
@@ -13,8 +13,10 @@ Installation
 
 Requirements:
 
-    *   CMake 3.11
-    *   C++20 compatible compiler
+*   CMake 3.11
+*   C++20 compatible compiler
+
+<!-- -->
 
     $ git clone --recurse-submodules https://m6v.ru/git/cgen
     $ cd cgen
@@ -28,7 +30,6 @@ Create .cgen.yml configuration file in the root of the project and generate
 CMakeLists.txt with following command:
 
     $ cgen -g
-
 
 Specification
 =============
