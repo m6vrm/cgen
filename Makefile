@@ -84,7 +84,7 @@ check:
 		include \
 		tests \
 		Makefile \
-		README \
+		README.md \
 		LICENSE \
 		docs
 
