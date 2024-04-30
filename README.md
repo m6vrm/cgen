@@ -34,7 +34,7 @@ CMakeLists.txt with following command:
 Specification
 =============
 
-See docs/spec.txt.
+See docs/spec.md.
 
 Contribution
 ============
