@@ -1,3 +1,5 @@
+Declarative CMake configuration generator.
+
 Features
 ========
 
