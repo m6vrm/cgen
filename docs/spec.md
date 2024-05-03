@@ -9,9 +9,9 @@ Project name and version.
 Schema:
 
     project:
-    - string                    # project name
-    - name: string              # project name
-      version: !optional scalar # version
+      - string                    # project name
+      - name: string              # project name
+        version: !optional scalar # version
 
 Example:
 
