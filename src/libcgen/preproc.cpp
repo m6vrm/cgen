@@ -58,6 +58,7 @@ void node_merge(const YAML::Node &from_node, YAML::Node &to_node) {
         }
     } else if (to_node.IsDefined() && from_node.IsSequence() &&
                to_node.IsSequence()) {
+
         // append if both nodes are lists
         for (const auto &it : from_node) {
             to_node.push_back(node_clone(it));

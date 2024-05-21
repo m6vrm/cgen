@@ -211,6 +211,7 @@ auto packages_find(const std::vector<Package> &pkgs,
 
 auto packages_contains(const std::vector<Package> &pkgs,
                        const Package &pkg) -> bool {
+
     return packages_find(pkgs, pkg) != pkgs.cend();
 }
 
@@ -418,6 +419,7 @@ void package_backup_restore(const Package &pkg) {
 
 auto operator>>(std::istream &in,
                 packages::FetchStrategy &strategy) -> std::istream & {
+
     char raw = 0;
     if (in >> raw) {
         strategy = static_cast<packages::FetchStrategy>(raw);
