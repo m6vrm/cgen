@@ -28,7 +28,7 @@ void CMakeGenerator::write(const Config &config) {
     POOST_TRACE("begin codegen");
 
     comment("Generated using cgen " + version_string() +
-            " — https://gitlab.com/madyanov/cgen");
+            " — https://github.com/m6vrm/cgen");
     comment("DO NOT EDIT");
     blank();
 
