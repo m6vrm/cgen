@@ -7,7 +7,7 @@
 #include <sstream>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(
-# Generated using cgen 1.1.0 — https://github.com/m6vrm/cgen
+# Generated using cgen 1.1.1 — https://github.com/m6vrm/cgen
 # DO NOT EDIT
 
 cmake_minimum_required(VERSION 3.11)
@@ -177,7 +177,7 @@ function(cgen_package_0)
     if(EXISTS ${PROJECT_SOURCE_DIR}/Package1/CMakeLists.txt)
         add_subdirectory(Package1)
     else()
-        message(WARNING "Package Package1 doesn't have CMakeLists.txt")
+        message(NOTICE "Package Package1 doesn't have CMakeLists.txt")
     endif()
 endfunction()
 cgen_package_0()
@@ -189,7 +189,7 @@ function(cgen_package_1)
     if(EXISTS ${PROJECT_SOURCE_DIR}/Package2/CMakeLists.txt)
         add_subdirectory(Package2)
     else()
-        message(WARNING "Package Package2 doesn't have CMakeLists.txt")
+        message(NOTICE "Package Package2 doesn't have CMakeLists.txt")
     endif()
 endfunction()
 if(condition)

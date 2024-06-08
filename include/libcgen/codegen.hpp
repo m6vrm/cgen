@@ -26,7 +26,7 @@ class CMakeGenerator {
     void comment(const std::string &str = "");
     void section(const std::string &str);
 
-    void warning(const std::string &msg);
+    void notice(const std::string &msg);
 
     void if_begin(const std::string &cond);
     void if_end(const std::string &cond);

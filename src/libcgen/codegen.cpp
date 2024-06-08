@@ -103,7 +103,7 @@ void CMakeGenerator::write(const Config &config) {
                      (source_root / pkg.name / cmake_lists).string());
             add_subdirectory(pkg.name);
             if_else();
-            warning("Package " + pkg.name + " doesn't have CMakeLists.txt");
+            notice("Package " + pkg.name + " doesn't have CMakeLists.txt");
             if_end();
             function_end();
 
@@ -200,8 +200,8 @@ void CMakeGenerator::section(const std::string &str) {
     blank();
 }
 
-void CMakeGenerator::warning(const std::string &msg) {
-    line("message(WARNING " + quote(msg) + ")");
+void CMakeGenerator::notice(const std::string &msg) {
+    line("message(NOTICE " + quote(msg) + ")");
 }
 
 void CMakeGenerator::if_begin(const std::string &cond) {
