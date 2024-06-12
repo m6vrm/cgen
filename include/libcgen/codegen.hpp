@@ -79,9 +79,9 @@ class CMakeGenerator {
     void definition(const config::Definition &def);
 
   private:
-    std::ostream &m_out;
-    int m_indent;
-    bool m_last_is_blank;
+    std::ostream &out_;
+    int indent_;
+    bool last_is_blank_;
 };
 
 } // namespace cgen

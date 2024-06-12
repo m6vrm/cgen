@@ -20,7 +20,7 @@ auto config_target_options(const Config &config)
 /// Public
 
 CMakeGenerator::CMakeGenerator(std::ostream &out)
-    : m_out{out}, m_indent{0}, m_last_is_blank{false} {}
+    : out_{out}, indent_{0}, last_is_blank_{false} {}
 
 void CMakeGenerator::write(const Config &config) {
     POOST_TRACE("begin codegen");
@@ -161,25 +161,25 @@ void CMakeGenerator::write(const Config &config) {
 
 /// Private
 
-void CMakeGenerator::indent() { ++m_indent; }
+void CMakeGenerator::indent() { ++indent_; }
 
 void CMakeGenerator::unindent() {
-    --m_indent;
-    POOST_ASSERT(m_indent >= 0, "negative indentation: %d", m_indent);
+    --indent_;
+    POOST_ASSERT(indent_ >= 0, "negative indentation: %d", indent_);
 }
 
 void CMakeGenerator::line(const std::string &str) {
-    m_out << std::string(m_indent * 4, ' ') << str << "\n";
-    m_last_is_blank = false;
+    out_ << std::string(indent_ * 4, ' ') << str << "\n";
+    last_is_blank_ = false;
 }
 
 void CMakeGenerator::blank() {
-    if (m_last_is_blank) {
+    if (last_is_blank_) {
         return;
     }
 
-    m_out << "\n";
-    m_last_is_blank = true;
+    out_ << "\n";
+    last_is_blank_ = true;
 }
 
 void CMakeGenerator::comment(const std::string &str) {

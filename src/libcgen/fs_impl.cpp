@@ -1,6 +1,6 @@
 #include <fs.hpp>
-#include <poost/log.hpp>
 #include <fstream>
+#include <poost/log.hpp>
 
 namespace cgen {
 

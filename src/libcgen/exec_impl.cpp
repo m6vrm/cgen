@@ -1,7 +1,7 @@
-#include <exec.hpp>
-#include <poost/log.hpp>
 #include <array>
 #include <cstdlib>
+#include <exec.hpp>
+#include <poost/log.hpp>
 
 #ifdef _WIN32
 #define popen _popen
