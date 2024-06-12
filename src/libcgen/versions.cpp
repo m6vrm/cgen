@@ -1,8 +1,7 @@
-#include "versions.hpp"
-
 #include <algorithm>
 #include <cctype>
 #include <limits>
+#include <versions.hpp>
 
 namespace cgen {
 

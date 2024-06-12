@@ -1,5 +1,4 @@
-#include "debug.hpp"
-
+#include <debug.hpp>
 #include <poost/assert.hpp>
 
 namespace cgen {

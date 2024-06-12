@@ -1,9 +1,7 @@
-#include "preproc.hpp"
-#include "debug.hpp"
-
-#include <poost/assert.hpp>
-
+#include <debug.hpp>
 #include <iterator>
+#include <poost/assert.hpp>
+#include <preproc.hpp>
 #include <string_view>
 #include <utility>
 

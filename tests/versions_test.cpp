@@ -1,7 +1,5 @@
-#include "versions.hpp"
-
+#include <versions.hpp>
 #include <doctest/doctest.h>
-
 #include <algorithm>
 
 auto version_tag(const std::string &ver, const std::vector<std::string> &tags,

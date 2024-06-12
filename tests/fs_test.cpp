@@ -1,5 +1,4 @@
-#include "fs.hpp"
-
+#include <fs.hpp>
 #include <doctest/doctest.h>
 
 TEST_CASE("paths checking") {

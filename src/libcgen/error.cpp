@@ -1,5 +1,4 @@
-#include "error.hpp"
-
+#include <error.hpp>
 #include <poost/assert.hpp>
 
 namespace cgen {

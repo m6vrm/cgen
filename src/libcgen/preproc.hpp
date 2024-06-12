@@ -1,12 +1,10 @@
-#ifndef CGEN_PREPROC_HPP
-#define CGEN_PREPROC_HPP
-
-#include <yaml-cpp/yaml.h>
+#pragma once
 
 #include <functional>
 #include <map>
 #include <string>
 #include <vector>
+#include <yaml-cpp/yaml.h>
 
 namespace cgen {
 
@@ -21,5 +19,3 @@ void node_wrap_configs(const YAML::Node &node, const std::string &key);
 void node_wrap_visibility(const YAML::Node &node, const std::string &key);
 
 } // namespace cgen
-
-#endif // ifndef CGEN_PREPROC_HPP

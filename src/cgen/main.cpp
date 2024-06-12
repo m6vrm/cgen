@@ -1,32 +1,29 @@
-#include <libcgen/codegen.hpp>
-#include <libcgen/config.hpp>
-#include <libcgen/error.hpp>
-#include <libcgen/packages.hpp>
-#include <libcgen/version.hpp>
-
-#include <poost/args.hpp>
-#include <poost/assert.hpp>
-#include <poost/log.hpp>
-
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <libcgen/codegen.hpp>
+#include <libcgen/config.hpp>
+#include <libcgen/error.hpp>
+#include <libcgen/packages.hpp>
+#include <libcgen/version.hpp>
+#include <poost/args.hpp>
+#include <poost/assert.hpp>
+#include <poost/log.hpp>
 #include <vector>
 
 inline constexpr char config_file[] = ".cgen.yml";
 inline constexpr char resolved_file[] = ".cgen.resolved";
 inline constexpr char cmake_file[] = "CMakeLists.txt";
 
-auto use_color() -> bool;
+auto use_colors() -> bool;
 
 const poost::LogSettings log_common{
     .stream = stderr,
     .log_level = poost::LogLevel::Info,
-    .print_file_line = false,
-    .use_color = use_color(),
+    .use_colors = use_colors(),
 };
 
 enum class ArgumentsParseResult {
@@ -81,20 +78,18 @@ auto main(int argc, char *argv[]) -> int {
         break;
     }
 
-    // main log settings
+    // global log settings
     if (opts.verbose) {
-        poost::log::main = poost::LogSettings{
+        poost::log::global = poost::LogSettings{
             .stream = stderr,
             .log_level = poost::LogLevel::All,
-            .print_file_line = true,
-            .use_color = use_color(),
+            .use_colors = use_colors(),
         };
     } else {
-        poost::log::main = poost::LogSettings{
+        poost::log::global = poost::LogSettings{
             .stream = stderr,
             .log_level = poost::LogLevel::Fatal,
-            .print_file_line = false,
-            .use_color = use_color(),
+            .use_colors = use_colors(),
         };
     }
 
@@ -321,7 +316,7 @@ void print_usage(const char *argv0) {
         argv0);
 }
 
-auto use_color() -> bool {
+auto use_colors() -> bool {
     // respect NO_COLOR environment variable
     // see: https://no-color.org
     const char *no_color = std::getenv("NO_COLOR");

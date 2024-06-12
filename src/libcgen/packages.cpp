@@ -1,14 +1,12 @@
-#include "packages.hpp"
-#include "fs.hpp"
-#include "git.hpp"
-#include "version.hpp"
-#include "versions.hpp"
-
-#include <poost/assert.hpp>
-#include <poost/log.hpp>
-
 #include <algorithm>
 #include <cstdlib>
+#include <fs.hpp>
+#include <git.hpp>
+#include <packages.hpp>
+#include <poost/assert.hpp>
+#include <poost/log.hpp>
+#include <version.hpp>
+#include <versions.hpp>
 
 // todo: write tests
 

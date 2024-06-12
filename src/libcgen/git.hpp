@@ -1,6 +1,4 @@
-#ifndef CGEN_GIT_HPP
-#define CGEN_GIT_HPP
-
+#pragma once
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -30,5 +28,3 @@ auto git_submodule_init(const std::filesystem::path &path) -> int;
 auto git_submodule_deinit(const std::filesystem::path &path) -> int;
 
 } // namespace cgen
-
-#endif // ifndef CGEN_GIT_HPP

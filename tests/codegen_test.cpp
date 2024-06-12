@@ -1,9 +1,7 @@
-#include "codegen.hpp"
-#include "config.hpp"
-#include "version.hpp"
-
+#include <codegen.hpp>
+#include <config.hpp>
+#include <version.hpp>
 #include <doctest/doctest.h>
-
 #include <sstream>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(

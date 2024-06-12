@@ -1,16 +1,13 @@
-#include "config.hpp"
-#include "fs.hpp"
-#include "preproc.hpp"
-
-#include <poost/log.hpp>
-
 #define MIROIR_IMPLEMENTATION
 #define MIROIR_YAMLCPP_SPECIALIZATION
+
+#include <config.hpp>
+#include <fs.hpp>
 #include <miroir/miroir.hpp>
-
-#include <yaml-cpp/yaml.h>
-
+#include <poost/log.hpp>
+#include <preproc.hpp>
 #include <set>
+#include <yaml-cpp/yaml.h>
 
 namespace YAML {
 

@@ -1,10 +1,8 @@
-#include "codegen.hpp"
-#include "version.hpp"
-
+#include <algorithm>
+#include <codegen.hpp>
 #include <poost/assert.hpp>
 #include <poost/log.hpp>
-
-#include <algorithm>
+#include <version.hpp>
 
 namespace cgen {
 

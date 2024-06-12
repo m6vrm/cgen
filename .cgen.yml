@@ -14,13 +14,6 @@ templates:
         Release:
           - -Werror
 
-  includes:
-    includes:
-      public:
-        - include
-      private:
-        - include/libcgen
-
   asan:
     compile_options:
       configurations:
@@ -56,6 +49,7 @@ templates:
 
 packages:
   - external: external/doctest
+    if: PROJECT_IS_TOP_LEVEL
     url: https://github.com/doctest/doctest
     options:
       DOCTEST_NO_INSTALL: ON
@@ -69,97 +63,93 @@ packages:
       YAML_CPP_FORMAT_SOURCE: OFF
 
   - external: external/miroir
-    url: https://m6v.ru/git/miroir
+    url: https://github.com/m6vrm/miroir
 
   - external: external/poost
-    url: https://m6v.ru/git/poost
+    url: https://github.com/m6vrm/poost
 
 targets:
   - library: libcgen_obj
     type: object
     templates:
       - common
-      - includes
     sources:
-      - include/libcgen/version.hpp
-      - src/libcgen/version.cpp
-
-      - include/libcgen/error.hpp
-      - src/libcgen/error.cpp
-
-      - include/libcgen/config.hpp
-      - src/libcgen/config.cpp
-      - src/libcgen/cgen.schema.yml.in
-
-      - include/libcgen/packages.hpp
-      - src/libcgen/packages.cpp
-
       - include/libcgen/codegen.hpp
+      - include/libcgen/config.hpp
+      - include/libcgen/error.hpp
+      - include/libcgen/packages.hpp
+      - include/libcgen/version.hpp
+      - src/libcgen/cgen.schema.yml.in
       - src/libcgen/codegen.cpp
-
-      - src/libcgen/exec.hpp
-
-      - src/libcgen/debug.hpp
+      - src/libcgen/config.cpp
       - src/libcgen/debug.cpp
-
-      - src/libcgen/fs.hpp
+      - src/libcgen/debug.hpp
+      - src/libcgen/error.cpp
+      - src/libcgen/exec.hpp
       - src/libcgen/fs.cpp
-
-      - src/libcgen/preproc.hpp
-      - src/libcgen/preproc.cpp
-
-      - src/libcgen/versions.hpp
-      - src/libcgen/versions.cpp
-
-      - src/libcgen/git.hpp
+      - src/libcgen/fs.hpp
       - src/libcgen/git.cpp
+      - src/libcgen/git.hpp
+      - src/libcgen/packages.cpp
+      - src/libcgen/preproc.cpp
+      - src/libcgen/preproc.hpp
+      - src/libcgen/version.cpp
+      - src/libcgen/versions.cpp
+      - src/libcgen/versions.hpp
+    includes:
+      public:
+        - include
+      private:
+        - include/libcgen
+        - src/libcgen
     dependencies:
       public:
         - yaml-cpp
       private:
-        - poost::poost
         - miroir::miroir
+        - poost::poost
 
   - library: libcgen
     templates:
       - common
-      - includes
     aliases:
       - cgen::libcgen
     sources:
-      - src/libcgen/fs_impl.cpp
       - src/libcgen/exec_impl.cpp
+      - src/libcgen/fs_impl.cpp
+    includes:
+      - src/libcgen
     dependencies:
       public:
-        - poost::poost
         - libcgen_obj
+      private:
+        - poost::poost
 
   - executable: libcgen_test
     if: PROJECT_IS_TOP_LEVEL
     templates:
       - common
-      - includes
       - asan
       - ubsan
     sources:
-      - tests/doctest_main.cpp
-
-      - tests/mocks.hpp
-      - tests/fs_mock.cpp
-      - tests/exec_mock.cpp
-
-      - tests/fs_test.cpp
-      - tests/preproc_test.cpp
-      - tests/config_test.cpp
-      - tests/versions_test.cpp
-      - tests/packages_test.cpp
       - tests/codegen_test.cpp
+      - tests/config_test.cpp
+      - tests/exec_mock.cpp
+      - tests/fs_mock.cpp
+      - tests/fs_test.cpp
+      - tests/main_test.cpp
+      - tests/mocks.hpp
+      - tests/packages_test.cpp
+      - tests/preproc_test.cpp
+      - tests/versions_test.cpp
     includes:
+      - include/libcgen
       - src/libcgen
+      - tests
     dependencies:
       - doctest::doctest
-      - poost::poost
       - libcgen_obj
+      - poost::poost
 
   - executable: cgen
     templates:

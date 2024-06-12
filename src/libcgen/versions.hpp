@@ -1,5 +1,4 @@
-#ifndef CGEN_VERSIONS_HPP
-#define CGEN_VERSIONS_HPP
+#pragma once
 
 #include <optional>
 #include <string>
@@ -15,5 +14,3 @@ auto version_tag(const std::string &ver, const std::vector<std::string> &tags,
                  bool ignore_rc = false) -> std::optional<std::string>;
 
 } // namespace cgen
-
-#endif // ifndef CGEN_VERSIONS_HPP

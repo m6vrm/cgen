@@ -1,9 +1,7 @@
-#include "config.hpp"
-#include "debug.hpp"
-#include "mocks.hpp"
-
+#include <config.hpp>
+#include <debug.hpp>
+#include <mocks.hpp>
 #include <doctest/doctest.h>
-
 #include <sstream>
 
 auto config_read(std::istream &in, std::vector<cgen::Error> &errors) {

@@ -1,6 +1,5 @@
-#include "exec.hpp"
-#include "mocks.hpp"
-
+#include <exec.hpp>
+#include <mocks.hpp>
 #include <cstdlib>
 
 namespace cgen {

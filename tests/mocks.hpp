@@ -1,5 +1,4 @@
-#ifndef CGEN_MOCKS_HPP
-#define CGEN_MOCKS_HPP
+#pragma once
 
 #include <filesystem>
 #include <map>
@@ -11,5 +10,3 @@ void mock_files(const std::map<std::filesystem::path, std::string> &mocks);
 void mock_exec(const std::map<std::string, std::string> &mocks);
 
 } // namespace cgen
-
-#endif // ifndef CGEN_MOCKS_HPP

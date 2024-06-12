@@ -1,6 +1,6 @@
-TARGET		= cgen
-TARGET_TEST	= libcgen_test
 OUT			= build
+TARGETS		= $(OUT)/cgen
+TESTS		= $(OUT)/libcgen_test
 
 PREFIX		= /usr/local
 BINDIR		= $(PREFIX)/bin
@@ -14,43 +14,45 @@ release: build
 debug: export CMAKE_BUILD_TYPE=Debug
 debug: build
 
-build: $(OUT)/$(TARGET)
+build: $(TARGETS)
 
-configure:
+CMakeLists.txt: .cgen.yml
+	-cgen -g
+
+configure: CMakeLists.txt
 	cmake \
 		-S . \
 		-B "$(OUT)" \
 		-G "Unix Makefiles" \
 		-D CMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-$(OUT)/$(TARGET): configure $(SRC)
+$(TARGETS): configure $(SRC)
 	cmake \
 		--build "$(OUT)" \
-		--target "$(TARGET)" \
+		--target "$(@F)" \
 		--parallel
 
-$(OUT)/$(TARGET_TEST): configure $(SRC) $(SRC_TEST)
+$(TESTS): configure $(SRC) $(SRC_TEST)
 	cmake \
 		--build "$(OUT)" \
-		--target "$(TARGET_TEST)" \
+		--target "$(@F)" \
 		--parallel
 
 clean:
 	$(RM) -r "$(OUT)"
 
 install:
-	strip "$(OUT)/$(TARGET)"
 	install -d "$(DESTDIR)$(BINDIR)"
-	install -m 755 "$(OUT)/$(TARGET)" "$(DESTDIR)$(BINDIR)"
+	install -m 755 "$(OUT)/cgen" "$(DESTDIR)$(BINDIR)"
 
 uninstall:
-	$(RM) "$(DESTDIR)$(BINDIR)/$(TARGET)"
+	$(RM) "$(DESTDIR)$(BINDIR)/cgen"
 
-run: $(OUT)/$(TARGET)
-	"./$(OUT)/$(TARGET)"
+run: $(TARGETS)
+	"./$(OUT)/cgen"
 
-test: $(OUT)/$(TARGET_TEST)
-	"./$(OUT)/$(TARGET_TEST)"
+test: $(TESTS)
+	"./$(OUT)/libcgen_test"
 
 format:
 	clang-format -i $(SRC) $(SRC_TEST)
@@ -86,7 +88,8 @@ check:
 		Makefile \
 		README.md \
 		LICENSE \
-		docs
+		docs \
+		.cgen.yml
 
 asan: export CMAKE_BUILD_TYPE=Asan
 asan: test

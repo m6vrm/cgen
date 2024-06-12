@@ -17,7 +17,9 @@ function(cgen_package_0)
         message(NOTICE "Package external/doctest doesn't have CMakeLists.txt")
     endif()
 endfunction()
-cgen_package_0()
+if(PROJECT_IS_TOP_LEVEL)
+    cgen_package_0()
+endif()
 
 # package external/yaml-cpp
 function(cgen_package_1)
@@ -62,41 +64,42 @@ function(cgen_target_0)
     add_library(libcgen_obj OBJECT)
     target_sources(libcgen_obj
         PRIVATE
-            include/libcgen/version.hpp
-            src/libcgen/version.cpp
-            include/libcgen/error.hpp
-            src/libcgen/error.cpp
-            include/libcgen/config.hpp
-            src/libcgen/config.cpp
-            src/libcgen/cgen.schema.yml.in
-            include/libcgen/packages.hpp
-            src/libcgen/packages.cpp
             include/libcgen/codegen.hpp
+            include/libcgen/config.hpp
+            include/libcgen/error.hpp
+            include/libcgen/packages.hpp
+            include/libcgen/version.hpp
+            src/libcgen/cgen.schema.yml.in
             src/libcgen/codegen.cpp
-            src/libcgen/exec.hpp
-            src/libcgen/debug.hpp
+            src/libcgen/config.cpp
             src/libcgen/debug.cpp
-            src/libcgen/fs.hpp
+            src/libcgen/debug.hpp
+            src/libcgen/error.cpp
+            src/libcgen/exec.hpp
             src/libcgen/fs.cpp
-            src/libcgen/preproc.hpp
-            src/libcgen/preproc.cpp
-            src/libcgen/versions.hpp
-            src/libcgen/versions.cpp
-            src/libcgen/git.hpp
+            src/libcgen/fs.hpp
             src/libcgen/git.cpp
+            src/libcgen/git.hpp
+            src/libcgen/packages.cpp
+            src/libcgen/preproc.cpp
+            src/libcgen/preproc.hpp
+            src/libcgen/version.cpp
+            src/libcgen/versions.cpp
+            src/libcgen/versions.hpp
     )
     target_include_directories(libcgen_obj
         PUBLIC
             include
         PRIVATE
             include/libcgen
+            src/libcgen
     )
     target_link_libraries(libcgen_obj
         PUBLIC
             yaml-cpp
         PRIVATE
-            poost::poost
             miroir::miroir
+            poost::poost
     )
     set_target_properties(libcgen_obj PROPERTIES
         CXX_STANDARD 20
@@ -120,19 +123,18 @@ function(cgen_target_1)
     add_library(cgen::libcgen ALIAS libcgen)
     target_sources(libcgen
         PRIVATE
-            src/libcgen/fs_impl.cpp
             src/libcgen/exec_impl.cpp
+            src/libcgen/fs_impl.cpp
     )
     target_include_directories(libcgen
-        PUBLIC
-            include
         PRIVATE
-            include/libcgen
+            src/libcgen
     )
     target_link_libraries(libcgen
         PUBLIC
-            poost::poost
             libcgen_obj
+        PRIVATE
+            poost::poost
     )
     set_target_properties(libcgen PROPERTIES
         CXX_STANDARD 20
@@ -155,29 +157,28 @@ function(cgen_target_2)
     add_executable(libcgen_test)
     target_sources(libcgen_test
         PRIVATE
-            tests/doctest_main.cpp
-            tests/mocks.hpp
-            tests/fs_mock.cpp
-            tests/exec_mock.cpp
-            tests/fs_test.cpp
-            tests/preproc_test.cpp
-            tests/config_test.cpp
-            tests/versions_test.cpp
-            tests/packages_test.cpp
             tests/codegen_test.cpp
+            tests/config_test.cpp
+            tests/exec_mock.cpp
+            tests/fs_mock.cpp
+            tests/fs_test.cpp
+            tests/main_test.cpp
+            tests/mocks.hpp
+            tests/packages_test.cpp
+            tests/preproc_test.cpp
+            tests/versions_test.cpp
     )
     target_include_directories(libcgen_test
-        PUBLIC
-            include
         PRIVATE
             include/libcgen
             src/libcgen
+            tests
     )
     target_link_libraries(libcgen_test
         PRIVATE
             doctest::doctest
-            poost::poost
             libcgen_obj
+            poost::poost
     )
     set_target_properties(libcgen_test PROPERTIES
         CXX_STANDARD 20

@@ -1,5 +1,4 @@
-#ifndef CGEN_FS_HPP
-#define CGEN_FS_HPP
+#pragma once
 
 #include <filesystem>
 #include <iostream>
@@ -22,5 +21,3 @@ auto path_is_equal(const std::filesystem::path &path1,
 void file_read(const std::filesystem::path &path, std::istream &in);
 
 } // namespace cgen
-
-#endif // ifndef CGEN_FS_HPP

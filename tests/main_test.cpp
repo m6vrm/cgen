@@ -1,16 +1,14 @@
-#include <poost/log.hpp>
-
 #define DOCTEST_CONFIG_IMPLEMENT
-#include <doctest/doctest.h>
 
+#include <doctest/doctest.h>
+#include <poost/log.hpp>
 #include <cstdio>
 
 auto main() -> int {
-    poost::log::main = poost::LogSettings{
+    poost::log::global = poost::LogSettings{
         .stream = stderr,
         .log_level = poost::LogLevel::Fatal,
-        .print_file_line = true,
-        .use_color = true,
+        .use_colors = true,
     };
 
     doctest::Context context{};
