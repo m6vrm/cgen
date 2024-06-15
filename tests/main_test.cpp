@@ -1,12 +1,12 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
 #include <doctest/doctest.h>
+#include <iostream>
 #include <poost/log.hpp>
-#include <cstdio>
 
 auto main() -> int {
     poost::log::global = poost::LogSettings{
-        .stream = stderr,
+        .stream = &std::cerr,
         .log_level = poost::LogLevel::Fatal,
         .use_colors = true,
     };

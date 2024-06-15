@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cstdio>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -21,7 +20,7 @@ inline constexpr char cmake_file[] = "CMakeLists.txt";
 auto use_colors() -> bool;
 
 const poost::LogSettings log_common{
-    .stream = stderr,
+    .stream = &std::cerr,
     .log_level = poost::LogLevel::Info,
     .use_colors = use_colors(),
 };
@@ -57,12 +56,12 @@ auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
 auto cmake_write(const cgen::Config &config) -> bool;
 
 void errors_print(const std::vector<cgen::Error> &errors);
-auto arguments_parse(int argc, char *argv[],
+auto arguments_parse(int argc, const char *argv[],
                      Options &opts) -> ArgumentsParseResult;
 
 void print_usage(const char *argv0);
 
-auto main(int argc, char *argv[]) -> int {
+auto main(int argc, const char *argv[]) -> int {
     POOST_INFO_EX(log_common, "cgen %s", cgen::version_string().c_str());
 
     // parse arguments
@@ -81,13 +80,13 @@ auto main(int argc, char *argv[]) -> int {
     // global log settings
     if (opts.verbose) {
         poost::log::global = poost::LogSettings{
-            .stream = stderr,
+            .stream = &std::cerr,
             .log_level = poost::LogLevel::All,
             .use_colors = use_colors(),
         };
     } else {
         poost::log::global = poost::LogSettings{
-            .stream = stderr,
+            .stream = &std::cerr,
             .log_level = poost::LogLevel::Fatal,
             .use_colors = use_colors(),
         };
@@ -258,7 +257,7 @@ void errors_print(const std::vector<cgen::Error> &errors) {
     }
 }
 
-auto arguments_parse(int argc, char *argv[],
+auto arguments_parse(int argc, const char *argv[],
                      Options &opts) -> ArgumentsParseResult {
 
     ArgumentsParseResult result = ArgumentsParseResult::SuccessExit;
