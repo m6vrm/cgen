@@ -1,5 +1,5 @@
-#include <packages.hpp>
 #include <doctest/doctest.h>
+#include <packages.hpp>
 #include <sstream>
 
 using FetchStrategy = cgen::packages::FetchStrategy;

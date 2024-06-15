@@ -1,5 +1,5 @@
-#include <fs.hpp>
 #include <doctest/doctest.h>
+#include <fs.hpp>
 
 TEST_CASE("paths checking") {
     SUBCASE("relative subpath is valid") {

@@ -1,8 +1,8 @@
 #include <codegen.hpp>
 #include <config.hpp>
-#include <version.hpp>
 #include <doctest/doctest.h>
 #include <sstream>
+#include <version.hpp>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(
 # Generated using cgen 1.1.1 — https://github.com/m6vrm/cgen

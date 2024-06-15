@@ -6,7 +6,7 @@ PREFIX		= /usr/local
 BINDIR		= $(PREFIX)/bin
 
 SRC			= $(wildcard src/*/*.?pp) $(wildcard include/*/*.?pp)
-SRC_TEST	= $(wildcard tests/*/*.?pp)
+SRC_TEST	= $(wildcard tests/*.?pp)
 
 release: export CMAKE_BUILD_TYPE=Release
 release: build

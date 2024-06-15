@@ -1,6 +1,6 @@
 #include <debug.hpp>
-#include <preproc.hpp>
 #include <doctest/doctest.h>
+#include <preproc.hpp>
 
 /// Merge
 

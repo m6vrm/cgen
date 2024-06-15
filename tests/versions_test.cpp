@@ -1,6 +1,6 @@
-#include <versions.hpp>
-#include <doctest/doctest.h>
 #include <algorithm>
+#include <doctest/doctest.h>
+#include <versions.hpp>
 
 auto version_tag(const std::string &ver, const std::vector<std::string> &tags,
                  bool ignore_rc = false) -> std::optional<std::string> {
