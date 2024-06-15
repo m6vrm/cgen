@@ -6,7 +6,7 @@ PREFIX		= /usr/local
 BINDIR		= $(PREFIX)/bin
 
 SRC			= $(wildcard src/*/*.?pp) $(wildcard include/*/*.?pp)
-SRC_TEST	= $(wildcard tests/*.?pp)
+SRC_TESTS	= $(wildcard tests/*.?pp)
 
 release: export CMAKE_BUILD_TYPE=Release
 release: build
@@ -32,7 +32,7 @@ $(TARGETS): configure $(SRC)
 		--target "$(@F)" \
 		--parallel
 
-$(TESTS): configure $(SRC) $(SRC_TEST)
+$(TESTS): configure $(SRC) $(SRC_TESTS)
 	cmake \
 		--build "$(OUT)" \
 		--target "$(@F)" \
@@ -55,7 +55,7 @@ test: $(TESTS)
 	"./$(OUT)/libcgen_test"
 
 format:
-	clang-format -i $(SRC) $(SRC_TEST)
+	clang-format -i $(SRC) $(SRC_TESTS)
 
 check:
 	cppcheck \
@@ -73,12 +73,12 @@ check:
 		--suppress=unusedStructMember \
 		--suppress=unusedFunction \
 		--suppress=useStlAlgorithm \
-		$(SRC) $(SRC_TEST)
+		$(SRC) $(SRC_TESTS)
 
 	clang-tidy \
 		-p="$(OUT)" \
 		--warnings-as-errors=* \
-		$(SRC) $(SRC_TEST)
+		$(SRC) $(SRC_TESTS)
 
 	codespell \
 		-L poost \
