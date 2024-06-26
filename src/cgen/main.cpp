@@ -62,7 +62,7 @@ auto arguments_parse(int argc, const char *argv[],
 void print_usage(const char *argv0);
 
 auto main(int argc, const char *argv[]) -> int {
-    POOST_INFO_EX(log_common, "cgen %s", cgen::version_string().c_str());
+    POOST_INFO_EX(log_common, "cgen {}", cgen::version_string());
 
     // parse arguments
     Options opts{};
@@ -172,12 +172,12 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
     // open config
     std::ifstream config_in{config_file};
     if (config_in.fail()) {
-        POOST_ERROR_EX(log_common, "can't access config file: %s", config_file);
+        POOST_ERROR_EX(log_common, "can't access config file: {}", config_file);
         return false;
     }
 
     // read config
-    POOST_INFO_EX(log_common, "read config file: %s", config_file);
+    POOST_INFO_EX(log_common, "read config file: {}", config_file);
     std::vector<cgen::Error> errors;
     config = cgen::config_read(config_in, cgen::version::major, errors);
     if (!errors.empty()) {
@@ -200,7 +200,7 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
             strategy = cgen::packages::FetchStrategy::Clone;
             break;
         default:
-            POOST_ASSERT_FAIL("invalid package fetch strategy: %c",
+            POOST_ASSERT_FAIL("invalid package fetch strategy: {}",
                               pkg.external.strategy);
         }
 
@@ -219,7 +219,7 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
     // read resolved
     std::ifstream resolved_in{resolved_file};
     if (!resolved_in.fail()) {
-        POOST_INFO_EX(log_common, "read resolved file: %s", resolved_file);
+        POOST_INFO_EX(log_common, "read resolved file: {}", resolved_file);
         resolved_pkgs = cgen::resolved_read(resolved_in);
         resolved_pkgs = cgen::packages_cleanup(pkgs, resolved_pkgs);
     }
@@ -235,7 +235,7 @@ auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
         return true;
     }
 
-    POOST_INFO_EX(log_common, "write resolved file: %s", resolved_file);
+    POOST_INFO_EX(log_common, "write resolved file: {}", resolved_file);
     std::ofstream out{resolved_file, std::ostream::trunc};
     const std::vector<cgen::Package> resolved_pkgs =
         cgen::packages_merge(old_resolved_pkgs, new_resolved_pkgs);
@@ -244,7 +244,7 @@ auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
 }
 
 auto cmake_write(const cgen::Config &config) -> bool {
-    POOST_INFO_EX(log_common, "generate and write cmake file: %s", cmake_file);
+    POOST_INFO_EX(log_common, "generate and write cmake file: {}", cmake_file);
     std::ofstream out{cmake_file, std::ostream::trunc};
     cgen::CMakeGenerator cmake{out};
     cmake.write(config);
@@ -253,7 +253,7 @@ auto cmake_write(const cgen::Config &config) -> bool {
 
 void errors_print(const std::vector<cgen::Error> &errors) {
     for (const cgen::Error &err : errors) {
-        POOST_ERROR_EX(log_common, err.description().c_str());
+        POOST_ERROR_EX(log_common, "{}", err.description());
     }
 }
 
@@ -286,9 +286,9 @@ auto arguments_parse(int argc, const char *argv[],
         default:
             // argument error
             if (opt == poost::args::not_an_option) {
-                POOST_ERROR_EX(log_common, "invalid argument: %s", args.peek());
+                POOST_ERROR_EX(log_common, "invalid argument: {}", args.peek());
             } else {
-                POOST_ERROR_EX(log_common, "unknown option: %c", opt);
+                POOST_ERROR_EX(log_common, "unknown option: {}", opt);
             }
 
             result = ArgumentsParseResult::FailureExit;
@@ -306,7 +306,7 @@ auto arguments_parse(int argc, const char *argv[],
 void print_usage(const char *argv0) {
     POOST_INFO_EX(
         log_common,
-        "usage: %s [-g] [-u package ...] [-v] [-h]"
+        "usage: {} [-g] [-u package ...] [-v] [-h]"
         "\n"
         "\n      -g Generate CMakeLists.txt and fetch external packages"
         "\n      -u Update external packages"

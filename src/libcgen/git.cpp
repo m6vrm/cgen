@@ -50,7 +50,7 @@ auto git_resolve_ref(const std::filesystem::path &repo, const std::string &ref,
         return status;
     }
 
-    POOST_ASSERT(git_is_commit(out), "invalid commit hash: %s", out.c_str());
+    POOST_ASSERT(git_is_commit(out), "invalid commit hash: {}", out);
 
     commit = out;
     return status;

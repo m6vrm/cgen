@@ -68,7 +68,7 @@ auto packages_resolve(const std::vector<Package> &pkgs,
 
             // package not resolved or has different version or fetch strategy
             // fetch new package
-            POOST_DEBUG("fetch new package: %s", pkg.url.c_str());
+            POOST_DEBUG("fetch new package: {}", pkg.url);
             const Package resolved_pkg = package_fetch(pkg, errors);
 
             if (errors.empty()) {
@@ -77,7 +77,7 @@ auto packages_resolve(const std::vector<Package> &pkgs,
         } else if (path_is_empty(pkg.path)) {
             // package resolved but not exists
             // fetch resolved package
-            POOST_DEBUG("fetch resolved package: %s", resolved_it->url.c_str());
+            POOST_DEBUG("fetch resolved package: {}", resolved_it->url);
             package_fetch(*resolved_it, errors);
 
             if (errors.empty()) {
@@ -85,8 +85,8 @@ auto packages_resolve(const std::vector<Package> &pkgs,
             }
         } else {
             // package already resolved and exists
-            POOST_DEBUG("package already resolved and exists: %s",
-                        resolved_it->path.c_str());
+            POOST_DEBUG("package already resolved and exists: {}",
+                        resolved_it->path);
             result.push_back(*resolved_it);
         }
     }
@@ -109,7 +109,7 @@ auto packages_update(const std::vector<Package> &pkgs,
                 continue;
             }
 
-            POOST_DEBUG("update package: %s", pkg.url.c_str());
+            POOST_DEBUG("update package: {}", pkg.url);
             const Package resolved_pkg = package_fetch(pkg, errors);
 
             if (errors.empty()) {
@@ -124,7 +124,7 @@ auto packages_update(const std::vector<Package> &pkgs,
 
         if (i < paths.size()) {
             const std::filesystem::path path = paths[i];
-            POOST_ERROR("package not found: %s", path.c_str());
+            POOST_ERROR("package not found: {}", path);
             errors.push_back(Error{
                 .type = ErrorType::PackageNotFound,
                 .source = "",
@@ -162,7 +162,7 @@ auto resolved_read(std::istream &in) -> std::vector<Package> {
     in >> comment >> format;
 
     if (format != version::resolved) {
-        POOST_WARN("unsupported resolved format: %d", format);
+        POOST_WARN("unsupported resolved format: {}", format);
         return resolved;
     }
 
@@ -228,11 +228,11 @@ void package_remove(const Package &pkg) {
 auto package_tag(const Package &pkg,
                  std::vector<Error> &errors) -> std::string {
 
-    POOST_TRACE("get all remote tags: %s", pkg.url.c_str());
+    POOST_TRACE("get all remote tags: {}", pkg.url);
     std::vector<std::string> tags;
     const int status = git_remote_tags(pkg.url, tags);
     if (status != EXIT_SUCCESS) {
-        POOST_ERROR("can't get remote tags: %s", pkg.url.c_str());
+        POOST_ERROR("can't get remote tags: {}", pkg.url);
 
         errors.push_back(Error{
             .type = ErrorType::PackageVersionResolutionError,
@@ -243,12 +243,12 @@ auto package_tag(const Package &pkg,
         return pkg.version;
     }
 
-    POOST_TRACE("find tag by version: %s", pkg.version.c_str());
+    POOST_TRACE("find tag by version: {}", pkg.version);
     const auto tag = version_tag(pkg.version, tags, false);
     if (!tag.has_value()) {
-        POOST_ERROR("can't find tag by version: %s"
-                    "\n\turl: %s",
-                    pkg.version.c_str(), pkg.url.c_str());
+        POOST_ERROR("can't find tag by version: {}"
+                    "\n\turl: {}",
+                    pkg.version, pkg.url);
 
         errors.push_back(Error{
             .type = ErrorType::PackageVersionResolutionError,
@@ -268,8 +268,8 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     if (!path_is_sub(pkg.path, std::filesystem::current_path())) {
         POOST_FATAL("fetching packages into the paths outside of the current "
                     "working dir is "
-                    "prohibited: %s",
-                    pkg.path.c_str());
+                    "prohibited: {}",
+                    pkg.path);
         return resolved_pkg;
     }
 
@@ -281,7 +281,7 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     case packages::FetchStrategy::Submodule:
         if (pkg.version.empty()) {
             // package version is empty
-            POOST_TRACE("add submodule: %s", pkg.url.c_str());
+            POOST_TRACE("add submodule: {}", pkg.url);
             status = git_submodule_add(pkg.path, pkg.url);
         } else if (version_is_valid(pkg.version)) {
             // package version looks like version tag
@@ -291,16 +291,16 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
                 return resolved_pkg;
             }
 
-            POOST_TRACE("add submodule: %s"
-                        "\n\ttag: %s",
-                        pkg.url.c_str(), tag.c_str());
+            POOST_TRACE("add submodule: {}"
+                        "\n\ttag: {}",
+                        pkg.url, tag);
             status = git_submodule_add(pkg.path, pkg.url);
             status = git_reset_hard(pkg.path, tag) | status;
         } else {
             // package version is a branch name or a commit hash
-            POOST_TRACE("add submodule: %s"
-                        "\n\tref: %s",
-                        pkg.url.c_str(), pkg.version.c_str());
+            POOST_TRACE("add submodule: {}"
+                        "\n\tref: {}",
+                        pkg.url, pkg.version);
             status = git_submodule_add(pkg.path, pkg.url);
             status = git_reset_hard(pkg.path, pkg.version) | status;
         }
@@ -311,13 +311,13 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     case packages::FetchStrategy::Clone:
         if (pkg.version.empty()) {
             // package version is empty
-            POOST_TRACE("shallow clone: %s", pkg.url.c_str());
+            POOST_TRACE("shallow clone: {}", pkg.url);
             status = git_clone_shallow(pkg.path, pkg.url);
         } else if (git_is_commit(pkg.version)) {
             // package version is a commit hash
-            POOST_TRACE("full clone: %s"
-                        "\n\tcommit: %s",
-                        pkg.url.c_str(), pkg.version.c_str());
+            POOST_TRACE("full clone: {}"
+                        "\n\tcommit: {}",
+                        pkg.url, pkg.version);
             status = git_clone_full(pkg.path, pkg.url);
             status = git_reset_hard(pkg.path, pkg.version) | status;
         } else if (version_is_valid(pkg.version)) {
@@ -328,27 +328,27 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
                 return resolved_pkg;
             }
 
-            POOST_TRACE("clone branch: %s"
-                        "\n\ttag: %s",
-                        pkg.url.c_str(), tag.c_str());
+            POOST_TRACE("clone branch: {}"
+                        "\n\ttag: {}",
+                        pkg.url, tag);
             status = git_clone_branch(pkg.path, pkg.url, tag);
         } else {
             // package version is a branch name
-            POOST_TRACE("clone branch: %s"
-                        "\n\tbranch: %s",
-                        pkg.url.c_str(), pkg.version.c_str());
+            POOST_TRACE("clone branch: {}"
+                        "\n\tbranch: {}",
+                        pkg.url, pkg.version);
             status = git_clone_branch(pkg.path, pkg.url, pkg.version);
         }
 
         break;
     default:
-        POOST_ASSERT_FAIL("invalid package fetch strategy: %c", pkg.strategy);
+        POOST_ASSERT_FAIL("invalid package fetch strategy: {}", pkg.strategy);
     }
 
     if (status != EXIT_SUCCESS) {
-        POOST_ERROR("can't fetch package: %s"
-                    "\n\texit status: %d",
-                    pkg.url.c_str(), status);
+        POOST_ERROR("can't fetch package: {}"
+                    "\n\texit status: {}",
+                    pkg.url, status);
 
         errors.push_back(Error{
             .type = ErrorType::PackageFetchError,
@@ -361,13 +361,12 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     }
 
     // get commit hash of current HEAD
-    POOST_TRACE("resolve commit hash of the current HEAD: %s",
-                pkg.path.c_str());
+    POOST_TRACE("resolve commit hash of the current HEAD: {}", pkg.path);
     status = git_resolve_ref(pkg.path, "HEAD", resolved_pkg.version) | status;
     if (status != EXIT_SUCCESS) {
-        POOST_ERROR("can't resolve commit hash of current HEAD: %s"
-                    "\n\texit status: %d",
-                    pkg.path.c_str(), status);
+        POOST_ERROR("can't resolve commit hash of current HEAD: {}"
+                    "\n\texit status: {}",
+                    pkg.path, status);
 
         errors.push_back(Error{
             .type = ErrorType::PackageVersionResolutionError,
@@ -385,12 +384,12 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     }
 
     POOST_DEBUG("resolved package"
-                "\n\tstrategy: %c"
-                "\n\tpath: %s"
-                "\n\turl: %s"
-                "\n\tcommit: %s",
-                resolved_pkg.strategy, resolved_pkg.path.c_str(),
-                resolved_pkg.url.c_str(), resolved_pkg.version.c_str());
+                "\n\tstrategy: {}"
+                "\n\tpath: {}"
+                "\n\turl: {}"
+                "\n\tcommit: {}",
+                resolved_pkg.strategy, resolved_pkg.path, resolved_pkg.url,
+                resolved_pkg.version);
 
     package_backup_remove(pkg);
     return resolved_pkg;

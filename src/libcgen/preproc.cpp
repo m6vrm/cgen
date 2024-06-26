@@ -134,7 +134,7 @@ auto node_clone(const YAML::Node &node) -> YAML::Node {
 auto node_find(const YAML::Node &map,
                const std::string &key) -> std::pair<YAML::Node, std::string> {
 
-    POOST_ASSERT(map.IsMap(), "node is not a map: %s", node_dump(map).c_str());
+    POOST_ASSERT(map.IsMap(), "node is not a map: {}", node_dump(map));
 
     const YAML::Node node = map[key];
 
@@ -236,11 +236,11 @@ auto string_replace_parameters(
 
             break;
         default:
-            POOST_ASSERT_FAIL("invalid params replacer state: %d", state);
+            POOST_ASSERT_FAIL("invalid params replacer state: {}", state);
         }
     }
 
-    POOST_ASSERT(state == ST_NONE, "invalid params replacer end state: %d",
+    POOST_ASSERT(state == ST_NONE, "invalid params replacer end state: {}",
                  state);
 
     return result;

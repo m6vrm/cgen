@@ -103,7 +103,7 @@ auto node_check_version(const YAML::Node &config_node, int ver,
         return true;
     }
 
-    POOST_ERROR("unsupported config version: %d", config_ver);
+    POOST_ERROR("unsupported config version: {}", config_ver);
 
     errors.push_back(Error{
         .type = ErrorType::ConfigUnsupportedVersion,
@@ -136,7 +136,7 @@ auto node_validate(const YAML::Node &config_node,
     if (!validation_errors.empty()) {
         for (const auto &validation_err : validation_errors) {
             const std::string desc = validation_err.description();
-            POOST_ERROR("config validation error: %s", desc.c_str());
+            POOST_ERROR("config validation error: {}", desc);
 
             errors.emplace_back(Error{
                 .type = ErrorType::ConfigValidationError,
@@ -164,8 +164,7 @@ void node_merge_includes(YAML::Node &config_node,
     for (const config::Include &include : config.includes) {
         for (const std::string &include_path : include.paths) {
             if (!path_exists(include_path)) {
-                POOST_ERROR("config include not found: %s",
-                            include_path.c_str());
+                POOST_ERROR("config include not found: {}", include_path);
 
                 errors.push_back(Error{
                     .type = ErrorType::ConfigIncludeNotFound,
@@ -200,8 +199,7 @@ void node_merge_includes(YAML::Node &config_node,
             node_merge(include_node, config_node);
 
             for (const std::string &param : undefined_params) {
-                POOST_ERROR("undefined config include param: %s",
-                            param.c_str());
+                POOST_ERROR("undefined config include param: {}", param);
 
                 errors.push_back(Error{
                     .type = ErrorType::ConfigUndefinedIncludeParameter,
@@ -228,8 +226,7 @@ void node_merge_templates(const YAML::Node &config_node,
                 const auto tpl_it = config.templates.find(tpl_name);
 
                 if (tpl_it == config.templates.end()) {
-                    POOST_ERROR("config template not found: %s",
-                                tpl_name.c_str());
+                    POOST_ERROR("config template not found: {}", tpl_name);
 
                     errors.push_back(Error{
                         .type = ErrorType::ConfigTemplateNotFound,
@@ -249,8 +246,7 @@ void node_merge_templates(const YAML::Node &config_node,
                 node_merge(tpl_node, target.node);
 
                 for (const std::string &param : undefined_params) {
-                    POOST_ERROR("undefined config template param: %s",
-                                param.c_str());
+                    POOST_ERROR("undefined config template param: {}", param);
 
                     errors.push_back(Error{
                         .type = ErrorType::ConfigUndefinedTemplateParameter,

@@ -48,7 +48,7 @@ auto Error::description() const -> std::string {
         break;
     }
 
-    POOST_ASSERT_FAIL("invalid error type: %d", type);
+    POOST_ASSERT_FAIL("invalid error type: {}", type);
 }
 
 } // namespace cgen

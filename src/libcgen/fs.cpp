@@ -10,13 +10,13 @@ void path_rename(const std::filesystem::path &path,
         !path_is_sub(new_path, std::filesystem::current_path())) {
 
         POOST_FATAL("renaming paths outside of the current working dir is "
-                    "prohibited: %s -> %s",
-                    path.c_str(), new_path.c_str());
+                    "prohibited: {} -> {}",
+                    path, new_path);
         return;
     }
 
     if (std::filesystem::exists(path)) {
-        POOST_DEBUG("rename path: %s -> %s", path.c_str(), new_path.c_str());
+        POOST_DEBUG("rename path: {} -> {}", path, new_path);
         std::filesystem::rename(path, new_path);
     }
 }

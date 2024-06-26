@@ -20,10 +20,10 @@ auto exec(std::string &out,
         cmd += part + " ";
     }
 
-    POOST_TRACE("execute command: %s", cmd.c_str());
+    POOST_TRACE("execute command: {}", cmd);
     std::FILE *fp = popen(cmd.c_str(), "r");
     if (fp == nullptr) {
-        POOST_ERROR("can't create pipe: %s", cmd.c_str());
+        POOST_ERROR("can't create pipe: {}", cmd);
         return -1;
     }
 
@@ -44,9 +44,9 @@ auto exec(std::string &out,
     status = WEXITSTATUS(status);
 
     if (status != EXIT_SUCCESS) {
-        POOST_WARN("command failed: %s"
-                   "\n\texit status: %d",
-                   cmd.c_str(), status);
+        POOST_WARN("command failed: {}"
+                   "\n\texit status: {}",
+                   cmd, status);
     }
 
     return status;

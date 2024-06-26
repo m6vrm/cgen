@@ -146,7 +146,7 @@ void CMakeGenerator::write(const Config &config) {
                 target_settings(target.name, target.executable.target_settings);
                 break;
             default:
-                POOST_ASSERT_FAIL("invalid target type: %d", target.type);
+                POOST_ASSERT_FAIL("invalid target type: {}", target.type);
             }
             function_end();
 
@@ -165,7 +165,7 @@ void CMakeGenerator::indent() { ++indent_; }
 
 void CMakeGenerator::unindent() {
     --indent_;
-    POOST_ASSERT(indent_ >= 0, "negative indentation: %d", indent_);
+    POOST_ASSERT(indent_ >= 0, "negative indentation: {}", indent_);
 }
 
 void CMakeGenerator::line(const std::string &str) {
@@ -315,7 +315,7 @@ void CMakeGenerator::add_library(const std::string &target_name,
         type_str = "OBJECT";
         break;
     default:
-        POOST_ASSERT_FAIL("invalid library type: %d", type);
+        POOST_ASSERT_FAIL("invalid library type: {}", type);
     }
 
     line("add_library(" + target_name + " " + type_str + ")");
@@ -613,7 +613,7 @@ auto config_target_options(const Config &config)
 
             break;
         default:
-            POOST_ASSERT_FAIL("invalid target type: %d", target.type);
+            POOST_ASSERT_FAIL("invalid target type: {}", target.type);
         }
     }
 

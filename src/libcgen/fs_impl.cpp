@@ -13,12 +13,12 @@ auto path_exists(const std::filesystem::path &path) -> bool {
 void path_remove(const std::filesystem::path &path) {
     if (!path_is_sub(path, std::filesystem::current_path())) {
         POOST_FATAL("removing paths outside of the current working dir is "
-                    "prohibited: %s",
-                    path.c_str());
+                    "prohibited: {}",
+                    path);
         return;
     }
 
-    POOST_DEBUG("remove everything at path: %s", path.c_str());
+    POOST_DEBUG("remove everything at path: {}", path);
     std::filesystem::remove_all(path);
 }
 
