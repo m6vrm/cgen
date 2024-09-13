@@ -20,7 +20,7 @@ Requirements:
 
 <!-- -->
 
-    $ git clone --recurse-submodules https://m6v.ru/git/cgen
+    $ git clone --recurse-submodules https://github.com/m6vrm/cgen
     $ cd cgen
     $ make
     $ sudo make install
