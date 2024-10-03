@@ -13,8 +13,7 @@ cmake_minimum_required(VERSION 3.11)
 
 auto config_generate(std::istream &in) -> std::string {
     std::vector<cgen::Error> errors;
-    const cgen::Config config =
-        cgen::config_read(in, cgen::version::major, errors);
+    const cgen::Config config = cgen::config_read(in, cgen::version::major, errors);
     CHECK(errors.empty());
 
     std::ostringstream oss;

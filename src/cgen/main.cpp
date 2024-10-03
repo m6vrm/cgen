@@ -50,14 +50,12 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
                  std::vector<cgen::Package> &resolved_pkgs) -> bool;
 
 auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
-                    const std::vector<cgen::Package> &new_resolved_pkgs)
-    -> bool;
+                    const std::vector<cgen::Package> &new_resolved_pkgs) -> bool;
 
 auto cmake_write(const cgen::Config &config) -> bool;
 
 void errors_print(const std::vector<cgen::Error> &errors);
-auto arguments_parse(int argc, const char *argv[],
-                     Options &opts) -> ArgumentsParseResult;
+auto arguments_parse(int argc, const char *argv[], Options &opts) -> ArgumentsParseResult;
 
 void print_usage(const char *argv0);
 
@@ -200,8 +198,7 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
             strategy = cgen::packages::FetchStrategy::Clone;
             break;
         default:
-            POOST_ASSERT_FAIL("invalid package fetch strategy: {}",
-                              pkg.external.strategy);
+            POOST_ASSERT_FAIL("invalid package fetch strategy: {}", pkg.external.strategy);
         }
 
         pkgs.push_back(cgen::Package{
@@ -211,8 +208,7 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
             .version = pkg.external.version,
 
             // equals to version before resolving
-            .original_version =
-                pkg.external.version.empty() ? "HEAD" : pkg.external.version,
+            .original_version = pkg.external.version.empty() ? "HEAD" : pkg.external.version,
         });
     }
 
@@ -228,8 +224,7 @@ auto config_read(cgen::Config &config, std::vector<cgen::Package> &pkgs,
 }
 
 auto resolved_write(const std::vector<cgen::Package> &old_resolved_pkgs,
-                    const std::vector<cgen::Package> &new_resolved_pkgs)
-    -> bool {
+                    const std::vector<cgen::Package> &new_resolved_pkgs) -> bool {
 
     if (old_resolved_pkgs.empty() && new_resolved_pkgs.empty()) {
         return true;
@@ -257,9 +252,7 @@ void errors_print(const std::vector<cgen::Error> &errors) {
     }
 }
 
-auto arguments_parse(int argc, const char *argv[],
-                     Options &opts) -> ArgumentsParseResult {
-
+auto arguments_parse(int argc, const char *argv[], Options &opts) -> ArgumentsParseResult {
     ArgumentsParseResult result = ArgumentsParseResult::SuccessExit;
 
     poost::Args args{argc, argv};
@@ -304,15 +297,14 @@ auto arguments_parse(int argc, const char *argv[],
 }
 
 void print_usage(const char *argv0) {
-    POOST_INFO_EX(
-        log_common,
-        "usage: {} [-g] [-u package ...] [-v] [-h]"
-        "\n"
-        "\n      -g Generate CMakeLists.txt and fetch external packages"
-        "\n      -u Update external packages"
-        "\n      -v Verbose output"
-        "\n      -h Show this help",
-        argv0);
+    POOST_INFO_EX(log_common,
+                  "usage: {} [-g] [-u package ...] [-v] [-h]"
+                  "\n"
+                  "\n      -g Generate CMakeLists.txt and fetch external packages"
+                  "\n      -u Update external packages"
+                  "\n      -v Verbose output"
+                  "\n      -h Show this help",
+                  argv0);
 }
 
 auto use_colors() -> bool {

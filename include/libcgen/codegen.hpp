@@ -39,15 +39,12 @@ class CMakeGenerator {
     void version(const std::string &ver);
     void project(const config::Project &project);
     void option(const std::string &opt_name, const config::Option &opt);
-    void set(const std::string &var_name, const config::Expression &expr,
-             bool force = false);
-    void find_package(const std::string &pkg_name,
-                      const config::SystemPackage &pkg);
+    void set(const std::string &var_name, const config::Expression &expr, bool force = false);
+    void find_package(const std::string &pkg_name, const config::SystemPackage &pkg);
 
     void add_subdirectory(const std::filesystem::path &path);
     void add_library(const std::string &target_name, config::LibraryType type);
-    void add_library_alias(const std::string &target_name,
-                           const std::string &target_alias);
+    void add_library_alias(const std::string &target_name, const std::string &target_alias);
     void add_executable(const std::string &target_name);
 
     void target_settings(const std::string &target_name,
@@ -66,12 +63,9 @@ class CMakeGenerator {
     void visibility(const config::Visibility<config::Configs<T>> &visibility,
                     const config::Expression &prefix = {});
 
-    void configs(const config::ConfigsExpressions &configs,
-                 const config::Expression &prefix);
-    void configs(const config::ConfigsDefinitions &configs,
-                 const config::Expression &);
-    void configs(const config::ConfigsExpressionsMap &configs,
-                 const config::Expression & = {});
+    void configs(const config::ConfigsExpressions &configs, const config::Expression &prefix);
+    void configs(const config::ConfigsDefinitions &configs, const config::Expression &);
+    void configs(const config::ConfigsExpressionsMap &configs, const config::Expression & = {});
 
     void config_begin(const std::string &config_name);
     void config_end();

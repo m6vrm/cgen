@@ -44,8 +44,7 @@ TEST_CASE("resolved packages reading and writing") {
 
         std::stringstream ss;
         cgen::resolved_write(ss, write_resolved);
-        const std::vector<cgen::Package> read_resolved =
-            cgen::resolved_read(ss);
+        const std::vector<cgen::Package> read_resolved = cgen::resolved_read(ss);
         CHECK(read_resolved.size() == 2);
         CHECK(read_resolved[0].strategy == FetchStrategy::Submodule);
         CHECK(read_resolved[0].path == "path1");

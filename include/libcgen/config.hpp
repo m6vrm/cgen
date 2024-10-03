@@ -95,9 +95,7 @@ template <typename T> struct Visibility {
     T private_;
     T interface;
 
-    auto empty() const -> bool {
-        return public_.empty() && private_.empty() && interface.empty();
-    }
+    auto empty() const -> bool { return public_.empty() && private_.empty() && interface.empty(); }
 };
 
 template <typename T> struct Configs {
@@ -111,19 +109,16 @@ template <typename T> struct Configs {
     auto empty() const -> bool {
         return !is_defined ||
                (global.empty() &&
-                std::all_of(
-                    configurations.cbegin(), configurations.cend(),
-                    [](const auto &it) -> bool { return it.second.empty(); }));
+                std::all_of(configurations.cbegin(), configurations.cend(),
+                            [](const auto &it) -> bool { return it.second.empty(); }));
     }
 
     void move_merge(const Configs<T> &configs) {
         is_defined = is_defined || configs.is_defined;
-        global.insert(global.end(),
-                      std::make_move_iterator(configs.global.cbegin()),
+        global.insert(global.end(), std::make_move_iterator(configs.global.cbegin()),
                       std::make_move_iterator(configs.global.cend()));
-        configurations.insert(
-            std::make_move_iterator(configs.configurations.cbegin()),
-            std::make_move_iterator(configs.configurations.cend()));
+        configurations.insert(std::make_move_iterator(configs.configurations.cbegin()),
+                              std::make_move_iterator(configs.configurations.cend()));
     }
 };
 
@@ -187,8 +182,7 @@ struct Config {
     std::vector<config::Target> targets;
 };
 
-auto config_read(std::istream &in, int ver,
-                 std::vector<Error> &errors) -> Config;
+auto config_read(std::istream &in, int ver, std::vector<Error> &errors) -> Config;
 
 } // namespace cgen
 

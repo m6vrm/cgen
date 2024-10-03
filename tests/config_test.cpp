@@ -16,8 +16,7 @@ TEST_CASE("invalid config parsing") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(errors[0].description() ==
-              "config validation error: /project: node not found");
+        CHECK(errors[0].description() == "config validation error: /project: node not found");
     }
 }
 
@@ -89,8 +88,7 @@ TEST_CASE("project parsing") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(errors[0].description() ==
-              "config validation error: /project: node not found");
+        CHECK(errors[0].description() == "config validation error: /project: node not found");
     }
 
     SUBCASE("validation error if project name is missing") {
@@ -181,13 +179,12 @@ TEST_CASE("includes parsing") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(
-            errors[0].description() ==
-            "config validation error: /includes: expected value type: includes"
-            "\n\t* failed variant 0:"
-            "\n\t\t/includes.0: expected value type: string"
-            "\n\t* failed variant 1:"
-            "\n\t\t/includes.0.paths: node not found");
+        CHECK(errors[0].description() ==
+              "config validation error: /includes: expected value type: includes"
+              "\n\t* failed variant 0:"
+              "\n\t\t/includes.0: expected value type: string"
+              "\n\t* failed variant 1:"
+              "\n\t\t/includes.0.paths: node not found");
     }
 }
 
@@ -352,16 +349,12 @@ TEST_CASE("external packages parsing") {
         CHECK(config.packages[0].if_ == "condition");
         CHECK(config.packages[0].external.url == "http://example.com");
         CHECK(config.packages[0].external.version == "1");
-        CHECK(config.packages[0].external.strategy ==
-              cgen::config::FetchStrategy::Clone);
+        CHECK(config.packages[0].external.strategy == cgen::config::FetchStrategy::Clone);
         CHECK(config.packages[0].external.options.size() == 2);
-        CHECK(config.packages[0].external.options.at("OPTION1").is_quoted ==
-              false);
-        CHECK(config.packages[0].external.options.at("OPTION1").value ==
-              "value");
+        CHECK(config.packages[0].external.options.at("OPTION1").is_quoted == false);
+        CHECK(config.packages[0].external.options.at("OPTION1").value == "value");
         CHECK(config.packages[0].external.options.at("OPTION2").is_quoted);
-        CHECK(config.packages[0].external.options.at("OPTION2").value ==
-              "quoted value");
+        CHECK(config.packages[0].external.options.at("OPTION2").value == "quoted value");
     }
 
     SUBCASE("external package defaults") {
@@ -381,8 +374,7 @@ TEST_CASE("external packages parsing") {
         CHECK(config.packages[0].if_ == "");
         CHECK(config.packages[0].external.url == "http://example.com");
         CHECK(config.packages[0].external.version == "");
-        CHECK(config.packages[0].external.strategy ==
-              cgen::config::FetchStrategy::Submodule);
+        CHECK(config.packages[0].external.strategy == cgen::config::FetchStrategy::Submodule);
         CHECK(config.packages[0].external.options.empty());
     }
 
@@ -396,14 +388,13 @@ TEST_CASE("external packages parsing") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(
-            errors[0].description() ==
-            "config validation error: /packages.0: expected value type: package"
-            "\n\t* failed variant 0:"
-            "\n\t\t/packages.0.url: node not found"
-            "\n\t* failed variant 1:"
-            "\n\t\t/packages.0.system: node not found"
-            "\n\t\t/packages.0.external: undefined node");
+        CHECK(errors[0].description() ==
+              "config validation error: /packages.0: expected value type: package"
+              "\n\t* failed variant 0:"
+              "\n\t\t/packages.0.url: node not found"
+              "\n\t* failed variant 1:"
+              "\n\t\t/packages.0.system: node not found"
+              "\n\t\t/packages.0.external: undefined node");
     }
 }
 
@@ -487,100 +478,69 @@ TEST_CASE("library targets parsing") {
         CHECK(config.targets[0].type == cgen::config::TargetType::Library);
         CHECK(config.targets[0].name == "library name");
         // library type
-        CHECK(config.targets[0].library.type ==
-              cgen::config::LibraryType::Static);
+        CHECK(config.targets[0].library.type == cgen::config::LibraryType::Static);
         // aliases
         CHECK(config.targets[0].library.aliases.size() == 1);
         CHECK(config.targets[0].library.aliases[0] == "my::lib");
         // if
         CHECK(config.targets[0].if_ == "condition");
         // path
-        CHECK(config.targets[0].library.target_settings.path.value ==
-              "path/to/lib");
+        CHECK(config.targets[0].library.target_settings.path.value == "path/to/lib");
         // options
         CHECK(config.targets[0].library.target_settings.options.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.options.at("OPTION1")
-                  .description == "option description");
-        CHECK(config.targets[0]
-                  .library.target_settings.options.at("OPTION1")
-                  .default_.value == "default value");
+        CHECK(config.targets[0].library.target_settings.options.at("OPTION1").description ==
+              "option description");
+        CHECK(config.targets[0].library.target_settings.options.at("OPTION1").default_.value ==
+              "default value");
         // settings
         CHECK(config.targets[0].library.target_settings.settings.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.settings.at("VAR1")
-                  .value == "var value");
+        CHECK(config.targets[0].library.target_settings.settings.at("VAR1").value == "var value");
         // sources
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
         // includes
-        CHECK(config.targets[0]
-                  .library.target_settings.includes.private_.global.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .library.target_settings.includes.private_.global[0]
-                  .value == "path/to/include/dir");
+        CHECK(config.targets[0].library.target_settings.includes.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.includes.private_.global[0].value ==
+              "path/to/include/dir");
         // pchs
-        CHECK(config.targets[0]
-                  .library.target_settings.pchs.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.pchs.private_.global[0]
-                  .value == "path/to/pch");
+        CHECK(config.targets[0].library.target_settings.pchs.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.pchs.private_.global[0].value ==
+              "path/to/pch");
         // dependencies
-        CHECK(
-            config.targets[0]
-                .library.target_settings.dependencies.private_.global.size() ==
-            2);
-        CHECK(config.targets[0]
-                  .library.target_settings.dependencies.private_.global[0]
-                  .value == "lib1");
-        CHECK(config.targets[0]
-                  .library.target_settings.dependencies.private_.global[1]
-                  .value == "my::lib2");
+        CHECK(config.targets[0].library.target_settings.dependencies.private_.global.size() == 2);
+        CHECK(config.targets[0].library.target_settings.dependencies.private_.global[0].value ==
+              "lib1");
+        CHECK(config.targets[0].library.target_settings.dependencies.private_.global[1].value ==
+              "my::lib2");
         // definitions
-        CHECK(config.targets[0]
-                  .library.target_settings.definitions.private_.global.size() ==
-              2);
+        CHECK(config.targets[0].library.target_settings.definitions.private_.global.size() == 2);
         CHECK(config.targets[0]
                   .library.target_settings.definitions.private_.global[0]
                   .value.value.empty());
-        CHECK(config.targets[0]
-                  .library.target_settings.definitions.private_.global[0]
-                  .map.size() == 1);
+        CHECK(config.targets[0].library.target_settings.definitions.private_.global[0].map.size() ==
+              1);
         CHECK(config.targets[0]
                   .library.target_settings.definitions.private_.global[0]
                   .map.at("DEFINE1")
                   .value == "define value");
-        CHECK(config.targets[0]
-                  .library.target_settings.definitions.private_.global[1]
-                  .value.value == "DEFINE2");
-        CHECK(config.targets[0]
-                  .library.target_settings.definitions.private_.global[1]
-                  .map.empty());
-        // properties
-        CHECK(config.targets[0]
-                  .library.target_settings.properties.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.properties.global.at("PROPERTY1")
-                  .value == "property value");
-        // compile_options
-        CHECK(config.targets[0]
-                  .library.target_settings.compile_options.private_.global
-                  .size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.compile_options.private_.global[0]
-                  .value == "compile option");
-        // link_options
         CHECK(
-            config.targets[0]
-                .library.target_settings.link_options.private_.global.size() ==
-            1);
-        CHECK(config.targets[0]
-                  .library.target_settings.link_options.private_.global[0]
-                  .value == "link option");
+            config.targets[0].library.target_settings.definitions.private_.global[1].value.value ==
+            "DEFINE2");
+        CHECK(config.targets[0].library.target_settings.definitions.private_.global[1].map.empty());
+        // properties
+        CHECK(config.targets[0].library.target_settings.properties.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.properties.global.at("PROPERTY1").value ==
+              "property value");
+        // compile_options
+        CHECK(config.targets[0].library.target_settings.compile_options.private_.global.size() ==
+              1);
+        CHECK(config.targets[0].library.target_settings.compile_options.private_.global[0].value ==
+              "compile option");
+        // link_options
+        CHECK(config.targets[0].library.target_settings.link_options.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.link_options.private_.global[0].value ==
+              "link option");
     }
 
     SUBCASE("static library type parsed correctly") {
@@ -595,8 +555,7 @@ TEST_CASE("library targets parsing") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0].library.type ==
-              cgen::config::LibraryType::Static);
+        CHECK(config.targets[0].library.type == cgen::config::LibraryType::Static);
     }
 
     SUBCASE("shared library type parsed correctly") {
@@ -611,8 +570,7 @@ TEST_CASE("library targets parsing") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0].library.type ==
-              cgen::config::LibraryType::Shared);
+        CHECK(config.targets[0].library.type == cgen::config::LibraryType::Shared);
     }
 
     SUBCASE("interface library type parsed correctly") {
@@ -627,8 +585,7 @@ TEST_CASE("library targets parsing") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0].library.type ==
-              cgen::config::LibraryType::Interface);
+        CHECK(config.targets[0].library.type == cgen::config::LibraryType::Interface);
     }
 
     SUBCASE("validation error if target has invalid type") {
@@ -689,56 +646,38 @@ TEST_CASE("executable targets parsing") {
         // if
         CHECK(config.targets[0].if_ == "condition");
         // path
-        CHECK(config.targets[0].executable.target_settings.path.value ==
-              "path/to/executable");
+        CHECK(config.targets[0].executable.target_settings.path.value == "path/to/executable");
         // options
         CHECK(config.targets[0].executable.target_settings.options.size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.options.at("OPTION1")
-                  .description == "option description");
-        CHECK(config.targets[0]
-                  .executable.target_settings.options.at("OPTION1")
-                  .default_.value == "default value");
+        CHECK(config.targets[0].executable.target_settings.options.at("OPTION1").description ==
+              "option description");
+        CHECK(config.targets[0].executable.target_settings.options.at("OPTION1").default_.value ==
+              "default value");
         // settings
-        CHECK(config.targets[0].executable.target_settings.settings.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.settings.at("VAR1")
-                  .value == "var value");
+        CHECK(config.targets[0].executable.target_settings.settings.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.settings.at("VAR1").value ==
+              "var value");
         // sources
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
         // includes
-        CHECK(config.targets[0]
-                  .executable.target_settings.includes.private_.global.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.includes.private_.global[0]
-                  .value == "path/to/include/dir");
+        CHECK(config.targets[0].executable.target_settings.includes.private_.global.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.includes.private_.global[0].value ==
+              "path/to/include/dir");
         // pchs
-        CHECK(config.targets[0]
-                  .executable.target_settings.pchs.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.pchs.private_.global[0]
-                  .value == "path/to/pch");
+        CHECK(config.targets[0].executable.target_settings.pchs.private_.global.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.pchs.private_.global[0].value ==
+              "path/to/pch");
         // dependencies
-        CHECK(config.targets[0]
-                  .executable.target_settings.dependencies.private_.global
-                  .size() == 2);
-        CHECK(config.targets[0]
-                  .executable.target_settings.dependencies.private_.global[0]
-                  .value == "lib1");
-        CHECK(config.targets[0]
-                  .executable.target_settings.dependencies.private_.global[1]
-                  .value == "my::lib2");
+        CHECK(config.targets[0].executable.target_settings.dependencies.private_.global.size() ==
+              2);
+        CHECK(config.targets[0].executable.target_settings.dependencies.private_.global[0].value ==
+              "lib1");
+        CHECK(config.targets[0].executable.target_settings.dependencies.private_.global[1].value ==
+              "my::lib2");
         // definitions
-        CHECK(config.targets[0]
-                  .executable.target_settings.definitions.private_.global
-                  .size() == 2);
+        CHECK(config.targets[0].executable.target_settings.definitions.private_.global.size() == 2);
         CHECK(config.targets[0]
                   .executable.target_settings.definitions.private_.global[0]
                   .value.value.empty());
@@ -756,25 +695,21 @@ TEST_CASE("executable targets parsing") {
                   .executable.target_settings.definitions.private_.global[1]
                   .map.empty());
         // properties
-        CHECK(config.targets[0]
-                  .executable.target_settings.properties.global.size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.properties.global.at("PROPERTY1")
-                  .value == "property value");
+        CHECK(config.targets[0].executable.target_settings.properties.global.size() == 1);
+        CHECK(
+            config.targets[0].executable.target_settings.properties.global.at("PROPERTY1").value ==
+            "property value");
         // compile_options
-        CHECK(config.targets[0]
-                  .executable.target_settings.compile_options.private_.global
-                  .size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.compile_options.private_.global[0]
-                  .value == "compile option");
+        CHECK(config.targets[0].executable.target_settings.compile_options.private_.global.size() ==
+              1);
+        CHECK(
+            config.targets[0].executable.target_settings.compile_options.private_.global[0].value ==
+            "compile option");
         // link_options
-        CHECK(config.targets[0]
-                  .executable.target_settings.link_options.private_.global
-                  .size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.link_options.private_.global[0]
-                  .value == "link option");
+        CHECK(config.targets[0].executable.target_settings.link_options.private_.global.size() ==
+              1);
+        CHECK(config.targets[0].executable.target_settings.link_options.private_.global[0].value ==
+              "link option");
     }
 }
 
@@ -792,11 +727,9 @@ TEST_CASE("visibility resolution") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
     }
 
     SUBCASE("shared library settings is private by default") {
@@ -812,11 +745,9 @@ TEST_CASE("visibility resolution") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
     }
 
     SUBCASE("interface library settings has interface visibility by default") {
@@ -832,12 +763,9 @@ TEST_CASE("visibility resolution") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.interface.global.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.interface.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.interface.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.interface.global[0].value ==
+              "path/to/source/file");
     }
 
     SUBCASE("executable settings is private by default") {
@@ -852,12 +780,9 @@ TEST_CASE("visibility resolution") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
     }
 }
 
@@ -874,15 +799,10 @@ TEST_CASE("target configurations") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.empty() ==
-              false);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global.size() ==
-              1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].executable.target_settings.sources.private_.empty() == false);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
     }
 
     SUBCASE("custom configurations") {
@@ -899,19 +819,14 @@ TEST_CASE("target configurations") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.empty() == false);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.configurations.size() ==
+              1);
         CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.empty() ==
-              false);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.configurations
+                  .executable.target_settings.sources.private_.configurations.at("Debug")
                   .size() == 1);
         CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.configurations
-                  .at("Debug")
-                  .size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.configurations
-                  .at("Debug")[0]
+                  .executable.target_settings.sources.private_.configurations.at("Debug")[0]
                   .value == "path/to/source/file");
     }
 
@@ -930,22 +845,16 @@ TEST_CASE("target configurations") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global.size() ==
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].executable.target_settings.sources.private_.global[0].value ==
+              "default/path/to/source/file");
+        CHECK(config.targets[0].executable.target_settings.sources.private_.configurations.size() ==
               1);
         CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.global[0]
-                  .value == "default/path/to/source/file");
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.configurations
+                  .executable.target_settings.sources.private_.configurations.at("Debug")
                   .size() == 1);
         CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.configurations
-                  .at("Debug")
-                  .size() == 1);
-        CHECK(config.targets[0]
-                  .executable.target_settings.sources.private_.configurations
-                  .at("Debug")[0]
+                  .executable.target_settings.sources.private_.configurations.at("Debug")[0]
                   .value == "path/to/source/file");
     }
 
@@ -966,26 +875,18 @@ TEST_CASE("target configurations") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "private/path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.public_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.public_.global[0].value ==
+              "default/path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.public_.configurations.size() == 1);
         CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "private/path/to/source/file");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.global[0]
-                  .value == "default/path/to/source/file");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.configurations
+                  .library.target_settings.sources.public_.configurations.at("Debug")
                   .size() == 1);
         CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.configurations
-                  .at("Debug")
-                  .size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.configurations
-                  .at("Debug")[0]
+                  .library.target_settings.sources.public_.configurations.at("Debug")[0]
                   .value == "path/to/source/file");
     }
 }
@@ -1278,8 +1179,7 @@ TEST_CASE("includes mering") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(errors[0].description() ==
-              "nested1: undefined config include parameter: library");
+        CHECK(errors[0].description() == "nested1: undefined config include parameter: library");
     }
 
     SUBCASE("always keep version, project and includes") {
@@ -1345,8 +1245,7 @@ TEST_CASE("includes mering") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(errors[0].description() ==
-              "config include file not found: path999");
+        CHECK(errors[0].description() == "config include file not found: path999");
     }
 
     SUBCASE("error if include parameter not found") {
@@ -1371,10 +1270,8 @@ TEST_CASE("includes mering") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 2);
-        CHECK(errors[0].description() ==
-              "path1: undefined config include parameter: library");
-        CHECK(errors[1].description() ==
-              "path2: undefined config include parameter: library");
+        CHECK(errors[0].description() == "path1: undefined config include parameter: library");
+        CHECK(errors[1].description() == "path2: undefined config include parameter: library");
     }
 }
 
@@ -1397,17 +1294,13 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 3);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[1]
-                  .value == "path/to/source/file1");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[2]
-                  .value == "path/to/source/file2");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 3);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[1].value ==
+              "path/to/source/file1");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[2].value ==
+              "path/to/source/file2");
     }
 
     SUBCASE("merge target templates with shared parameters") {
@@ -1431,17 +1324,13 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 3);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[1]
-                  .value == "path/to/source/file1");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[2]
-                  .value == "path/to/source/file2");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 3);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[1].value ==
+              "path/to/source/file1");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[2].value ==
+              "path/to/source/file2");
     }
 
     SUBCASE("merge target templates with independent parameters") {
@@ -1470,20 +1359,15 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 4);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[1]
-                  .value == "path/to/source/file1");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[2]
-                  .value == "path/to/source/file2");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[3]
-                  .value == "my/path/to/source/file3");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 4);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[1].value ==
+              "path/to/source/file1");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[2].value ==
+              "path/to/source/file2");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[3].value ==
+              "my/path/to/source/file3");
     }
 
     SUBCASE("merge target templates keeping original sources") {
@@ -1504,15 +1388,12 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file");
     }
 
-    SUBCASE(
-        "merge target templates replacing original sources in first template") {
+    SUBCASE("merge target templates replacing original sources in first template") {
         std::istringstream config_iss{R"(
         project: project name
         templates:
@@ -1530,14 +1411,11 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 2);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file1");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[1]
-                  .value == "path/to/source/file2");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 2);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file1");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[1].value ==
+              "path/to/source/file2");
     }
 
     SUBCASE("merge target templates replacing original sources in second "
@@ -1559,11 +1437,9 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file2");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file2");
     }
 
     SUBCASE("merge target templates with different structure") {
@@ -1604,35 +1480,26 @@ TEST_CASE("target templates merging") {
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.empty());
         CHECK(config.targets.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.public_.global.size() == 1);
+        CHECK(config.targets[0].library.target_settings.sources.public_.global[0].value ==
+              "path/to/source/file1");
         CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.global.size() == 1);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.global[0]
-                  .value == "path/to/source/file1");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.configurations
-                  .at("Release")
+                  .library.target_settings.sources.public_.configurations.at("Release")
                   .size() == 1);
         CHECK(config.targets[0]
-                  .library.target_settings.sources.public_.configurations
-                  .at("Release")[0]
+                  .library.target_settings.sources.public_.configurations.at("Release")[0]
                   .value == "path/to/source/file2");
         CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.configurations
-                  .at("Release")
+                  .library.target_settings.sources.private_.configurations.at("Release")
                   .size() == 1);
         CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.configurations
-                  .at("Release")[0]
+                  .library.target_settings.sources.private_.configurations.at("Release")[0]
                   .value == "path/to/source/file4");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global.size() == 2);
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[0]
-                  .value == "path/to/source/file5");
-        CHECK(config.targets[0]
-                  .library.target_settings.sources.private_.global[1]
-                  .value == "path/to/source/file");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global.size() == 2);
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[0].value ==
+              "path/to/source/file5");
+        CHECK(config.targets[0].library.target_settings.sources.private_.global[1].value ==
+              "path/to/source/file");
     }
 
     SUBCASE("error if template not found") {
@@ -1646,10 +1513,8 @@ TEST_CASE("target templates merging") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 2);
-        CHECK(errors[0].description() ==
-              "library name: config template not found: template1");
-        CHECK(errors[1].description() ==
-              "library name: config template not found: template2");
+        CHECK(errors[0].description() == "library name: config template not found: template1");
+        CHECK(errors[1].description() == "library name: config template not found: template2");
     }
 
     SUBCASE("error if template parameter not found") {
@@ -1666,7 +1531,6 @@ TEST_CASE("target templates merging") {
         std::vector<cgen::Error> errors;
         const cgen::Config config = config_read(config_iss, errors);
         CHECK(errors.size() == 1);
-        CHECK(errors[0].description() ==
-              "template1: undefined config template parameter: path");
+        CHECK(errors[0].description() == "template1: undefined config template parameter: path");
     }
 }

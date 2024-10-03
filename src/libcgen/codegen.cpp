@@ -7,26 +7,22 @@
 namespace cgen {
 
 auto quote(const std::string &str) -> std::string;
-auto expression(const config::Expression &expr,
-                bool padded = true) -> std::string;
+auto expression(const config::Expression &expr, bool padded = true) -> std::string;
 auto concatenate_paths(const config::Expression &lhs,
                        const config::Expression &rhs) -> config::Expression;
 
-auto config_has_packages(const Config &config,
-                         config::PackageType type) -> bool;
+auto config_has_packages(const Config &config, config::PackageType type) -> bool;
 auto config_target_options(const Config &config)
     -> std::map<std::string, std::map<std::string, config::Option>>;
 
 /// Public
 
-CMakeGenerator::CMakeGenerator(std::ostream &out)
-    : out_{out}, indent_{0}, last_is_blank_{false} {}
+CMakeGenerator::CMakeGenerator(std::ostream &out) : out_{out}, indent_{0}, last_is_blank_{false} {}
 
 void CMakeGenerator::write(const Config &config) {
     POOST_TRACE("begin codegen");
 
-    comment("Generated using cgen " + version_string() +
-            " — https://github.com/m6vrm/cgen");
+    comment("Generated using cgen " + version_string() + " — https://github.com/m6vrm/cgen");
     comment("DO NOT EDIT");
     blank();
 
@@ -41,8 +37,8 @@ void CMakeGenerator::write(const Config &config) {
         }
     }
 
-    const std::map<std::string, std::map<std::string, config::Option>>
-        target_opts = config_target_options(config);
+    const std::map<std::string, std::map<std::string, config::Option>> target_opts =
+        config_target_options(config);
     if (!target_opts.empty()) {
         POOST_TRACE("write target options");
         section("Target options");
@@ -88,8 +84,7 @@ void CMakeGenerator::write(const Config &config) {
 
             blank();
             comment("package " + pkg.name);
-            const std::string func_name =
-                "cgen_package_" + std::to_string(pkg_idx++);
+            const std::string func_name = "cgen_package_" + std::to_string(pkg_idx++);
             function_begin(func_name);
             for (const auto &[name, expr] : pkg.external.options) {
                 set(name, expr, true);
@@ -97,8 +92,7 @@ void CMakeGenerator::write(const Config &config) {
 
             const std::filesystem::path source_root{"${PROJECT_SOURCE_DIR}"};
             const std::filesystem::path cmake_lists{"CMakeLists.txt"};
-            if_begin("EXISTS " +
-                     (source_root / pkg.name / cmake_lists).string());
+            if_begin("EXISTS " + (source_root / pkg.name / cmake_lists).string());
             add_subdirectory(pkg.name);
             if_else();
             notice("Package " + pkg.name + " doesn't have CMakeLists.txt");
@@ -118,13 +112,11 @@ void CMakeGenerator::write(const Config &config) {
         for (const config::Target &target : config.targets) {
             blank();
             comment("target " + target.name);
-            const std::string func_name =
-                "cgen_target_" + std::to_string(target_idx++);
+            const std::string func_name = "cgen_target_" + std::to_string(target_idx++);
             function_begin(func_name);
             switch (target.type) {
             case config::TargetType::Library:
-                for (const auto &[var_name, expr] :
-                     target.library.target_settings.settings) {
+                for (const auto &[var_name, expr] : target.library.target_settings.settings) {
                     set(var_name, expr);
                 }
 
@@ -137,8 +129,7 @@ void CMakeGenerator::write(const Config &config) {
                 target_settings(target.name, target.library.target_settings);
                 break;
             case config::TargetType::Executable:
-                for (const auto &[var_name, expr] :
-                     target.executable.target_settings.settings) {
+                for (const auto &[var_name, expr] : target.executable.target_settings.settings) {
                     set(var_name, expr);
                 }
 
@@ -198,9 +189,7 @@ void CMakeGenerator::section(const std::string &str) {
     blank();
 }
 
-void CMakeGenerator::notice(const std::string &msg) {
-    line("message(NOTICE " + quote(msg) + ")");
-}
+void CMakeGenerator::notice(const std::string &msg) { line("message(NOTICE " + quote(msg) + ")"); }
 
 void CMakeGenerator::if_begin(const std::string &cond) {
     if (cond.empty()) {
@@ -241,9 +230,7 @@ void CMakeGenerator::function_end() {
     line("endfunction()");
 }
 
-void CMakeGenerator::function_call(const std::string &func_name) {
-    line(func_name + "()");
-}
+void CMakeGenerator::function_call(const std::string &func_name) { line(func_name + "()"); }
 
 void CMakeGenerator::version(const std::string &ver) {
     line("cmake_minimum_required(VERSION " + ver + ")");
@@ -259,15 +246,12 @@ void CMakeGenerator::project(const config::Project &project) {
     line("project(" + project.name + args + ")");
 }
 
-void CMakeGenerator::option(const std::string &opt_name,
-                            const config::Option &opt) {
+void CMakeGenerator::option(const std::string &opt_name, const config::Option &opt) {
 
-    line("option(" + opt_name + " " + quote(opt.description) +
-         expression(opt.default_) + ")");
+    line("option(" + opt_name + " " + quote(opt.description) + expression(opt.default_) + ")");
 }
 
-void CMakeGenerator::set(const std::string &var_name,
-                         const config::Expression &expr, bool force) {
+void CMakeGenerator::set(const std::string &var_name, const config::Expression &expr, bool force) {
     std::string args;
 
     if (force) {
@@ -277,8 +261,7 @@ void CMakeGenerator::set(const std::string &var_name,
     line("set(" + var_name + expression(expr) + args + ")");
 }
 
-void CMakeGenerator::find_package(const std::string &pkg_name,
-                                  const config::SystemPackage &pkg) {
+void CMakeGenerator::find_package(const std::string &pkg_name, const config::SystemPackage &pkg) {
 
     std::string args;
 
@@ -297,8 +280,7 @@ void CMakeGenerator::add_subdirectory(const std::filesystem::path &path) {
     line("add_subdirectory(" + path.string() + ")");
 }
 
-void CMakeGenerator::add_library(const std::string &target_name,
-                                 config::LibraryType type) {
+void CMakeGenerator::add_library(const std::string &target_name, config::LibraryType type) {
 
     std::string type_str;
     switch (type) {
@@ -331,9 +313,8 @@ void CMakeGenerator::add_executable(const std::string &target_name) {
     line("add_executable(" + target_name + ")");
 }
 
-void CMakeGenerator::target_settings(
-    const std::string &target_name,
-    const config::TargetSettings &target_settings) {
+void CMakeGenerator::target_settings(const std::string &target_name,
+                                     const config::TargetSettings &target_settings) {
 
     if (!target_settings.sources.empty()) {
         target_sources_begin(target_name);
@@ -399,14 +380,12 @@ void CMakeGenerator::target_pchs_begin(const std::string &target_name) {
     indent();
 }
 
-void CMakeGenerator::target_link_libraries_begin(
-    const std::string &target_name) {
+void CMakeGenerator::target_link_libraries_begin(const std::string &target_name) {
     line("target_link_libraries(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_compile_definitions_begin(
-    const std::string &target_name) {
+void CMakeGenerator::target_compile_definitions_begin(const std::string &target_name) {
     line("target_compile_definitions(" + target_name);
     indent();
 }
@@ -416,8 +395,7 @@ void CMakeGenerator::target_properties_begin(const std::string &target_name) {
     indent();
 }
 
-void CMakeGenerator::target_compile_options_begin(
-    const std::string &target_name) {
+void CMakeGenerator::target_compile_options_begin(const std::string &target_name) {
     line("target_compile_options(" + target_name);
     indent();
 }
@@ -433,9 +411,8 @@ void CMakeGenerator::target_settings_end() {
 }
 
 template <typename T>
-void CMakeGenerator::visibility(
-    const config::Visibility<config::Configs<T>> &visibility,
-    const config::Expression &prefix) {
+void CMakeGenerator::visibility(const config::Visibility<config::Configs<T>> &visibility,
+                                const config::Expression &prefix) {
 
     if (!visibility.public_.empty()) {
         line("PUBLIC");
@@ -582,13 +559,10 @@ auto concatenate_paths(const config::Expression &lhs,
     };
 }
 
-auto config_has_packages(const Config &config,
-                         config::PackageType type) -> bool {
+auto config_has_packages(const Config &config, config::PackageType type) -> bool {
 
     return std::any_of(config.packages.cbegin(), config.packages.cend(),
-                       [type](const config::Package &pkg) -> bool {
-                           return pkg.type == type;
-                       });
+                       [type](const config::Package &pkg) -> bool { return pkg.type == type; });
 }
 
 auto config_target_options(const Config &config)
@@ -600,15 +574,13 @@ auto config_target_options(const Config &config)
         switch (target.type) {
         case config::TargetType::Library:
             if (!target.library.target_settings.options.empty()) {
-                target_opts[target.name] =
-                    target.library.target_settings.options;
+                target_opts[target.name] = target.library.target_settings.options;
             }
 
             break;
         case config::TargetType::Executable:
             if (!target.executable.target_settings.options.empty()) {
-                target_opts[target.name] =
-                    target.executable.target_settings.options;
+                target_opts[target.name] = target.executable.target_settings.options;
             }
 
             break;
