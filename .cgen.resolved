@@ -1,5 +1,5 @@
 format	1
 s	"external/doctest"	https://github.com/doctest/doctest	ae7a13539fb71f270b87eb2e874fbac80bc8dda2	HEAD
 s	"external/miroir"	https://github.com/m6vrm/miroir	ffd0e36fd227da87dce1ad1dd24f891192ab855b	HEAD
-s	"external/poost"	https://github.com/m6vrm/poost	99bbcc60bae59733450ce79e7a9b04e30c209b70	HEAD
+s	"external/poost"	https://github.com/m6vrm/poost	f6e79e8ab49aff273f157b44bb4fb7ff1e2c7d36	HEAD
 s	"external/yaml-cpp"	https://github.com/jbeder/yaml-cpp	da82fd982c260e7f335ce5acbceff24b270544d1	HEAD
