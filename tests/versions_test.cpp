@@ -1,10 +1,10 @@
-#include <algorithm>
 #include <doctest/doctest.h>
+#include <algorithm>
 #include <versions.hpp>
 
-auto version_tag(const std::string &ver, const std::vector<std::string> &tags,
+auto version_tag(const std::string& ver,
+                 const std::vector<std::string>& tags,
                  bool ignore_rc = false) -> std::optional<std::string> {
-
     const std::optional<std::string> tag = cgen::version_tag(ver, tags, ignore_rc);
 
     std::vector<std::string> reversed_tags{tags};
@@ -16,7 +16,7 @@ auto version_tag(const std::string &ver, const std::vector<std::string> &tags,
     return tag;
 }
 
-auto version_less(const std::string &lhs, const std::string &rhs) -> bool {
+auto version_less(const std::string& lhs, const std::string& rhs) -> bool {
     const bool less = cgen::version_less(lhs, rhs);
     const bool greater = cgen::version_less(rhs, lhs);
     return less == !greater;
@@ -120,9 +120,13 @@ TEST_CASE("version matching") {
 }
 
 TEST_CASE("version comparison") {
-    SUBCASE("prefixed version is preferred") { CHECK(version_less("1.0.0", "v1.0.0")); }
+    SUBCASE("prefixed version is preferred") {
+        CHECK(version_less("1.0.0", "v1.0.0"));
+    }
 
-    SUBCASE("longest version is preferred") { CHECK(version_less("1.0", "1.0.0")); }
+    SUBCASE("longest version is preferred") {
+        CHECK(version_less("1.0", "1.0.0"));
+    }
 
     SUBCASE("semver comparison") {
         // see https://semver.org/spec/v2.0.0-rc.1.html
@@ -158,17 +162,17 @@ TEST_CASE("version comparison") {
 
 TEST_CASE("tag searching") {
     const std::vector<std::string> tags{
-        "0.1",       //
-        "v1.0",      //
-        "1.0.0",     //
-        "1.2.3-rc1", //
-        "1.2.3",     //
-        "v1.2.3",    //
-        "1.2.4-rc1", //
-        "1.2.4-rc2", //
-        "2",         //
-        "v2.0.1",    //
-        "2.3",       //
+        "0.1",        //
+        "v1.0",       //
+        "1.0.0",      //
+        "1.2.3-rc1",  //
+        "1.2.3",      //
+        "v1.2.3",     //
+        "1.2.4-rc1",  //
+        "1.2.4-rc2",  //
+        "2",          //
+        "v2.0.1",     //
+        "2.3",        //
     };
 
     SUBCASE("exact tag found") {

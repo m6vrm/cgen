@@ -1,10 +1,10 @@
+#include <doctest/doctest.h>
 #include <config.hpp>
 #include <debug.hpp>
-#include <doctest/doctest.h>
 #include <mocks.hpp>
 #include <sstream>
 
-auto config_read(std::istream &in, std::vector<cgen::Error> &errors) {
+auto config_read(std::istream& in, std::vector<cgen::Error>& errors) {
     return cgen::config_read(in, 1, errors);
 }
 
@@ -1418,8 +1418,9 @@ TEST_CASE("target templates merging") {
               "path/to/source/file2");
     }
 
-    SUBCASE("merge target templates replacing original sources in second "
-            "template") {
+    SUBCASE(
+        "merge target templates replacing original sources in second "
+        "template") {
         std::istringstream config_iss{R"(
         project: project name
         templates:

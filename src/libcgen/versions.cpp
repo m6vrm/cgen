@@ -12,11 +12,11 @@ struct Version {
     bool has_rc;
 };
 
-auto version_parse(const std::string &ver) -> Version;
+auto version_parse(const std::string& ver) -> Version;
 
 /// Public
 
-auto version_is_valid(const std::string &ver) -> bool {
+auto version_is_valid(const std::string& ver) -> bool {
     for (const unsigned char c : ver) {
         if (c != '.' && c != '*' && !std::isdigit(c)) {
             return false;
@@ -26,11 +26,11 @@ auto version_is_valid(const std::string &ver) -> bool {
     return true;
 }
 
-auto version_match(const std::string &ver, const std::string &tag, bool ignore_rc) -> bool {
+auto version_match(const std::string& ver, const std::string& tag, bool ignore_rc) -> bool {
     // use only normal parts for matching
     const Version tag_ver = version_parse(tag);
     const std::vector<int> ver_parts = version_parse(ver).normal;
-    const std::vector<int> &tag_parts = tag_ver.normal;
+    const std::vector<int>& tag_parts = tag_ver.normal;
 
     if (ignore_rc && tag_ver.has_rc) {
         // ignore pre-releases
@@ -69,7 +69,7 @@ auto version_match(const std::string &ver, const std::string &tag, bool ignore_r
     return ver_parts.size() >= tag_parts.size();
 }
 
-auto version_less(const std::string &lhs, const std::string &rhs) -> bool {
+auto version_less(const std::string& lhs, const std::string& rhs) -> bool {
     // see https://semver.org/spec/v2.0.0-rc.1.html
     Version lhs_parts = version_parse(lhs);
     Version rhs_parts = version_parse(rhs);
@@ -100,9 +100,9 @@ auto version_less(const std::string &lhs, const std::string &rhs) -> bool {
     return lhs.size() < rhs.size();
 }
 
-auto version_tag(const std::string &ver, const std::vector<std::string> &tags, bool ignore_rc)
-    -> std::optional<std::string> {
-
+auto version_tag(const std::string& ver,
+                 const std::vector<std::string>& tags,
+                 bool ignore_rc) -> std::optional<std::string> {
     std::vector<std::string> sorted_tags{tags};
     std::sort(sorted_tags.rbegin(), sorted_tags.rend(), version_less);
 
@@ -119,13 +119,13 @@ auto version_tag(const std::string &ver, const std::vector<std::string> &tags, b
 
 /// Private
 
-void vector_remove_trailing_zeros(std::vector<int> &vector) {
+void vector_remove_trailing_zeros(std::vector<int>& vector) {
     const auto zeroes_it =
         std::find_if(vector.crbegin(), vector.crend(), [](int val) -> bool { return val != 0; });
     vector.erase(zeroes_it.base(), vector.end());
 }
 
-auto version_parse(const std::string &ver) -> Version {
+auto version_parse(const std::string& ver) -> Version {
     Version result{};
 
     enum {
@@ -134,7 +134,7 @@ auto version_parse(const std::string &ver) -> Version {
         ST_BUILD,
     } state = ST_NORMAL;
 
-    std::vector<int> *parts = &result.normal;
+    std::vector<int>* parts = &result.normal;
 
     for (auto it = ver.cbegin(); it != ver.cend(); ++it) {
         const unsigned char c = *it;
@@ -167,4 +167,4 @@ auto version_parse(const std::string &ver) -> Version {
     return result;
 }
 
-} // namespace cgen
+}  // namespace cgen

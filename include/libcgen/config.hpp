@@ -23,7 +23,7 @@ struct Expression {
     std::string value;
 
     Expression() : is_defined{false}, is_quoted{false} {}
-    Expression(bool is_defined, bool is_quoted, const std::string &val)
+    Expression(bool is_defined, bool is_quoted, const std::string& val)
         : is_defined{is_defined}, is_quoted{is_quoted}, value{val} {}
 };
 
@@ -89,7 +89,8 @@ enum class LibraryType {
     Object,
 };
 
-template <typename T> struct Visibility {
+template <typename T>
+struct Visibility {
     T default_;
     T public_;
     T private_;
@@ -98,7 +99,8 @@ template <typename T> struct Visibility {
     auto empty() const -> bool { return public_.empty() && private_.empty() && interface.empty(); }
 };
 
-template <typename T> struct Configs {
+template <typename T>
+struct Configs {
     bool is_defined;
 
     T global;
@@ -110,10 +112,10 @@ template <typename T> struct Configs {
         return !is_defined ||
                (global.empty() &&
                 std::all_of(configurations.cbegin(), configurations.cend(),
-                            [](const auto &it) -> bool { return it.second.empty(); }));
+                            [](const auto& it) -> bool { return it.second.empty(); }));
     }
 
-    void move_merge(const Configs<T> &configs) {
+    void move_merge(const Configs<T>& configs) {
         is_defined = is_defined || configs.is_defined;
         global.insert(global.end(), std::make_move_iterator(configs.global.cbegin()),
                       std::make_move_iterator(configs.global.cend()));
@@ -169,7 +171,7 @@ struct Target {
     ExecutableTarget executable;
 };
 
-} // namespace config
+}  // namespace config
 
 struct Config {
     std::string version;
@@ -182,8 +184,8 @@ struct Config {
     std::vector<config::Target> targets;
 };
 
-auto config_read(std::istream &in, int ver, std::vector<Error> &errors) -> Config;
+auto config_read(std::istream& in, int ver, std::vector<Error>& errors) -> Config;
 
-} // namespace cgen
+}  // namespace cgen
 
-#endif // ifndef CGEN_CONFIG_HPP
+#endif  // ifndef CGEN_CONFIG_HPP

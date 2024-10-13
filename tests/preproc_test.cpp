@@ -1,5 +1,5 @@
-#include <debug.hpp>
 #include <doctest/doctest.h>
+#include <debug.hpp>
 #include <preproc.hpp>
 
 /// Merge
@@ -14,36 +14,41 @@ TEST_CASE("node merging") {
     SUBCASE("source replaces empty destination") {
         YAML::Node to = YAML::Load("");
         cgen::node_merge(from, to);
-        CHECK(cgen::node_dump(to) == "{list: [1, 2, 3], map: {hello: world, nested: {key: value}}, "
-                                     "scalar: something}");
+        CHECK(cgen::node_dump(to) ==
+              "{list: [1, 2, 3], map: {hello: world, nested: {key: value}}, "
+              "scalar: something}");
     }
 
     SUBCASE("source replaces uninitialized destination") {
         YAML::Node to;
         cgen::node_merge(from, to);
-        CHECK(cgen::node_dump(to) == "{list: [1, 2, 3], map: {hello: world, nested: {key: value}}, "
-                                     "scalar: something}");
+        CHECK(cgen::node_dump(to) ==
+              "{list: [1, 2, 3], map: {hello: world, nested: {key: value}}, "
+              "scalar: something}");
     }
 
     SUBCASE("source appends to the list") {
         YAML::Node to = YAML::Load("list: [4, 5]");
         cgen::node_merge(from, to);
-        CHECK(cgen::node_dump(to) == "{list: [4, 5, 1, 2, 3], map: {hello: world, nested: {key: "
-                                     "value}}, scalar: something}");
+        CHECK(cgen::node_dump(to) ==
+              "{list: [4, 5, 1, 2, 3], map: {hello: world, nested: {key: "
+              "value}}, scalar: something}");
     }
 
     SUBCASE("source merges into the map") {
         YAML::Node to = YAML::Load("map: { hello: hello, nested: { key: nothing } }");
         cgen::node_merge(from, to);
-        CHECK(cgen::node_dump(to) == "{map: {hello: world, nested: {key: value}}, list: [1, 2, 3], "
-                                     "scalar: something}");
+        CHECK(cgen::node_dump(to) ==
+              "{map: {hello: world, nested: {key: value}}, list: [1, 2, 3], "
+              "scalar: something}");
     }
 
     SUBCASE("source replaces scalar") {
         YAML::Node to = YAML::Load("scalar: nothing");
         cgen::node_merge(from, to);
-        CHECK(cgen::node_dump(to) == "{scalar: something, list: [1, 2, 3], map: {hello: world, "
-                                     "nested: {key: value}}}");
+        CHECK(cgen::node_dump(to) ==
+              "{scalar: something, list: [1, 2, 3], map: {hello: world, "
+              "nested: {key: value}}}");
     }
 
     SUBCASE("destination keeps unaffected nodes") {
@@ -286,7 +291,8 @@ TEST_CASE("visibility wrapping") {
         )");
 
         cgen::node_wrap_visibility(node, "key");
-        CHECK(cgen::node_dump(node) == "{key: {public: {configurations: {Release: [1, 2, 3]}}, "
-                                       "private: {global: [4, 5, 6]}}}");
+        CHECK(cgen::node_dump(node) ==
+              "{key: {public: {configurations: {Release: [1, 2, 3]}}, "
+              "private: {global: [4, 5, 6]}}}");
     }
 }

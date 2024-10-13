@@ -26,6 +26,6 @@ struct Error {
     auto description() const -> std::string;
 };
 
-} // namespace cgen
+}  // namespace cgen
 
-#endif // ifndef CGEN_ERROR_HPP
+#endif  // ifndef CGEN_ERROR_HPP

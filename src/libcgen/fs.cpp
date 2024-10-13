@@ -3,13 +3,13 @@
 
 namespace cgen {
 
-void path_rename(const std::filesystem::path &path, const std::filesystem::path &new_path) {
+void path_rename(const std::filesystem::path& path, const std::filesystem::path& new_path) {
     if (!path_is_sub(path, std::filesystem::current_path()) ||
         !path_is_sub(new_path, std::filesystem::current_path())) {
-
-        POOST_FATAL("renaming paths outside of the current working dir is "
-                    "prohibited: {} -> {}",
-                    path, new_path);
+        POOST_FATAL(
+            "renaming paths outside of the current working dir is "
+            "prohibited: {} -> {}",
+            path, new_path);
         return;
     }
 
@@ -19,15 +19,15 @@ void path_rename(const std::filesystem::path &path, const std::filesystem::path 
     }
 }
 
-auto path_is_dir(const std::filesystem::path &path) -> bool {
+auto path_is_dir(const std::filesystem::path& path) -> bool {
     return std::filesystem::exists(path) && std::filesystem::is_directory(path);
 }
 
-auto path_is_empty(const std::filesystem::path &path) -> bool {
+auto path_is_empty(const std::filesystem::path& path) -> bool {
     return !std::filesystem::exists(path) || std::filesystem::is_empty(path);
 }
 
-auto path_is_sub(const std::filesystem::path &path, const std::filesystem::path &base) -> bool {
+auto path_is_sub(const std::filesystem::path& path, const std::filesystem::path& base) -> bool {
     const std::filesystem::path cb = std::filesystem::weakly_canonical(base);
     const std::filesystem::path cp = std::filesystem::weakly_canonical(cb / path);
 
@@ -40,10 +40,10 @@ auto path_is_sub(const std::filesystem::path &path, const std::filesystem::path 
     return true;
 }
 
-auto path_is_equal(const std::filesystem::path &path1, const std::filesystem::path &path2) -> bool {
+auto path_is_equal(const std::filesystem::path& path1, const std::filesystem::path& path2) -> bool {
     const std::filesystem::path cp1 = std::filesystem::weakly_canonical(path1);
     const std::filesystem::path cp2 = std::filesystem::weakly_canonical(path2);
     return cp1 == cp2;
 }
 
-} // namespace cgen
+}  // namespace cgen

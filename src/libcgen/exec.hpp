@@ -5,6 +5,6 @@
 
 namespace cgen {
 
-auto exec(std::string &out, std::initializer_list<std::string> cmd_parts) -> int;
+auto exec(std::string& out, std::initializer_list<std::string> cmd_parts) -> int;
 
-} // namespace cgen
+}  // namespace cgen

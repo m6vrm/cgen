@@ -7,19 +7,19 @@
 #define popen _popen
 #define pclose _pclose
 #define WEXITSTATUS
-#endif // ifdef _WIN32
+#endif  // ifdef _WIN32
 
 namespace cgen {
 
 // todo: consider exec(3) family of functions
-auto exec(std::string &out, std::initializer_list<std::string> cmd_parts) -> int {
+auto exec(std::string& out, std::initializer_list<std::string> cmd_parts) -> int {
     std::string cmd;
-    for (const std::string &part : cmd_parts) {
+    for (const std::string& part : cmd_parts) {
         cmd += part + " ";
     }
 
     POOST_TRACE("execute command: {}", cmd);
-    std::FILE *fp = popen(cmd.c_str(), "r");
+    std::FILE* fp = popen(cmd.c_str(), "r");
     if (fp == nullptr) {
         POOST_ERROR("can't create pipe: {}", cmd);
         return -1;
@@ -42,12 +42,13 @@ auto exec(std::string &out, std::initializer_list<std::string> cmd_parts) -> int
     status = WEXITSTATUS(status);
 
     if (status != EXIT_SUCCESS) {
-        POOST_WARN("command failed: {}"
-                   "\n\texit status: {}",
-                   cmd, status);
+        POOST_WARN(
+            "command failed: {}"
+            "\n\texit status: {}",
+            cmd, status);
     }
 
     return status;
 }
 
-} // namespace cgen
+}  // namespace cgen

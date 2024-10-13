@@ -7,8 +7,9 @@
 auto main() -> int {
     poost::log::global = poost::LogSettings{
         .stream = &std::cerr,
-        .log_level = poost::LogLevel::Fatal,
+        .log_level = poost::LogLevel::FATAL,
         .use_colors = true,
+        .print_location = true,
     };
 
     doctest::Context context{};

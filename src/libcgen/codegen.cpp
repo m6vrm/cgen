@@ -6,20 +6,20 @@
 
 namespace cgen {
 
-auto quote(const std::string &str) -> std::string;
-auto expression(const config::Expression &expr, bool padded = true) -> std::string;
-auto concatenate_paths(const config::Expression &lhs,
-                       const config::Expression &rhs) -> config::Expression;
+auto quote(const std::string& str) -> std::string;
+auto expression(const config::Expression& expr, bool padded = true) -> std::string;
+auto concatenate_paths(const config::Expression& lhs,
+                       const config::Expression& rhs) -> config::Expression;
 
-auto config_has_packages(const Config &config, config::PackageType type) -> bool;
-auto config_target_options(const Config &config)
+auto config_has_packages(const Config& config, config::PackageType type) -> bool;
+auto config_target_options(const Config& config)
     -> std::map<std::string, std::map<std::string, config::Option>>;
 
 /// Public
 
-CMakeGenerator::CMakeGenerator(std::ostream &out) : out_{out}, indent_{0}, last_is_blank_{false} {}
+CMakeGenerator::CMakeGenerator(std::ostream& out) : out_{out}, indent_{0}, last_is_blank_{false} {}
 
-void CMakeGenerator::write(const Config &config) {
+void CMakeGenerator::write(const Config& config) {
     POOST_TRACE("begin codegen");
 
     comment("Generated using cgen " + version_string() + " — https://github.com/m6vrm/cgen");
@@ -32,7 +32,7 @@ void CMakeGenerator::write(const Config &config) {
     if (!config.options.empty()) {
         POOST_TRACE("write options");
         section("Options");
-        for (const auto &[opt_name, opt] : config.options) {
+        for (const auto& [opt_name, opt] : config.options) {
             option(opt_name, opt);
         }
     }
@@ -42,10 +42,10 @@ void CMakeGenerator::write(const Config &config) {
     if (!target_opts.empty()) {
         POOST_TRACE("write target options");
         section("Target options");
-        for (const auto &[target_name, opts] : target_opts) {
+        for (const auto& [target_name, opts] : target_opts) {
             blank();
             comment("options for target " + target_name);
-            for (const auto &[opt_name, opt] : opts) {
+            for (const auto& [opt_name, opt] : opts) {
                 option(opt_name, opt);
             }
         }
@@ -54,7 +54,7 @@ void CMakeGenerator::write(const Config &config) {
     if (!config.settings.empty()) {
         POOST_TRACE("write settings");
         section("Settings");
-        for (const auto &[var_name, expr] : config.settings) {
+        for (const auto& [var_name, expr] : config.settings) {
             set(var_name, expr);
         }
     }
@@ -62,7 +62,7 @@ void CMakeGenerator::write(const Config &config) {
     if (config_has_packages(config, config::PackageType::System)) {
         POOST_TRACE("write system packages");
         section("System packages");
-        for (const config::Package &pkg : config.packages) {
+        for (const config::Package& pkg : config.packages) {
             if (pkg.type != config::PackageType::System) {
                 continue;
             }
@@ -77,7 +77,7 @@ void CMakeGenerator::write(const Config &config) {
         POOST_TRACE("write external packages");
         section("External packages");
         int pkg_idx = 0;
-        for (const config::Package &pkg : config.packages) {
+        for (const config::Package& pkg : config.packages) {
             if (pkg.type != config::PackageType::External) {
                 continue;
             }
@@ -86,7 +86,7 @@ void CMakeGenerator::write(const Config &config) {
             comment("package " + pkg.name);
             const std::string func_name = "cgen_package_" + std::to_string(pkg_idx++);
             function_begin(func_name);
-            for (const auto &[name, expr] : pkg.external.options) {
+            for (const auto& [name, expr] : pkg.external.options) {
                 set(name, expr, true);
             }
 
@@ -109,35 +109,36 @@ void CMakeGenerator::write(const Config &config) {
         POOST_TRACE("write targets");
         section("Targets");
         int target_idx = 0;
-        for (const config::Target &target : config.targets) {
+        for (const config::Target& target : config.targets) {
             blank();
             comment("target " + target.name);
             const std::string func_name = "cgen_target_" + std::to_string(target_idx++);
             function_begin(func_name);
             switch (target.type) {
-            case config::TargetType::Library:
-                for (const auto &[var_name, expr] : target.library.target_settings.settings) {
-                    set(var_name, expr);
-                }
+                case config::TargetType::Library:
+                    for (const auto& [var_name, expr] : target.library.target_settings.settings) {
+                        set(var_name, expr);
+                    }
 
-                add_library(target.name, target.library.type);
+                    add_library(target.name, target.library.type);
 
-                for (const std::string &alias : target.library.aliases) {
-                    add_library_alias(target.name, alias);
-                }
+                    for (const std::string& alias : target.library.aliases) {
+                        add_library_alias(target.name, alias);
+                    }
 
-                target_settings(target.name, target.library.target_settings);
-                break;
-            case config::TargetType::Executable:
-                for (const auto &[var_name, expr] : target.executable.target_settings.settings) {
-                    set(var_name, expr);
-                }
+                    target_settings(target.name, target.library.target_settings);
+                    break;
+                case config::TargetType::Executable:
+                    for (const auto& [var_name, expr] :
+                         target.executable.target_settings.settings) {
+                        set(var_name, expr);
+                    }
 
-                add_executable(target.name);
-                target_settings(target.name, target.executable.target_settings);
-                break;
-            default:
-                POOST_ASSERT_FAIL("invalid target type: {}", target.type);
+                    add_executable(target.name);
+                    target_settings(target.name, target.executable.target_settings);
+                    break;
+                default:
+                    POOST_ASSERT_FAIL("invalid target type: {}", target.type);
             }
             function_end();
 
@@ -152,14 +153,16 @@ void CMakeGenerator::write(const Config &config) {
 
 /// Private
 
-void CMakeGenerator::indent() { ++indent_; }
+void CMakeGenerator::indent() {
+    ++indent_;
+}
 
 void CMakeGenerator::unindent() {
     --indent_;
     POOST_ASSERT(indent_ >= 0, "negative indentation: {}", indent_);
 }
 
-void CMakeGenerator::line(const std::string &str) {
+void CMakeGenerator::line(const std::string& str) {
     out_ << std::string(indent_ * 4, ' ') << str << "\n";
     last_is_blank_ = false;
 }
@@ -173,7 +176,7 @@ void CMakeGenerator::blank() {
     last_is_blank_ = true;
 }
 
-void CMakeGenerator::comment(const std::string &str) {
+void CMakeGenerator::comment(const std::string& str) {
     if (!str.empty()) {
         line("# " + str);
     } else {
@@ -181,7 +184,7 @@ void CMakeGenerator::comment(const std::string &str) {
     }
 }
 
-void CMakeGenerator::section(const std::string &str) {
+void CMakeGenerator::section(const std::string& str) {
     blank();
     comment();
     comment(str);
@@ -189,9 +192,11 @@ void CMakeGenerator::section(const std::string &str) {
     blank();
 }
 
-void CMakeGenerator::notice(const std::string &msg) { line("message(NOTICE " + quote(msg) + ")"); }
+void CMakeGenerator::notice(const std::string& msg) {
+    line("message(NOTICE " + quote(msg) + ")");
+}
 
-void CMakeGenerator::if_begin(const std::string &cond) {
+void CMakeGenerator::if_begin(const std::string& cond) {
     if (cond.empty()) {
         return;
     }
@@ -200,7 +205,7 @@ void CMakeGenerator::if_begin(const std::string &cond) {
     indent();
 }
 
-void CMakeGenerator::if_end(const std::string &cond) {
+void CMakeGenerator::if_end(const std::string& cond) {
     if (cond.empty()) {
         return;
     }
@@ -220,7 +225,7 @@ void CMakeGenerator::if_end() {
     line("endif()");
 }
 
-void CMakeGenerator::function_begin(const std::string &func_name) {
+void CMakeGenerator::function_begin(const std::string& func_name) {
     line("function(" + func_name + ")");
     indent();
 }
@@ -230,13 +235,15 @@ void CMakeGenerator::function_end() {
     line("endfunction()");
 }
 
-void CMakeGenerator::function_call(const std::string &func_name) { line(func_name + "()"); }
+void CMakeGenerator::function_call(const std::string& func_name) {
+    line(func_name + "()");
+}
 
-void CMakeGenerator::version(const std::string &ver) {
+void CMakeGenerator::version(const std::string& ver) {
     line("cmake_minimum_required(VERSION " + ver + ")");
 }
 
-void CMakeGenerator::project(const config::Project &project) {
+void CMakeGenerator::project(const config::Project& project) {
     std::string args;
 
     if (!project.version.empty()) {
@@ -246,12 +253,11 @@ void CMakeGenerator::project(const config::Project &project) {
     line("project(" + project.name + args + ")");
 }
 
-void CMakeGenerator::option(const std::string &opt_name, const config::Option &opt) {
-
+void CMakeGenerator::option(const std::string& opt_name, const config::Option& opt) {
     line("option(" + opt_name + " " + quote(opt.description) + expression(opt.default_) + ")");
 }
 
-void CMakeGenerator::set(const std::string &var_name, const config::Expression &expr, bool force) {
+void CMakeGenerator::set(const std::string& var_name, const config::Expression& expr, bool force) {
     std::string args;
 
     if (force) {
@@ -261,8 +267,7 @@ void CMakeGenerator::set(const std::string &var_name, const config::Expression &
     line("set(" + var_name + expression(expr) + args + ")");
 }
 
-void CMakeGenerator::find_package(const std::string &pkg_name, const config::SystemPackage &pkg) {
-
+void CMakeGenerator::find_package(const std::string& pkg_name, const config::SystemPackage& pkg) {
     std::string args;
 
     if (!pkg.version.empty()) {
@@ -276,46 +281,43 @@ void CMakeGenerator::find_package(const std::string &pkg_name, const config::Sys
     line("find_package(" + pkg_name + args + ")");
 }
 
-void CMakeGenerator::add_subdirectory(const std::filesystem::path &path) {
+void CMakeGenerator::add_subdirectory(const std::filesystem::path& path) {
     line("add_subdirectory(" + path.string() + ")");
 }
 
-void CMakeGenerator::add_library(const std::string &target_name, config::LibraryType type) {
-
+void CMakeGenerator::add_library(const std::string& target_name, config::LibraryType type) {
     std::string type_str;
     switch (type) {
-    case config::LibraryType::Static:
-        type_str = "STATIC";
-        break;
-    case config::LibraryType::Shared:
-        type_str = "SHARED";
-        break;
-    case config::LibraryType::Interface:
-        type_str = "INTERFACE";
-        break;
-    case config::LibraryType::Object:
-        type_str = "OBJECT";
-        break;
-    default:
-        POOST_ASSERT_FAIL("invalid library type: {}", type);
+        case config::LibraryType::Static:
+            type_str = "STATIC";
+            break;
+        case config::LibraryType::Shared:
+            type_str = "SHARED";
+            break;
+        case config::LibraryType::Interface:
+            type_str = "INTERFACE";
+            break;
+        case config::LibraryType::Object:
+            type_str = "OBJECT";
+            break;
+        default:
+            POOST_ASSERT_FAIL("invalid library type: {}", type);
     }
 
     line("add_library(" + target_name + " " + type_str + ")");
 }
 
-void CMakeGenerator::add_library_alias(const std::string &target_name,
-                                       const std::string &target_alias) {
-
+void CMakeGenerator::add_library_alias(const std::string& target_name,
+                                       const std::string& target_alias) {
     line("add_library(" + target_alias + " ALIAS " + target_name + ")");
 }
 
-void CMakeGenerator::add_executable(const std::string &target_name) {
+void CMakeGenerator::add_executable(const std::string& target_name) {
     line("add_executable(" + target_name + ")");
 }
 
-void CMakeGenerator::target_settings(const std::string &target_name,
-                                     const config::TargetSettings &target_settings) {
-
+void CMakeGenerator::target_settings(const std::string& target_name,
+                                     const config::TargetSettings& target_settings) {
     if (!target_settings.sources.empty()) {
         target_sources_begin(target_name);
         visibility(target_settings.sources, target_settings.path);
@@ -365,42 +367,42 @@ void CMakeGenerator::target_settings(const std::string &target_name,
     }
 }
 
-void CMakeGenerator::target_sources_begin(const std::string &target_name) {
+void CMakeGenerator::target_sources_begin(const std::string& target_name) {
     line("target_sources(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_includes_begin(const std::string &target_name) {
+void CMakeGenerator::target_includes_begin(const std::string& target_name) {
     line("target_include_directories(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_pchs_begin(const std::string &target_name) {
+void CMakeGenerator::target_pchs_begin(const std::string& target_name) {
     line("target_precompiled_headers(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_link_libraries_begin(const std::string &target_name) {
+void CMakeGenerator::target_link_libraries_begin(const std::string& target_name) {
     line("target_link_libraries(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_compile_definitions_begin(const std::string &target_name) {
+void CMakeGenerator::target_compile_definitions_begin(const std::string& target_name) {
     line("target_compile_definitions(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_properties_begin(const std::string &target_name) {
+void CMakeGenerator::target_properties_begin(const std::string& target_name) {
     line("set_target_properties(" + target_name + " PROPERTIES");
     indent();
 }
 
-void CMakeGenerator::target_compile_options_begin(const std::string &target_name) {
+void CMakeGenerator::target_compile_options_begin(const std::string& target_name) {
     line("target_compile_options(" + target_name);
     indent();
 }
 
-void CMakeGenerator::target_link_options_begin(const std::string &target_name) {
+void CMakeGenerator::target_link_options_begin(const std::string& target_name) {
     line("target_link_options(" + target_name);
     indent();
 }
@@ -411,9 +413,8 @@ void CMakeGenerator::target_settings_end() {
 }
 
 template <typename T>
-void CMakeGenerator::visibility(const config::Visibility<config::Configs<T>> &visibility,
-                                const config::Expression &prefix) {
-
+void CMakeGenerator::visibility(const config::Visibility<config::Configs<T>>& visibility,
+                                const config::Expression& prefix) {
     if (!visibility.public_.empty()) {
         line("PUBLIC");
         indent();
@@ -436,21 +437,20 @@ void CMakeGenerator::visibility(const config::Visibility<config::Configs<T>> &vi
     }
 }
 
-void CMakeGenerator::configs(const config::ConfigsExpressions &configs,
-                             const config::Expression &prefix) {
-
-    for (const config::Expression &expr : configs.global) {
+void CMakeGenerator::configs(const config::ConfigsExpressions& configs,
+                             const config::Expression& prefix) {
+    for (const config::Expression& expr : configs.global) {
         line(expression(concatenate_paths(prefix, expr), false));
     }
 
-    for (const auto &[config, exprs] : configs.configurations) {
+    for (const auto& [config, exprs] : configs.configurations) {
         if (exprs.empty()) {
             continue;
         }
 
         config_begin(config);
 
-        for (const config::Expression &expr : exprs) {
+        for (const config::Expression& expr : exprs) {
             line(expression(concatenate_paths(prefix, expr), false));
         }
 
@@ -458,21 +458,19 @@ void CMakeGenerator::configs(const config::ConfigsExpressions &configs,
     }
 }
 
-void CMakeGenerator::configs(const config::ConfigsDefinitions &configs,
-                             const config::Expression &) {
-
-    for (const config::Definition &def : configs.global) {
+void CMakeGenerator::configs(const config::ConfigsDefinitions& configs, const config::Expression&) {
+    for (const config::Definition& def : configs.global) {
         definition(def);
     }
 
-    for (const auto &[config, defs] : configs.configurations) {
+    for (const auto& [config, defs] : configs.configurations) {
         if (defs.empty()) {
             continue;
         }
 
         config_begin(config);
 
-        for (const config::Definition &def : defs) {
+        for (const config::Definition& def : defs) {
             definition(def);
         }
 
@@ -480,21 +478,20 @@ void CMakeGenerator::configs(const config::ConfigsDefinitions &configs,
     }
 }
 
-void CMakeGenerator::configs(const config::ConfigsExpressionsMap &configs,
-                             const config::Expression &) {
-
-    for (const auto &[key, expr] : configs.global) {
+void CMakeGenerator::configs(const config::ConfigsExpressionsMap& configs,
+                             const config::Expression&) {
+    for (const auto& [key, expr] : configs.global) {
         line(key + expression(expr));
     }
 
-    for (const auto &[config, map] : configs.configurations) {
+    for (const auto& [config, map] : configs.configurations) {
         if (map.empty()) {
             continue;
         }
 
         config_begin(config);
 
-        for (const auto &[key, expr] : map) {
+        for (const auto& [key, expr] : map) {
             line(key + expression(expr));
         }
 
@@ -502,7 +499,7 @@ void CMakeGenerator::configs(const config::ConfigsExpressionsMap &configs,
     }
 }
 
-void CMakeGenerator::config_begin(const std::string &config_name) {
+void CMakeGenerator::config_begin(const std::string& config_name) {
     line("$<$<CONFIG:" + config_name + ">:");
     indent();
 }
@@ -512,11 +509,11 @@ void CMakeGenerator::config_end() {
     line(">");
 }
 
-void CMakeGenerator::definition(const config::Definition &def) {
+void CMakeGenerator::definition(const config::Definition& def) {
     if (def.map.empty()) {
         line(expression(def.value, false));
     } else {
-        for (const auto &[key, expr] : def.map) {
+        for (const auto& [key, expr] : def.map) {
             line(key + "=" + expression(expr, false));
         }
     }
@@ -524,9 +521,11 @@ void CMakeGenerator::definition(const config::Definition &def) {
 
 /// Utility
 
-auto quote(const std::string &str) -> std::string { return '"' + str + '"'; }
+auto quote(const std::string& str) -> std::string {
+    return '"' + str + '"';
+}
 
-auto expression(const config::Expression &expr, bool padded) -> std::string {
+auto expression(const config::Expression& expr, bool padded) -> std::string {
     std::string result;
 
     if (!expr.is_defined) {
@@ -546,9 +545,8 @@ auto expression(const config::Expression &expr, bool padded) -> std::string {
     return result;
 }
 
-auto concatenate_paths(const config::Expression &lhs,
-                       const config::Expression &rhs) -> config::Expression {
-
+auto concatenate_paths(const config::Expression& lhs,
+                       const config::Expression& rhs) -> config::Expression {
     const std::filesystem::path lhs_path{lhs.value};
     const std::filesystem::path rhs_path{rhs.value};
 
@@ -559,37 +557,35 @@ auto concatenate_paths(const config::Expression &lhs,
     };
 }
 
-auto config_has_packages(const Config &config, config::PackageType type) -> bool {
-
+auto config_has_packages(const Config& config, config::PackageType type) -> bool {
     return std::any_of(config.packages.cbegin(), config.packages.cend(),
-                       [type](const config::Package &pkg) -> bool { return pkg.type == type; });
+                       [type](const config::Package& pkg) -> bool { return pkg.type == type; });
 }
 
-auto config_target_options(const Config &config)
+auto config_target_options(const Config& config)
     -> std::map<std::string, std::map<std::string, config::Option>> {
-
     std::map<std::string, std::map<std::string, config::Option>> target_opts;
 
-    for (const config::Target &target : config.targets) {
+    for (const config::Target& target : config.targets) {
         switch (target.type) {
-        case config::TargetType::Library:
-            if (!target.library.target_settings.options.empty()) {
-                target_opts[target.name] = target.library.target_settings.options;
-            }
+            case config::TargetType::Library:
+                if (!target.library.target_settings.options.empty()) {
+                    target_opts[target.name] = target.library.target_settings.options;
+                }
 
-            break;
-        case config::TargetType::Executable:
-            if (!target.executable.target_settings.options.empty()) {
-                target_opts[target.name] = target.executable.target_settings.options;
-            }
+                break;
+            case config::TargetType::Executable:
+                if (!target.executable.target_settings.options.empty()) {
+                    target_opts[target.name] = target.executable.target_settings.options;
+                }
 
-            break;
-        default:
-            POOST_ASSERT_FAIL("invalid target type: {}", target.type);
+                break;
+            default:
+                POOST_ASSERT_FAIL("invalid target type: {}", target.type);
         }
     }
 
     return target_opts;
 }
 
-} // namespace cgen
+}  // namespace cgen

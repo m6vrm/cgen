@@ -6,15 +6,16 @@ namespace cgen {
 
 std::ifstream fs;
 
-auto path_exists(const std::filesystem::path &path) -> bool {
+auto path_exists(const std::filesystem::path& path) -> bool {
     return std::filesystem::exists(path);
 }
 
-void path_remove(const std::filesystem::path &path) {
+void path_remove(const std::filesystem::path& path) {
     if (!path_is_sub(path, std::filesystem::current_path())) {
-        POOST_FATAL("removing paths outside of the current working dir is "
-                    "prohibited: {}",
-                    path);
+        POOST_FATAL(
+            "removing paths outside of the current working dir is "
+            "prohibited: {}",
+            path);
         return;
     }
 
@@ -22,7 +23,7 @@ void path_remove(const std::filesystem::path &path) {
     std::filesystem::remove_all(path);
 }
 
-void file_read(const std::filesystem::path &path, std::istream &in) {
+void file_read(const std::filesystem::path& path, std::istream& in) {
     if (fs.is_open()) {
         fs.close();
         fs.clear();
@@ -32,4 +33,4 @@ void file_read(const std::filesystem::path &path, std::istream &in) {
     in.rdbuf(fs.rdbuf());
 }
 
-} // namespace cgen
+}  // namespace cgen

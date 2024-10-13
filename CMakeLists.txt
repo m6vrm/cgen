@@ -64,28 +64,16 @@ function(cgen_target_0)
     add_library(libcgen_obj OBJECT)
     target_sources(libcgen_obj
         PRIVATE
-            include/libcgen/codegen.hpp
-            include/libcgen/config.hpp
-            include/libcgen/error.hpp
-            include/libcgen/packages.hpp
-            include/libcgen/version.hpp
-            src/libcgen/cgen.schema.yml.in
             src/libcgen/codegen.cpp
             src/libcgen/config.cpp
             src/libcgen/debug.cpp
-            src/libcgen/debug.hpp
             src/libcgen/error.cpp
-            src/libcgen/exec.hpp
             src/libcgen/fs.cpp
-            src/libcgen/fs.hpp
             src/libcgen/git.cpp
-            src/libcgen/git.hpp
             src/libcgen/packages.cpp
             src/libcgen/preproc.cpp
-            src/libcgen/preproc.hpp
             src/libcgen/version.cpp
             src/libcgen/versions.cpp
-            src/libcgen/versions.hpp
     )
     target_include_directories(libcgen_obj
         PUBLIC
@@ -102,7 +90,7 @@ function(cgen_target_0)
             poost::poost
     )
     set_target_properties(libcgen_obj PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED ON
     )
     target_compile_options(libcgen_obj
@@ -137,7 +125,7 @@ function(cgen_target_1)
             poost::poost
     )
     set_target_properties(libcgen PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED ON
     )
     target_compile_options(libcgen
@@ -163,7 +151,6 @@ function(cgen_target_2)
             tests/fs_mock.cpp
             tests/fs_test.cpp
             tests/main_test.cpp
-            tests/mocks.hpp
             tests/packages_test.cpp
             tests/preproc_test.cpp
             tests/versions_test.cpp
@@ -181,7 +168,7 @@ function(cgen_target_2)
             poost::poost
     )
     set_target_properties(libcgen_test PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED ON
     )
     target_compile_options(libcgen_test
@@ -243,7 +230,7 @@ function(cgen_target_3)
             poost::poost
     )
     set_target_properties(cgen PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED ON
     )
     target_compile_options(cgen

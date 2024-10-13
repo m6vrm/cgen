@@ -3,7 +3,7 @@
 
 namespace cgen {
 
-auto node_dump(const YAML::Node &node) -> std::string {
+auto node_dump(const YAML::Node& node) -> std::string {
     YAML::Emitter emitter;
     emitter.SetSeqFormat(YAML::Flow);
     emitter.SetMapFormat(YAML::Flow);
@@ -12,4 +12,4 @@ auto node_dump(const YAML::Node &node) -> std::string {
     return emitter.c_str();
 }
 
-} // namespace cgen
+}  // namespace cgen

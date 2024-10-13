@@ -13,11 +13,11 @@ TEST_CASE("paths checking") {
         CHECK(cgen::path_is_sub("/path/to/dir/../dir/subdir", "/path/to/dir"));
     }
 
-    SUBCASE("relative path from other hierarchy is invalid") { //
+    SUBCASE("relative path from other hierarchy is invalid") {  //
         CHECK(cgen::path_is_sub("../subdir", "/path/to/dir") == false);
     }
 
-    SUBCASE("absolute path from other hierarchy is invalid") { //
+    SUBCASE("absolute path from other hierarchy is invalid") {  //
         CHECK(cgen::path_is_sub("/path/to/subdir", "/path/to/dir") == false);
     }
 }

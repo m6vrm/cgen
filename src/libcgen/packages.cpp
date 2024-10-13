@@ -12,32 +12,31 @@
 
 namespace cgen {
 
-auto packages_find(const std::vector<Package> &pkgs, const Package &pkg)
-    -> std::vector<Package>::const_iterator;
-auto packages_contains(const std::vector<Package> &pkgs, const Package &pkg) -> bool;
+auto packages_find(const std::vector<Package>& pkgs,
+                   const Package& pkg) -> std::vector<Package>::const_iterator;
+auto packages_contains(const std::vector<Package>& pkgs, const Package& pkg) -> bool;
 
-void package_remove(const Package &pkg);
-auto package_tag(const Package &pkg, std::vector<Error> &errors) -> std::string;
-auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package;
+void package_remove(const Package& pkg);
+auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string;
+auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package;
 
-void package_backup(const Package &pkg);
-void package_backup_remove(const Package &pkg);
-void package_backup_restore(const Package &pkg);
+void package_backup(const Package& pkg);
+void package_backup_remove(const Package& pkg);
+void package_backup_restore(const Package& pkg);
 
-auto operator>>(std::istream &in, packages::FetchStrategy &strategy) -> std::istream &;
+auto operator>>(std::istream& in, packages::FetchStrategy& strategy) -> std::istream&;
 
 static const std::filesystem::path git_modules_path = ".git/modules";
 static const std::string backup_suffix = ".bak";
 
 /// Packages
 
-auto packages_cleanup(const std::vector<Package> &pkgs, const std::vector<Package> &resolved_pkgs)
-    -> std::vector<Package> {
-
+auto packages_cleanup(const std::vector<Package>& pkgs,
+                      const std::vector<Package>& resolved_pkgs) -> std::vector<Package> {
     std::vector<Package> result;
 
     // remove resolved packages that aren't exist in the config
-    for (const Package &pkg : resolved_pkgs) {
+    for (const Package& pkg : resolved_pkgs) {
         if (packages_contains(pkgs, pkg)) {
             result.push_back(pkg);
         } else {
@@ -48,19 +47,18 @@ auto packages_cleanup(const std::vector<Package> &pkgs, const std::vector<Packag
     return result;
 }
 
-auto packages_resolve(const std::vector<Package> &pkgs, const std::vector<Package> &resolved_pkgs,
-                      std::vector<Error> &errors) -> std::vector<Package> {
-
+auto packages_resolve(const std::vector<Package>& pkgs,
+                      const std::vector<Package>& resolved_pkgs,
+                      std::vector<Error>& errors) -> std::vector<Package> {
     std::vector<Package> result;
 
     // resolve packages that aren't already resolved
-    for (const Package &pkg : pkgs) {
+    for (const Package& pkg : pkgs) {
         const auto resolved_it = packages_find(resolved_pkgs, pkg);
 
         if (resolved_it == resolved_pkgs.cend() ||
             resolved_it->original_version != pkg.original_version ||
             resolved_it->strategy != pkg.strategy) {
-
             // package not resolved or has different version or fetch strategy
             // fetch new package
             POOST_DEBUG("fetch new package: {}", pkg.url);
@@ -88,17 +86,16 @@ auto packages_resolve(const std::vector<Package> &pkgs, const std::vector<Packag
     return result;
 }
 
-auto packages_update(const std::vector<Package> &pkgs,
-                     const std::vector<std::filesystem::path> &paths, std::vector<Error> &errors)
-    -> std::vector<Package> {
-
+auto packages_update(const std::vector<Package>& pkgs,
+                     const std::vector<std::filesystem::path>& paths,
+                     std::vector<Error>& errors) -> std::vector<Package> {
     std::vector<Package> result;
 
     // update all packages if paths are empty
     const std::size_t i_max = std::max<std::size_t>(1, paths.size());
 
     for (std::size_t i = 0; i < i_max; ++i) {
-        for (const Package &pkg : pkgs) {
+        for (const Package& pkg : pkgs) {
             if (i < paths.size() && !path_is_equal(paths[i], pkg.path)) {
                 continue;
             }
@@ -132,12 +129,11 @@ auto packages_update(const std::vector<Package> &pkgs,
     return result;
 }
 
-auto packages_merge(const std::vector<Package> &from, const std::vector<Package> &to)
-    -> std::vector<Package> {
-
+auto packages_merge(const std::vector<Package>& from,
+                    const std::vector<Package>& to) -> std::vector<Package> {
     std::vector<Package> result = to;
 
-    for (const Package &pkg : from) {
+    for (const Package& pkg : from) {
         if (!packages_contains(result, pkg)) {
             result.push_back(pkg);
         }
@@ -148,7 +144,7 @@ auto packages_merge(const std::vector<Package> &from, const std::vector<Package>
 
 /// Resolved
 
-auto resolved_read(std::istream &in) -> std::vector<Package> {
+auto resolved_read(std::istream& in) -> std::vector<Package> {
     std::vector<Package> resolved;
 
     std::string comment;
@@ -168,16 +164,16 @@ auto resolved_read(std::istream &in) -> std::vector<Package> {
     return resolved;
 }
 
-void resolved_write(std::ostream &out, const std::vector<Package> &resolved_pkgs) {
+void resolved_write(std::ostream& out, const std::vector<Package>& resolved_pkgs) {
     // sort packages to get rid of unnecessary changes in the diff
     std::vector<Package> sorted_pkgs = resolved_pkgs;
     std::sort(
         sorted_pkgs.begin(), sorted_pkgs.end(),
-        [](const Package &pkg1, const Package &pkg2) -> bool { return pkg1.path < pkg2.path; });
+        [](const Package& pkg1, const Package& pkg2) -> bool { return pkg1.path < pkg2.path; });
 
     out << "format\t" << version::resolved << "\n";
 
-    for (const Package &pkg : sorted_pkgs) {
+    for (const Package& pkg : sorted_pkgs) {
         out << static_cast<char>(pkg.strategy) << "\t";
         out << pkg.path << "\t";
         out << pkg.url << "\t";
@@ -188,19 +184,18 @@ void resolved_write(std::ostream &out, const std::vector<Package> &resolved_pkgs
 
 /// Private
 
-auto packages_find(const std::vector<Package> &pkgs, const Package &pkg)
-    -> std::vector<Package>::const_iterator {
-
+auto packages_find(const std::vector<Package>& pkgs,
+                   const Package& pkg) -> std::vector<Package>::const_iterator {
     const std::filesystem::path path = pkg.path;
     return std::find_if(pkgs.cbegin(), pkgs.cend(),
-                        [&path](const Package &pkg) -> bool { return pkg.path == path; });
+                        [&path](const Package& pkg) -> bool { return pkg.path == path; });
 }
 
-auto packages_contains(const std::vector<Package> &pkgs, const Package &pkg) -> bool {
+auto packages_contains(const std::vector<Package>& pkgs, const Package& pkg) -> bool {
     return packages_find(pkgs, pkg) != pkgs.cend();
 }
 
-void package_remove(const Package &pkg) {
+void package_remove(const Package& pkg) {
     if (!path_exists(pkg.path)) {
         return;
     }
@@ -212,7 +207,7 @@ void package_remove(const Package &pkg) {
     path_remove(pkg.path);
 }
 
-auto package_tag(const Package &pkg, std::vector<Error> &errors) -> std::string {
+auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string {
     POOST_TRACE("get all remote tags: {}", pkg.url);
     std::vector<std::string> tags;
     const int status = git_remote_tags(pkg.url, tags);
@@ -231,9 +226,10 @@ auto package_tag(const Package &pkg, std::vector<Error> &errors) -> std::string 
     POOST_TRACE("find tag by version: {}", pkg.version);
     const auto tag = version_tag(pkg.version, tags, false);
     if (!tag.has_value()) {
-        POOST_ERROR("can't find tag by version: {}"
-                    "\n\turl: {}",
-                    pkg.version, pkg.url);
+        POOST_ERROR(
+            "can't find tag by version: {}"
+            "\n\turl: {}",
+            pkg.version, pkg.url);
 
         errors.push_back(Error{
             .type = ErrorType::PackageVersionResolutionError,
@@ -247,14 +243,15 @@ auto package_tag(const Package &pkg, std::vector<Error> &errors) -> std::string 
     return tag.value();
 }
 
-auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
+auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package {
     Package resolved_pkg = pkg;
 
     if (!path_is_sub(pkg.path, std::filesystem::current_path())) {
-        POOST_FATAL("fetching packages into the paths outside of the current "
-                    "working dir is "
-                    "prohibited: {}",
-                    pkg.path);
+        POOST_FATAL(
+            "fetching packages into the paths outside of the current "
+            "working dir is "
+            "prohibited: {}",
+            pkg.path);
         return resolved_pkg;
     }
 
@@ -263,77 +260,83 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     int status = 0;
 
     switch (pkg.strategy) {
-    case packages::FetchStrategy::Submodule:
-        if (pkg.version.empty()) {
-            // package version is empty
-            POOST_TRACE("add submodule: {}", pkg.url);
-            status = git_submodule_add(pkg.path, pkg.url);
-        } else if (version_is_valid(pkg.version)) {
-            // package version looks like version tag
-            const std::string tag = package_tag(pkg, errors);
-            if (!errors.empty()) {
-                package_backup_restore(pkg);
-                return resolved_pkg;
+        case packages::FetchStrategy::Submodule:
+            if (pkg.version.empty()) {
+                // package version is empty
+                POOST_TRACE("add submodule: {}", pkg.url);
+                status = git_submodule_add(pkg.path, pkg.url);
+            } else if (version_is_valid(pkg.version)) {
+                // package version looks like version tag
+                const std::string tag = package_tag(pkg, errors);
+                if (!errors.empty()) {
+                    package_backup_restore(pkg);
+                    return resolved_pkg;
+                }
+
+                POOST_TRACE(
+                    "add submodule: {}"
+                    "\n\ttag: {}",
+                    pkg.url, tag);
+                status = git_submodule_add(pkg.path, pkg.url);
+                status = git_reset_hard(pkg.path, tag) | status;
+            } else {
+                // package version is a branch name or a commit hash
+                POOST_TRACE(
+                    "add submodule: {}"
+                    "\n\tref: {}",
+                    pkg.url, pkg.version);
+                status = git_submodule_add(pkg.path, pkg.url);
+                status = git_reset_hard(pkg.path, pkg.version) | status;
             }
 
-            POOST_TRACE("add submodule: {}"
-                        "\n\ttag: {}",
-                        pkg.url, tag);
-            status = git_submodule_add(pkg.path, pkg.url);
-            status = git_reset_hard(pkg.path, tag) | status;
-        } else {
-            // package version is a branch name or a commit hash
-            POOST_TRACE("add submodule: {}"
-                        "\n\tref: {}",
-                        pkg.url, pkg.version);
-            status = git_submodule_add(pkg.path, pkg.url);
-            status = git_reset_hard(pkg.path, pkg.version) | status;
-        }
+            // pull nested submodules
+            status = git_submodule_init(pkg.path) | status;
+            break;
+        case packages::FetchStrategy::Clone:
+            if (pkg.version.empty()) {
+                // package version is empty
+                POOST_TRACE("shallow clone: {}", pkg.url);
+                status = git_clone_shallow(pkg.path, pkg.url);
+            } else if (git_is_commit(pkg.version)) {
+                // package version is a commit hash
+                POOST_TRACE(
+                    "full clone: {}"
+                    "\n\tcommit: {}",
+                    pkg.url, pkg.version);
+                status = git_clone_full(pkg.path, pkg.url);
+                status = git_reset_hard(pkg.path, pkg.version) | status;
+            } else if (version_is_valid(pkg.version)) {
+                // package version looks like version tag
+                const std::string tag = package_tag(pkg, errors);
+                if (!errors.empty()) {
+                    package_backup_restore(pkg);
+                    return resolved_pkg;
+                }
 
-        // pull nested submodules
-        status = git_submodule_init(pkg.path) | status;
-        break;
-    case packages::FetchStrategy::Clone:
-        if (pkg.version.empty()) {
-            // package version is empty
-            POOST_TRACE("shallow clone: {}", pkg.url);
-            status = git_clone_shallow(pkg.path, pkg.url);
-        } else if (git_is_commit(pkg.version)) {
-            // package version is a commit hash
-            POOST_TRACE("full clone: {}"
-                        "\n\tcommit: {}",
-                        pkg.url, pkg.version);
-            status = git_clone_full(pkg.path, pkg.url);
-            status = git_reset_hard(pkg.path, pkg.version) | status;
-        } else if (version_is_valid(pkg.version)) {
-            // package version looks like version tag
-            const std::string tag = package_tag(pkg, errors);
-            if (!errors.empty()) {
-                package_backup_restore(pkg);
-                return resolved_pkg;
+                POOST_TRACE(
+                    "clone branch: {}"
+                    "\n\ttag: {}",
+                    pkg.url, tag);
+                status = git_clone_branch(pkg.path, pkg.url, tag);
+            } else {
+                // package version is a branch name
+                POOST_TRACE(
+                    "clone branch: {}"
+                    "\n\tbranch: {}",
+                    pkg.url, pkg.version);
+                status = git_clone_branch(pkg.path, pkg.url, pkg.version);
             }
 
-            POOST_TRACE("clone branch: {}"
-                        "\n\ttag: {}",
-                        pkg.url, tag);
-            status = git_clone_branch(pkg.path, pkg.url, tag);
-        } else {
-            // package version is a branch name
-            POOST_TRACE("clone branch: {}"
-                        "\n\tbranch: {}",
-                        pkg.url, pkg.version);
-            status = git_clone_branch(pkg.path, pkg.url, pkg.version);
-        }
-
-        break;
-    default:
-        POOST_ASSERT_FAIL("invalid package fetch strategy: {}", pkg.strategy);
+            break;
+        default:
+            POOST_ASSERT_FAIL("invalid package fetch strategy: {}", pkg.strategy);
     }
 
     if (status != EXIT_SUCCESS) {
-        POOST_ERROR("can't fetch package: {}"
-                    "\n\texit status: {}",
-                    pkg.url, status);
+        POOST_ERROR(
+            "can't fetch package: {}"
+            "\n\texit status: {}",
+            pkg.url, status);
 
         errors.push_back(Error{
             .type = ErrorType::PackageFetchError,
@@ -349,9 +352,10 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
     POOST_TRACE("resolve commit hash of the current HEAD: {}", pkg.path);
     status = git_resolve_ref(pkg.path, "HEAD", resolved_pkg.version) | status;
     if (status != EXIT_SUCCESS) {
-        POOST_ERROR("can't resolve commit hash of current HEAD: {}"
-                    "\n\texit status: {}",
-                    pkg.path, status);
+        POOST_ERROR(
+            "can't resolve commit hash of current HEAD: {}"
+            "\n\texit status: {}",
+            pkg.path, status);
 
         errors.push_back(Error{
             .type = ErrorType::PackageVersionResolutionError,
@@ -368,37 +372,38 @@ auto package_fetch(const Package &pkg, std::vector<Error> &errors) -> Package {
         path_remove(pkg.path / ".git");
     }
 
-    POOST_DEBUG("resolved package"
-                "\n\tstrategy: {}"
-                "\n\tpath: {}"
-                "\n\turl: {}"
-                "\n\tcommit: {}",
-                resolved_pkg.strategy, resolved_pkg.path, resolved_pkg.url, resolved_pkg.version);
+    POOST_DEBUG(
+        "resolved package"
+        "\n\tstrategy: {}"
+        "\n\tpath: {}"
+        "\n\turl: {}"
+        "\n\tcommit: {}",
+        resolved_pkg.strategy, resolved_pkg.path, resolved_pkg.url, resolved_pkg.version);
 
     package_backup_remove(pkg);
     return resolved_pkg;
 }
 
-void package_backup(const Package &pkg) {
+void package_backup(const Package& pkg) {
     path_rename(git_modules_path / pkg.path,
                 (git_modules_path / pkg.path).string() + backup_suffix);
     path_rename(pkg.path, pkg.path.string() + backup_suffix);
     package_remove(pkg);
 }
 
-void package_backup_remove(const Package &pkg) {
+void package_backup_remove(const Package& pkg) {
     path_remove((git_modules_path / pkg.path).string() + backup_suffix);
     path_remove(pkg.path.string() + backup_suffix);
 }
 
-void package_backup_restore(const Package &pkg) {
+void package_backup_restore(const Package& pkg) {
     package_remove(pkg);
     path_rename((git_modules_path / pkg.path).string() + backup_suffix,
                 git_modules_path / pkg.path);
     path_rename(pkg.path.string() + backup_suffix, pkg.path);
 }
 
-auto operator>>(std::istream &in, packages::FetchStrategy &strategy) -> std::istream & {
+auto operator>>(std::istream& in, packages::FetchStrategy& strategy) -> std::istream& {
     char raw = 0;
     if (in >> raw) {
         strategy = static_cast<packages::FetchStrategy>(raw);
@@ -407,4 +412,4 @@ auto operator>>(std::istream &in, packages::FetchStrategy &strategy) -> std::ist
     return in;
 }
 
-} // namespace cgen
+}  // namespace cgen

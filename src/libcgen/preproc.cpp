@@ -7,28 +7,28 @@
 
 namespace cgen {
 
-auto node_clone(const YAML::Node &node) -> YAML::Node;
-auto node_find(const YAML::Node &map, const std::string &key) -> std::pair<YAML::Node, std::string>;
+auto node_clone(const YAML::Node& node) -> YAML::Node;
+auto node_find(const YAML::Node& map, const std::string& key) -> std::pair<YAML::Node, std::string>;
 
-auto string_key_attribute(const std::string &key) -> std::pair<std::string, std::string_view>;
-auto string_replace_parameters(const std::string &str,
-                               const std::map<std::string, std::string, std::less<void>> &params,
-                               std::vector<std::string> &undefined_params) -> std::string;
+auto string_key_attribute(const std::string& key) -> std::pair<std::string, std::string_view>;
+auto string_replace_parameters(const std::string& str,
+                               const std::map<std::string, std::string, std::less<void>>& params,
+                               std::vector<std::string>& undefined_params) -> std::string;
 
-auto node_is_defined(const YAML::Node &node, const std::string &key) -> bool;
+auto node_is_defined(const YAML::Node& node, const std::string& key) -> bool;
 void node_wrap_configs(YAML::Node node);
 void node_wrap_visibility(YAML::Node node);
 
 /// Public
 
-void node_merge(const YAML::Node &from_node, YAML::Node &to_node) {
+void node_merge(const YAML::Node& from_node, YAML::Node& to_node) {
     if (!from_node.IsDefined() || from_node.IsNull()) {
         return;
     }
 
     if (to_node.IsDefined() && from_node.IsMap() && to_node.IsMap()) {
         // merge if both nodes are maps
-        for (const auto &it : from_node) {
+        for (const auto& it : from_node) {
             const YAML::Node from_key_node = it.first;
             const YAML::Node from_val_node = it.second;
             const std::string from_key = from_key_node.as<std::string>();
@@ -51,9 +51,8 @@ void node_merge(const YAML::Node &from_node, YAML::Node &to_node) {
             }
         }
     } else if (to_node.IsDefined() && from_node.IsSequence() && to_node.IsSequence()) {
-
         // append if both nodes are lists
-        for (const auto &it : from_node) {
+        for (const auto& it : from_node) {
             to_node.push_back(node_clone(it));
         }
     } else {
@@ -62,10 +61,9 @@ void node_merge(const YAML::Node &from_node, YAML::Node &to_node) {
     }
 }
 
-void node_replace_parameters(YAML::Node &node,
-                             const std::map<std::string, std::string, std::less<void>> &params,
-                             std::vector<std::string> &undefined_params) {
-
+void node_replace_parameters(YAML::Node& node,
+                             const std::map<std::string, std::string, std::less<void>>& params,
+                             std::vector<std::string>& undefined_params) {
     if (node.IsMap()) {
         for (auto it : node) {
             node_replace_parameters(it.second, params, undefined_params);
@@ -80,19 +78,19 @@ void node_replace_parameters(YAML::Node &node,
     }
 }
 
-void node_wrap_configs(const YAML::Node &node, const std::string &key) {
+void node_wrap_configs(const YAML::Node& node, const std::string& key) {
     node_wrap_configs(node[key]);
     node_wrap_configs(node[key + ":REPLACE"]);
 }
 
-void node_wrap_visibility(const YAML::Node &node, const std::string &key) {
+void node_wrap_visibility(const YAML::Node& node, const std::string& key) {
     node_wrap_visibility(node[key]);
     node_wrap_visibility(node[key + ":REPLACE"]);
 }
 
 /// Private
 
-void node_trim_attributes(YAML::Node &node) {
+void node_trim_attributes(YAML::Node& node) {
     if (node.IsMap()) {
         for (auto it : node) {
             YAML::Node key_node = it.first;
@@ -106,11 +104,11 @@ void node_trim_attributes(YAML::Node &node) {
     }
 }
 
-auto node_clone(const YAML::Node &node) -> YAML::Node {
+auto node_clone(const YAML::Node& node) -> YAML::Node {
     if (node.IsMap()) {
         YAML::Node cloned_node{YAML::NodeType::Map};
 
-        for (const auto &it : node) {
+        for (const auto& it : node) {
             const YAML::Node key_node = it.first;
             const YAML::Node val_node = it.second;
             const std::string key = key_node.as<std::string>();
@@ -125,9 +123,8 @@ auto node_clone(const YAML::Node &node) -> YAML::Node {
     }
 }
 
-auto node_find(const YAML::Node &map, const std::string &key)
-    -> std::pair<YAML::Node, std::string> {
-
+auto node_find(const YAML::Node& map,
+               const std::string& key) -> std::pair<YAML::Node, std::string> {
     POOST_ASSERT(map.IsMap(), "node is not a map: {}", node_dump(map));
 
     const YAML::Node node = map[key];
@@ -136,7 +133,7 @@ auto node_find(const YAML::Node &map, const std::string &key)
         return std::pair<YAML::Node, std::string>(node, "");
     }
 
-    for (const auto &it : map) {
+    for (const auto& it : map) {
         const YAML::Node key_node = it.first;
         const YAML::Node val_node = it.second;
         const std::string node_key = key_node.as<std::string>();
@@ -152,7 +149,7 @@ auto node_find(const YAML::Node &map, const std::string &key)
     return std::pair<YAML::Node, std::string>(node, "");
 }
 
-auto string_key_attribute(const std::string &key) -> std::pair<std::string, std::string_view> {
+auto string_key_attribute(const std::string& key) -> std::pair<std::string, std::string_view> {
     const std::string::size_type pos = key.find(':');
 
     if (pos != std::string::npos) {
@@ -163,10 +160,9 @@ auto string_key_attribute(const std::string &key) -> std::pair<std::string, std:
     }
 }
 
-auto string_replace_parameters(const std::string &str,
-                               const std::map<std::string, std::string, std::less<void>> &params,
-                               std::vector<std::string> &undefined_params) -> std::string {
-
+auto string_replace_parameters(const std::string& str,
+                               const std::map<std::string, std::string, std::less<void>>& params,
+                               std::vector<std::string>& undefined_params) -> std::string {
     if (str.empty()) {
         return str;
     }
@@ -187,45 +183,46 @@ auto string_replace_parameters(const std::string &str,
         const unsigned char c = *it;
 
         switch (state) {
-        case ST_NONE:
-            if (c == '$' && !is_last) {
-                state = ST_PARAM_BEGIN;
-            } else {
-                result += c;
-            }
-
-            break;
-        case ST_PARAM_BEGIN:
-            if (c == '(') {
-                state = ST_PARAM;
-            } else if (c == '$') {
-                state = ST_NONE;
-                result += c;
-            } else {
-                state = ST_NONE;
-                result += "$";
-                result += c;
-            }
-
-            break;
-        case ST_PARAM:
-            if (c == ')') {
-                const auto param_it = params.find(param);
-                if (param_it != params.end()) {
-                    result += param_it->second;
+            case ST_NONE:
+                if (c == '$' && !is_last) {
+                    state = ST_PARAM_BEGIN;
                 } else {
-                    undefined_params.push_back(std::string{param});
+                    result += c;
                 }
 
-                state = ST_NONE;
-                param = std::string_view{};
-            } else {
-                param = std::string_view{!param.empty() ? param.data() : &(*it), param.size() + 1};
-            }
+                break;
+            case ST_PARAM_BEGIN:
+                if (c == '(') {
+                    state = ST_PARAM;
+                } else if (c == '$') {
+                    state = ST_NONE;
+                    result += c;
+                } else {
+                    state = ST_NONE;
+                    result += "$";
+                    result += c;
+                }
 
-            break;
-        default:
-            POOST_ASSERT_FAIL("invalid params replacer state: {}", state);
+                break;
+            case ST_PARAM:
+                if (c == ')') {
+                    const auto param_it = params.find(param);
+                    if (param_it != params.end()) {
+                        result += param_it->second;
+                    } else {
+                        undefined_params.push_back(std::string{param});
+                    }
+
+                    state = ST_NONE;
+                    param = std::string_view{};
+                } else {
+                    param =
+                        std::string_view{!param.empty() ? param.data() : &(*it), param.size() + 1};
+                }
+
+                break;
+            default:
+                POOST_ASSERT_FAIL("invalid params replacer state: {}", state);
         }
     }
 
@@ -234,7 +231,7 @@ auto string_replace_parameters(const std::string &str,
     return result;
 }
 
-auto node_is_defined(const YAML::Node &node, const std::string &key) -> bool {
+auto node_is_defined(const YAML::Node& node, const std::string& key) -> bool {
     return node[key].IsDefined() || node[key + ":REPLACE"].IsDefined();
 }
 
@@ -259,7 +256,6 @@ void node_wrap_visibility(YAML::Node node) {
 
     if (node_is_defined(node, "default") || node_is_defined(node, "public") ||
         node_is_defined(node, "private") || node_is_defined(node, "interface")) {
-
         node_wrap_configs(node, "default");
         node_wrap_configs(node, "public");
         node_wrap_configs(node, "private");
@@ -272,4 +268,4 @@ void node_wrap_visibility(YAML::Node node) {
     }
 }
 
-} // namespace cgen
+}  // namespace cgen

@@ -1,36 +1,40 @@
 #define MIROIR_IMPLEMENTATION
 #define MIROIR_YAMLCPP_SPECIALIZATION
 
+#include <yaml-cpp/yaml.h>
 #include <config.hpp>
 #include <fs.hpp>
 #include <miroir/miroir.hpp>
 #include <poost/log.hpp>
 #include <preproc.hpp>
 #include <set>
-#include <yaml-cpp/yaml.h>
 
 namespace YAML {
 
-template <typename T> auto as(const Node &node) -> T { return node.as<T>(T{}); }
-template <typename T> auto as(const Node &node, const T &fallback) -> T {
+template <typename T>
+auto as(const Node& node) -> T {
+    return node.as<T>(T{});
+}
+template <typename T>
+auto as(const Node& node, const T& fallback) -> T {
     return node.as<T>(fallback);
 }
 
-} // namespace YAML
+}  // namespace YAML
 
 namespace cgen {
 
-auto node_check_version(const YAML::Node &config_node, int ver, std::vector<Error> &errors) -> bool;
-auto node_validate(const YAML::Node &config_node, std::vector<Error> &errors) -> bool;
+auto node_check_version(const YAML::Node& config_node, int ver, std::vector<Error>& errors) -> bool;
+auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) -> bool;
 
-void node_merge_includes(YAML::Node &config_node, std::set<std::string> &included_paths,
-                         std::vector<Error> &errors);
-void node_merge_templates(const YAML::Node &config_node, std::vector<Error> &errors);
+void node_merge_includes(YAML::Node& config_node,
+                         std::set<std::string>& included_paths,
+                         std::vector<Error>& errors);
+void node_merge_templates(const YAML::Node& config_node, std::vector<Error>& errors);
 
 /// Public
 
-auto config_read(std::istream &in, int ver, std::vector<Error> &errors) -> Config {
-
+auto config_read(std::istream& in, int ver, std::vector<Error>& errors) -> Config {
     // load
     YAML::Node config_node = YAML::Load(in);
 
@@ -83,12 +87,11 @@ auto config_read(std::istream &in, int ver, std::vector<Error> &errors) -> Confi
 
 /// Validation
 
-auto node_check_version(const YAML::Node &config_node, int ver,
-                        std::vector<Error> &errors) -> bool {
-
+auto node_check_version(const YAML::Node& config_node,
+                        int ver,
+                        std::vector<Error>& errors) -> bool {
     if (!config_node.IsDefined() || !config_node.IsMap() || !config_node["version"].IsDefined() ||
         !config_node["version"].IsScalar()) {
-
         return true;
     }
 
@@ -110,7 +113,7 @@ auto node_check_version(const YAML::Node &config_node, int ver,
 
 auto make_validator() -> miroir::Validator<YAML::Node> {
     // embed schema in the source code
-    const char *schema_yaml =
+    const char* schema_yaml =
 #include "cgen.schema.yml.in"
         ;
     const YAML::Node schema_node = YAML::Load(schema_yaml);
@@ -118,15 +121,14 @@ auto make_validator() -> miroir::Validator<YAML::Node> {
     return validator;
 }
 
-auto node_validate(const YAML::Node &config_node, std::vector<Error> &errors) -> bool {
-
+auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) -> bool {
     static const miroir::Validator<YAML::Node> validator = make_validator();
 
     const std::vector<miroir::Error<YAML::Node>> validation_errors =
         validator.validate(config_node);
 
     if (!validation_errors.empty()) {
-        for (const auto &validation_err : validation_errors) {
+        for (const auto& validation_err : validation_errors) {
             const std::string desc = validation_err.description();
             POOST_ERROR("config validation error: {}", desc);
 
@@ -145,15 +147,15 @@ auto node_validate(const YAML::Node &config_node, std::vector<Error> &errors) ->
 
 /// Includes
 
-void node_merge_includes(YAML::Node &config_node, std::set<std::string> &included_paths,
-                         std::vector<Error> &errors) {
-
+void node_merge_includes(YAML::Node& config_node,
+                         std::set<std::string>& included_paths,
+                         std::vector<Error>& errors) {
     Config config = YAML::as<Config>(config_node);
 
     std::vector<std::string> undefined_params;
 
-    for (const config::Include &include : config.includes) {
-        for (const std::string &include_path : include.paths) {
+    for (const config::Include& include : config.includes) {
+        for (const std::string& include_path : include.paths) {
             if (!path_exists(include_path)) {
                 POOST_ERROR("config include not found: {}", include_path);
 
@@ -184,11 +186,11 @@ void node_merge_includes(YAML::Node &config_node, std::set<std::string> &include
             // ignore some fields in included configs
             include_node.remove("version");
             include_node.remove("project");
-            include_node.remove("includes"); // ignore nested includes just to
-                                             // make things simpler
+            include_node.remove("includes");  // ignore nested includes just to
+                                              // make things simpler
             node_merge(include_node, config_node);
 
-            for (const std::string &param : undefined_params) {
+            for (const std::string& param : undefined_params) {
                 POOST_ERROR("undefined config include param: {}", param);
 
                 errors.push_back(Error{
@@ -203,15 +205,14 @@ void node_merge_includes(YAML::Node &config_node, std::set<std::string> &include
 
 /// Templates
 
-void node_merge_templates(const YAML::Node &config_node, std::vector<Error> &errors) {
-
+void node_merge_templates(const YAML::Node& config_node, std::vector<Error>& errors) {
     Config config = YAML::as<Config>(config_node);
 
     std::vector<std::string> undefined_params;
 
-    for (config::Target &target : config.targets) {
-        for (const config::Template &tpl : target.templates) {
-            for (const std::string &tpl_name : tpl.names) {
+    for (config::Target& target : config.targets) {
+        for (const config::Template& tpl : target.templates) {
+            for (const std::string& tpl_name : tpl.names) {
                 const auto tpl_it = config.templates.find(tpl_name);
 
                 if (tpl_it == config.templates.end()) {
@@ -233,7 +234,7 @@ void node_merge_templates(const YAML::Node &config_node, std::vector<Error> &err
 
                 node_merge(tpl_node, target.node);
 
-                for (const std::string &param : undefined_params) {
+                for (const std::string& param : undefined_params) {
                     POOST_ERROR("undefined config template param: {}", param);
 
                     errors.push_back(Error{
@@ -249,14 +250,15 @@ void node_merge_templates(const YAML::Node &config_node, std::vector<Error> &err
     }
 }
 
-} // namespace cgen
+}  // namespace cgen
 
 /// Decoders
 
 namespace YAML {
 
-template <> struct convert<cgen::Config> {
-    static auto decode(const Node &node, cgen::Config &config) -> bool {
+template <>
+struct convert<cgen::Config> {
+    static auto decode(const Node& node, cgen::Config& config) -> bool {
         config.version = as<std::string>(node["version"]);
         config.project = as<cgen::config::Project>(node["project"]);
         config.includes = as<std::vector<cgen::config::Include>>(node["includes"]);
@@ -270,9 +272,9 @@ template <> struct convert<cgen::Config> {
     }
 };
 
-template <> struct convert<cgen::config::Project> {
-    static auto decode(const Node &node, cgen::config::Project &project) -> bool {
-
+template <>
+struct convert<cgen::config::Project> {
+    static auto decode(const Node& node, cgen::config::Project& project) -> bool {
         if (node.IsScalar()) {
             project.name = as<std::string>(node);
         } else {
@@ -284,9 +286,9 @@ template <> struct convert<cgen::config::Project> {
     }
 };
 
-template <> struct convert<cgen::config::Include> {
-    static auto decode(const Node &node, cgen::config::Include &include) -> bool {
-
+template <>
+struct convert<cgen::config::Include> {
+    static auto decode(const Node& node, cgen::config::Include& include) -> bool {
         if (node.IsScalar()) {
             const std::string path = as<std::string>(node);
             include.paths.push_back(path);
@@ -300,16 +302,18 @@ template <> struct convert<cgen::config::Include> {
     }
 };
 
-template <> struct convert<cgen::config::Option> {
-    static auto decode(const Node &node, cgen::config::Option &opt) -> bool {
+template <>
+struct convert<cgen::config::Option> {
+    static auto decode(const Node& node, cgen::config::Option& opt) -> bool {
         opt.description = as<std::string>(node["description"]);
         opt.default_ = as<cgen::config::Expression>(node["default"]);
         return true;
     }
 };
 
-template <> struct convert<cgen::config::Package> {
-    static auto decode(const Node &node, cgen::config::Package &pkg) -> bool {
+template <>
+struct convert<cgen::config::Package> {
+    static auto decode(const Node& node, cgen::config::Package& pkg) -> bool {
         pkg.if_ = as<std::string>(node["if"]);
 
         if (node["external"].IsDefined()) {
@@ -330,9 +334,9 @@ template <> struct convert<cgen::config::Package> {
     }
 };
 
-template <> struct convert<cgen::config::FetchStrategy> {
-    static auto decode(const Node &node, cgen::config::FetchStrategy &strategy) -> bool {
-
+template <>
+struct convert<cgen::config::FetchStrategy> {
+    static auto decode(const Node& node, cgen::config::FetchStrategy& strategy) -> bool {
         const std::string strategy_str = as<std::string>(node);
 
         if (strategy_str == "submodule") {
@@ -348,9 +352,9 @@ template <> struct convert<cgen::config::FetchStrategy> {
         return false;
     }
 };
-template <> struct convert<cgen::config::ExternalPackage> {
-    static auto decode(const Node &node, cgen::config::ExternalPackage &pkg) -> bool {
-
+template <>
+struct convert<cgen::config::ExternalPackage> {
+    static auto decode(const Node& node, cgen::config::ExternalPackage& pkg) -> bool {
         pkg.url = as<std::string>(node["url"]);
         pkg.version = as<std::string>(node["version"]);
         pkg.strategy = as<cgen::config::FetchStrategy>(node["strategy"],
@@ -360,17 +364,18 @@ template <> struct convert<cgen::config::ExternalPackage> {
     }
 };
 
-template <> struct convert<cgen::config::SystemPackage> {
-    static auto decode(const Node &node, cgen::config::SystemPackage &pkg) -> bool {
-
+template <>
+struct convert<cgen::config::SystemPackage> {
+    static auto decode(const Node& node, cgen::config::SystemPackage& pkg) -> bool {
         pkg.version = as<std::string>(node["version"]);
         pkg.is_required = as<bool>(node["required"], true);
         return true;
     }
 };
 
-template <> struct convert<cgen::config::Target> {
-    static auto decode(const Node &node, cgen::config::Target &target) -> bool {
+template <>
+struct convert<cgen::config::Target> {
+    static auto decode(const Node& node, cgen::config::Target& target) -> bool {
         target.node = node;
         target.templates = as<std::vector<cgen::config::Template>>(node["templates"]);
         target.if_ = as<std::string>(node["if"]);
@@ -393,8 +398,9 @@ template <> struct convert<cgen::config::Target> {
     }
 };
 
-template <> struct convert<cgen::config::Template> {
-    static auto decode(const Node &node, cgen::config::Template &tpl) -> bool {
+template <>
+struct convert<cgen::config::Template> {
+    static auto decode(const Node& node, cgen::config::Template& tpl) -> bool {
         if (node.IsScalar()) {
             const std::string name = as<std::string>(node);
             tpl.names.push_back(name);
@@ -408,9 +414,9 @@ template <> struct convert<cgen::config::Template> {
     }
 };
 
-template <> struct convert<cgen::config::LibraryTarget> {
-    static auto decode(const Node &node, cgen::config::LibraryTarget &target) -> bool {
-
+template <>
+struct convert<cgen::config::LibraryTarget> {
+    static auto decode(const Node& node, cgen::config::LibraryTarget& target) -> bool {
         target.type =
             as<cgen::config::LibraryType>(node["type"], cgen::config::LibraryType::Static);
         target.aliases = as<std::vector<std::string>>(node["aliases"]);
@@ -419,9 +425,9 @@ template <> struct convert<cgen::config::LibraryTarget> {
     }
 };
 
-template <> struct convert<cgen::config::LibraryType> {
-    static auto decode(const Node &node, cgen::config::LibraryType &type) -> bool {
-
+template <>
+struct convert<cgen::config::LibraryType> {
+    static auto decode(const Node& node, cgen::config::LibraryType& type) -> bool {
         const std::string type_str = as<std::string>(node);
 
         if (type_str == "static") {
@@ -448,17 +454,17 @@ template <> struct convert<cgen::config::LibraryType> {
     }
 };
 
-template <> struct convert<cgen::config::ExecutableTarget> {
-    static auto decode(const Node &node, cgen::config::ExecutableTarget &target) -> bool {
-
+template <>
+struct convert<cgen::config::ExecutableTarget> {
+    static auto decode(const Node& node, cgen::config::ExecutableTarget& target) -> bool {
         target.target_settings = as<cgen::config::TargetSettings>(node);
         return true;
     }
 };
 
-template <> struct convert<cgen::config::TargetSettings> {
-    static auto decode(const Node &node, cgen::config::TargetSettings &settings) -> bool {
-
+template <>
+struct convert<cgen::config::TargetSettings> {
+    static auto decode(const Node& node, cgen::config::TargetSettings& settings) -> bool {
         settings.node = node;
 
         settings.path = as<cgen::config::Expression>(node["path"]);
@@ -487,7 +493,8 @@ template <> struct convert<cgen::config::TargetSettings> {
         return true;
     }
 
-    template <typename T> static auto as_visibility(const Node &node, const std::string &key) -> T {
+    template <typename T>
+    static auto as_visibility(const Node& node, const std::string& key) -> T {
         cgen::node_wrap_visibility(node, key);
 
         T visibility = as<T>(node[key]);
@@ -497,23 +504,23 @@ template <> struct convert<cgen::config::TargetSettings> {
         // fallback to the static library type (ugly, but it works)
         const cgen::config::LibraryType type = as(node["type"], cgen::config::LibraryType::Static);
         switch (type) {
-        case cgen::config::LibraryType::Interface:
-            // for interface libraries everything is interface
-            visibility.interface.move_merge(visibility.default_);
-            break;
-        default:
-            // by default everything is private
-            visibility.private_.move_merge(visibility.default_);
+            case cgen::config::LibraryType::Interface:
+                // for interface libraries everything is interface
+                visibility.interface.move_merge(visibility.default_);
+                break;
+            default:
+                // by default everything is private
+                visibility.private_.move_merge(visibility.default_);
         }
 
         return visibility;
     }
 };
 
-template <> struct convert<cgen::config::VisibilityConfigsExpressions> {
-    static auto decode(const Node &node,
-                       cgen::config::VisibilityConfigsExpressions &visibility) -> bool {
-
+template <>
+struct convert<cgen::config::VisibilityConfigsExpressions> {
+    static auto decode(const Node& node,
+                       cgen::config::VisibilityConfigsExpressions& visibility) -> bool {
         visibility.default_ = as<cgen::config::ConfigsExpressions>(node["default"]);
         visibility.public_ = as<cgen::config::ConfigsExpressions>(node["public"]);
         visibility.private_ = as<cgen::config::ConfigsExpressions>(node["private"]);
@@ -522,9 +529,9 @@ template <> struct convert<cgen::config::VisibilityConfigsExpressions> {
     }
 };
 
-template <> struct convert<cgen::config::ConfigsExpressions> {
-    static auto decode(const Node &node, cgen::config::ConfigsExpressions &configs) {
-
+template <>
+struct convert<cgen::config::ConfigsExpressions> {
+    static auto decode(const Node& node, cgen::config::ConfigsExpressions& configs) {
         configs.is_defined = node.IsDefined();
         configs.global = as<std::vector<cgen::config::Expression>>(node["global"]);
         configs.configurations = as<std::map<std::string, std::vector<cgen::config::Expression>>>(
@@ -533,10 +540,10 @@ template <> struct convert<cgen::config::ConfigsExpressions> {
     }
 };
 
-template <> struct convert<cgen::config::VisibilityConfigsExpressionsMap> {
-    static auto decode(const Node &node,
-                       cgen::config::VisibilityConfigsExpressionsMap &visibility) -> bool {
-
+template <>
+struct convert<cgen::config::VisibilityConfigsExpressionsMap> {
+    static auto decode(const Node& node,
+                       cgen::config::VisibilityConfigsExpressionsMap& visibility) -> bool {
         visibility.default_ = as<cgen::config::ConfigsExpressionsMap>(node["default"]);
         visibility.public_ = as<cgen::config::ConfigsExpressionsMap>(node["public"]);
         visibility.private_ = as<cgen::config::ConfigsExpressionsMap>(node["private"]);
@@ -545,9 +552,9 @@ template <> struct convert<cgen::config::VisibilityConfigsExpressionsMap> {
     }
 };
 
-template <> struct convert<cgen::config::ConfigsExpressionsMap> {
-    static auto decode(const Node &node, cgen::config::ConfigsExpressionsMap &configs) -> bool {
-
+template <>
+struct convert<cgen::config::ConfigsExpressionsMap> {
+    static auto decode(const Node& node, cgen::config::ConfigsExpressionsMap& configs) -> bool {
         configs.is_defined = node.IsDefined();
         configs.global = as<std::map<std::string, cgen::config::Expression>>(node["global"]);
         configs.configurations =
@@ -557,10 +564,10 @@ template <> struct convert<cgen::config::ConfigsExpressionsMap> {
     }
 };
 
-template <> struct convert<cgen::config::VisibilityConfigsDefinitions> {
-    static auto decode(const Node &node,
-                       cgen::config::VisibilityConfigsDefinitions &visibility) -> bool {
-
+template <>
+struct convert<cgen::config::VisibilityConfigsDefinitions> {
+    static auto decode(const Node& node,
+                       cgen::config::VisibilityConfigsDefinitions& visibility) -> bool {
         visibility.default_ = as<cgen::config::ConfigsDefinitions>(node["default"]);
         visibility.public_ = as<cgen::config::ConfigsDefinitions>(node["public"]);
         visibility.private_ = as<cgen::config::ConfigsDefinitions>(node["private"]);
@@ -569,9 +576,9 @@ template <> struct convert<cgen::config::VisibilityConfigsDefinitions> {
     }
 };
 
-template <> struct convert<cgen::config::ConfigsDefinitions> {
-    static auto decode(const Node &node, cgen::config::ConfigsDefinitions &configs) -> bool {
-
+template <>
+struct convert<cgen::config::ConfigsDefinitions> {
+    static auto decode(const Node& node, cgen::config::ConfigsDefinitions& configs) -> bool {
         configs.is_defined = node.IsDefined();
         configs.global = as<std::vector<cgen::config::Definition>>(node["global"]);
         configs.configurations = as<std::map<std::string, std::vector<cgen::config::Definition>>>(
@@ -580,9 +587,9 @@ template <> struct convert<cgen::config::ConfigsDefinitions> {
     }
 };
 
-template <> struct convert<cgen::config::Definition> {
-    static auto decode(const Node &node, cgen::config::Definition &def) -> bool {
-
+template <>
+struct convert<cgen::config::Definition> {
+    static auto decode(const Node& node, cgen::config::Definition& def) -> bool {
         if (node.IsScalar()) {
             def.value = as<cgen::config::Expression>(node);
             return true;
@@ -597,9 +604,9 @@ template <> struct convert<cgen::config::Definition> {
     }
 };
 
-template <> struct convert<cgen::config::Expression> {
-    static auto decode(const Node &node, cgen::config::Expression &expr) -> bool {
-
+template <>
+struct convert<cgen::config::Expression> {
+    static auto decode(const Node& node, cgen::config::Expression& expr) -> bool {
         expr.is_defined = node.IsDefined();
         expr.is_quoted = node.Tag() == "!";
         expr.value = as<std::string>(node);
@@ -607,4 +614,4 @@ template <> struct convert<cgen::config::Expression> {
     }
 };
 
-} // namespace YAML
+}  // namespace YAML

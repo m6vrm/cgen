@@ -1,17 +1,17 @@
+#include <doctest/doctest.h>
 #include <codegen.hpp>
 #include <config.hpp>
-#include <doctest/doctest.h>
 #include <sstream>
 #include <version.hpp>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(
-# Generated using cgen 1.1.1 — https://github.com/m6vrm/cgen
+# Generated using cgen 1.1.2 — https://github.com/m6vrm/cgen
 # DO NOT EDIT
 
 cmake_minimum_required(VERSION 3.11)
 )";
 
-auto config_generate(std::istream &in) -> std::string {
+auto config_generate(std::istream& in) -> std::string {
     std::vector<cgen::Error> errors;
     const cgen::Config config = cgen::config_read(in, cgen::version::major, errors);
     CHECK(errors.empty());
