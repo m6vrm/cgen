@@ -46,8 +46,8 @@ Contributing
 
 Use cgen itself to generate the CMakeLists.txt file.
 
-    make format       # format source code
-    make clean test   # run tests
-    make check        # run static checks
-    make clean asan   # run tests with address sanitizer
-    make clean ubsan  # run tests with UB sanitizer
+    make format         # format source code
+    make clean test     # run tests
+    make check          # run static checks
+    make clean asan     # run tests with address sanitizer
+    make clean ubsan    # run tests with UB sanitizer
