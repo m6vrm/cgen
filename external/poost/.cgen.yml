@@ -1,0 +1,104 @@
+project: poost
+
+templates:
+  common:
+    properties:
+      CXX_STANDARD: 23
+      CXX_STANDARD_REQUIRED: ON
+    compile_options:
+      global:
+        - -Wall
+        - -Wextra
+        - -Wpedantic
+      configurations:
+        Release:
+          - -Werror
+
+  asan:
+    compile_options:
+      configurations:
+        Asan:
+          - ${CMAKE_CXX_FLAGS_DEBUG}
+          - -O1
+          - -fno-omit-frame-pointer
+          - -fno-optimize-sibling-calls
+          - -fsanitize=address
+    link_options:
+      configurations:
+        Asan:
+          - ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+          - -g
+          - -fsanitize=address
+
+  ubsan:
+    compile_options:
+      configurations:
+        Ubsan:
+          - ${CMAKE_CXX_FLAGS_DEBUG}
+          - -O1
+          - -fno-omit-frame-pointer
+          - -fno-optimize-sibling-calls
+          - -fsanitize=undefined
+          - -fno-sanitize-recover
+    link_options:
+      configurations:
+        Ubsan:
+          - ${CMAKE_EXE_LINKER_FLAGS_DEBUG}
+          - -g
+          - -fsanitize=undefined
+
+packages:
+  - external: external/doctest
+    if: PROJECT_IS_TOP_LEVEL
+    url: https://github.com/doctest/doctest
+    strategy: clone
+    options:
+      DOCTEST_NO_INSTALL: ON
+
+  - external: external/fmt
+    url: https://github.com/fmtlib/fmt
+    strategy: clone
+    options:
+      FMT_INSTALL: OFF
+
+targets:
+  - library: poost
+    templates:
+      - common
+    aliases:
+      - poost::poost
+    sources:
+      - include/poost/args.hpp
+      - include/poost/assert.hpp
+      - include/poost/config.hpp
+      - include/poost/format.hpp
+      - include/poost/log.hpp
+      - src/poost/args.cpp
+      - src/poost/config.cpp
+      - src/poost/log.cpp
+    includes:
+      public:
+        - include
+      private:
+        - include/poost
+    dependencies:
+      public:
+        - fmt::fmt
+
+  - executable: poost_test
+    if: PROJECT_IS_TOP_LEVEL
+    templates:
+      - asan
+      - common
+      - ubsan
+    sources:
+      - tests/args_test.cpp
+      - tests/assert_test.cpp
+      - tests/config_test.cpp
+      - tests/log_test.cpp
+    includes:
+      - include/poost
+      - src/poost
+    dependencies:
+      - doctest::doctest_with_main
+      - poost::poost
