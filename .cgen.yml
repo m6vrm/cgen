@@ -51,11 +51,13 @@ packages:
   - external: external/doctest
     if: PROJECT_IS_TOP_LEVEL
     url: https://github.com/doctest/doctest
+    strategy: clone
     options:
       DOCTEST_NO_INSTALL: ON
 
   - external: external/yaml-cpp
     url: https://github.com/jbeder/yaml-cpp
+    strategy: clone
     options:
       YAML_BUILD_SHARED_LIBS: OFF
       YAML_CPP_BUILD_CONTRIB: OFF
@@ -64,9 +66,11 @@ packages:
 
   - external: external/miroir
     url: https://github.com/m6vrm/miroir
+    strategy: clone
 
   - external: external/poost
     url: https://github.com/m6vrm/poost
+    strategy: clone
 
 targets:
   - library: libcgen_obj
