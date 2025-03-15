@@ -12,27 +12,27 @@
 
 namespace cgen {
 
-auto packages_find(const std::vector<Package>& pkgs,
-                   const Package& pkg) -> std::vector<Package>::const_iterator;
-auto packages_contains(const std::vector<Package>& pkgs, const Package& pkg) -> bool;
+static auto packages_find(const std::vector<Package>& pkgs, const Package& pkg)
+    -> std::vector<Package>::const_iterator;
+static auto packages_contains(const std::vector<Package>& pkgs, const Package& pkg) -> bool;
 
-void package_remove(const Package& pkg);
-auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string;
-auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package;
+static void package_remove(const Package& pkg);
+static auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string;
+static auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package;
 
-void package_backup(const Package& pkg);
-void package_backup_remove(const Package& pkg);
-void package_backup_restore(const Package& pkg);
+static void package_backup(const Package& pkg);
+static void package_backup_remove(const Package& pkg);
+static void package_backup_restore(const Package& pkg);
 
-auto operator>>(std::istream& in, packages::FetchStrategy& strategy) -> std::istream&;
+static auto operator>>(std::istream& in, packages::FetchStrategy& strategy) -> std::istream&;
 
-static const std::filesystem::path git_modules_path = ".git/modules";
-static const std::string backup_suffix = ".bak";
+const std::filesystem::path git_modules_path = ".git/modules";
+const std::string backup_suffix = ".bak";
 
 /// Packages
 
-auto packages_cleanup(const std::vector<Package>& pkgs,
-                      const std::vector<Package>& resolved_pkgs) -> std::vector<Package> {
+auto packages_cleanup(const std::vector<Package>& pkgs, const std::vector<Package>& resolved_pkgs)
+    -> std::vector<Package> {
     std::vector<Package> result;
 
     // remove resolved packages that aren't exist in the config
@@ -129,8 +129,8 @@ auto packages_update(const std::vector<Package>& pkgs,
     return result;
 }
 
-auto packages_merge(const std::vector<Package>& from,
-                    const std::vector<Package>& to) -> std::vector<Package> {
+auto packages_merge(const std::vector<Package>& from, const std::vector<Package>& to)
+    -> std::vector<Package> {
     std::vector<Package> result = to;
 
     for (const Package& pkg : from) {
@@ -184,18 +184,18 @@ void resolved_write(std::ostream& out, const std::vector<Package>& resolved_pkgs
 
 /// Private
 
-auto packages_find(const std::vector<Package>& pkgs,
-                   const Package& pkg) -> std::vector<Package>::const_iterator {
+static auto packages_find(const std::vector<Package>& pkgs, const Package& pkg)
+    -> std::vector<Package>::const_iterator {
     const std::filesystem::path path = pkg.path;
     return std::find_if(pkgs.cbegin(), pkgs.cend(),
                         [&path](const Package& pkg) -> bool { return pkg.path == path; });
 }
 
-auto packages_contains(const std::vector<Package>& pkgs, const Package& pkg) -> bool {
+static auto packages_contains(const std::vector<Package>& pkgs, const Package& pkg) -> bool {
     return packages_find(pkgs, pkg) != pkgs.cend();
 }
 
-void package_remove(const Package& pkg) {
+static void package_remove(const Package& pkg) {
     if (!path_exists(pkg.path)) {
         return;
     }
@@ -207,7 +207,7 @@ void package_remove(const Package& pkg) {
     path_remove(pkg.path);
 }
 
-auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string {
+static auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string {
     POOST_TRACE("get all remote tags: {}", pkg.url);
     std::vector<std::string> tags;
     const int status = git_remote_tags(pkg.url, tags);
@@ -243,7 +243,7 @@ auto package_tag(const Package& pkg, std::vector<Error>& errors) -> std::string 
     return tag.value();
 }
 
-auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package {
+static auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package {
     Package resolved_pkg = pkg;
 
     if (!path_is_sub(pkg.path, std::filesystem::current_path())) {
@@ -384,27 +384,27 @@ auto package_fetch(const Package& pkg, std::vector<Error>& errors) -> Package {
     return resolved_pkg;
 }
 
-void package_backup(const Package& pkg) {
+static void package_backup(const Package& pkg) {
     path_rename(git_modules_path / pkg.path,
                 (git_modules_path / pkg.path).string() + backup_suffix);
     path_rename(pkg.path, pkg.path.string() + backup_suffix);
     package_remove(pkg);
 }
 
-void package_backup_remove(const Package& pkg) {
+static void package_backup_remove(const Package& pkg) {
     path_remove((git_modules_path / pkg.path).string() + backup_suffix);
     path_remove(pkg.path.string() + backup_suffix);
 }
 
-void package_backup_restore(const Package& pkg) {
+static void package_backup_restore(const Package& pkg) {
     package_remove(pkg);
     path_rename((git_modules_path / pkg.path).string() + backup_suffix,
                 git_modules_path / pkg.path);
     path_rename(pkg.path.string() + backup_suffix, pkg.path);
 }
 
-auto operator>>(std::istream& in, packages::FetchStrategy& strategy) -> std::istream& {
-    char raw = 0;
+static auto operator>>(std::istream& in, packages::FetchStrategy& strategy) -> std::istream& {
+    char raw = '\0';
     if (in >> raw) {
         strategy = static_cast<packages::FetchStrategy>(raw);
     }

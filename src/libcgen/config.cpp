@@ -15,6 +15,7 @@ template <typename T>
 auto as(const Node& node) -> T {
     return node.as<T>(T{});
 }
+
 template <typename T>
 auto as(const Node& node, const T& fallback) -> T {
     return node.as<T>(fallback);
@@ -24,13 +25,14 @@ auto as(const Node& node, const T& fallback) -> T {
 
 namespace cgen {
 
-auto node_check_version(const YAML::Node& config_node, int ver, std::vector<Error>& errors) -> bool;
-auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) -> bool;
+static auto node_check_version(const YAML::Node& config_node, int ver, std::vector<Error>& errors)
+    -> bool;
+static auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) -> bool;
 
-void node_merge_includes(YAML::Node& config_node,
-                         std::set<std::string>& included_paths,
-                         std::vector<Error>& errors);
-void node_merge_templates(const YAML::Node& config_node, std::vector<Error>& errors);
+static void node_merge_includes(YAML::Node& config_node,
+                                std::set<std::string>& included_paths,
+                                std::vector<Error>& errors);
+static void node_merge_templates(const YAML::Node& config_node, std::vector<Error>& errors);
 
 /// Public
 
@@ -87,9 +89,8 @@ auto config_read(std::istream& in, int ver, std::vector<Error>& errors) -> Confi
 
 /// Validation
 
-auto node_check_version(const YAML::Node& config_node,
-                        int ver,
-                        std::vector<Error>& errors) -> bool {
+static auto node_check_version(const YAML::Node& config_node, int ver, std::vector<Error>& errors)
+    -> bool {
     if (!config_node.IsDefined() || !config_node.IsMap() || !config_node["version"].IsDefined() ||
         !config_node["version"].IsScalar()) {
         return true;
@@ -111,7 +112,7 @@ auto node_check_version(const YAML::Node& config_node,
     return false;
 }
 
-auto make_validator() -> miroir::Validator<YAML::Node> {
+static auto make_validator() -> miroir::Validator<YAML::Node> {
     // embed schema in the source code
     const char* schema_yaml =
 #include "cgen.schema.yml.in"
@@ -121,7 +122,7 @@ auto make_validator() -> miroir::Validator<YAML::Node> {
     return validator;
 }
 
-auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) -> bool {
+static auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) -> bool {
     static const miroir::Validator<YAML::Node> validator = make_validator();
 
     const std::vector<miroir::Error<YAML::Node>> validation_errors =
@@ -147,9 +148,9 @@ auto node_validate(const YAML::Node& config_node, std::vector<Error>& errors) ->
 
 /// Includes
 
-void node_merge_includes(YAML::Node& config_node,
-                         std::set<std::string>& included_paths,
-                         std::vector<Error>& errors) {
+static void node_merge_includes(YAML::Node& config_node,
+                                std::set<std::string>& included_paths,
+                                std::vector<Error>& errors) {
     Config config = YAML::as<Config>(config_node);
 
     std::vector<std::string> undefined_params;
@@ -205,7 +206,7 @@ void node_merge_includes(YAML::Node& config_node,
 
 /// Templates
 
-void node_merge_templates(const YAML::Node& config_node, std::vector<Error>& errors) {
+static void node_merge_templates(const YAML::Node& config_node, std::vector<Error>& errors) {
     Config config = YAML::as<Config>(config_node);
 
     std::vector<std::string> undefined_params;
@@ -519,8 +520,8 @@ struct convert<cgen::config::TargetSettings> {
 
 template <>
 struct convert<cgen::config::VisibilityConfigsExpressions> {
-    static auto decode(const Node& node,
-                       cgen::config::VisibilityConfigsExpressions& visibility) -> bool {
+    static auto decode(const Node& node, cgen::config::VisibilityConfigsExpressions& visibility)
+        -> bool {
         visibility.default_ = as<cgen::config::ConfigsExpressions>(node["default"]);
         visibility.public_ = as<cgen::config::ConfigsExpressions>(node["public"]);
         visibility.private_ = as<cgen::config::ConfigsExpressions>(node["private"]);
@@ -542,8 +543,8 @@ struct convert<cgen::config::ConfigsExpressions> {
 
 template <>
 struct convert<cgen::config::VisibilityConfigsExpressionsMap> {
-    static auto decode(const Node& node,
-                       cgen::config::VisibilityConfigsExpressionsMap& visibility) -> bool {
+    static auto decode(const Node& node, cgen::config::VisibilityConfigsExpressionsMap& visibility)
+        -> bool {
         visibility.default_ = as<cgen::config::ConfigsExpressionsMap>(node["default"]);
         visibility.public_ = as<cgen::config::ConfigsExpressionsMap>(node["public"]);
         visibility.private_ = as<cgen::config::ConfigsExpressionsMap>(node["private"]);
@@ -566,8 +567,8 @@ struct convert<cgen::config::ConfigsExpressionsMap> {
 
 template <>
 struct convert<cgen::config::VisibilityConfigsDefinitions> {
-    static auto decode(const Node& node,
-                       cgen::config::VisibilityConfigsDefinitions& visibility) -> bool {
+    static auto decode(const Node& node, cgen::config::VisibilityConfigsDefinitions& visibility)
+        -> bool {
         visibility.default_ = as<cgen::config::ConfigsDefinitions>(node["default"]);
         visibility.public_ = as<cgen::config::ConfigsDefinitions>(node["public"]);
         visibility.private_ = as<cgen::config::ConfigsDefinitions>(node["private"]);

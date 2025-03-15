@@ -6,13 +6,13 @@
 
 namespace cgen {
 
-auto quote(const std::string& str) -> std::string;
-auto expression(const config::Expression& expr, bool padded = true) -> std::string;
-auto concatenate_paths(const config::Expression& lhs,
-                       const config::Expression& rhs) -> config::Expression;
+static auto quote(const std::string& str) -> std::string;
+static auto expression(const config::Expression& expr, bool padded = true) -> std::string;
+static auto concatenate_paths(const config::Expression& lhs, const config::Expression& rhs)
+    -> config::Expression;
 
-auto config_has_packages(const Config& config, config::PackageType type) -> bool;
-auto config_target_options(const Config& config)
+static auto config_has_packages(const Config& config, config::PackageType type) -> bool;
+static auto config_target_options(const Config& config)
     -> std::map<std::string, std::map<std::string, config::Option>>;
 
 /// Public
@@ -521,11 +521,11 @@ void CMakeGenerator::definition(const config::Definition& def) {
 
 /// Utility
 
-auto quote(const std::string& str) -> std::string {
+static auto quote(const std::string& str) -> std::string {
     return '"' + str + '"';
 }
 
-auto expression(const config::Expression& expr, bool padded) -> std::string {
+static auto expression(const config::Expression& expr, bool padded) -> std::string {
     std::string result;
 
     if (!expr.is_defined) {
@@ -545,8 +545,8 @@ auto expression(const config::Expression& expr, bool padded) -> std::string {
     return result;
 }
 
-auto concatenate_paths(const config::Expression& lhs,
-                       const config::Expression& rhs) -> config::Expression {
+static auto concatenate_paths(const config::Expression& lhs, const config::Expression& rhs)
+    -> config::Expression {
     const std::filesystem::path lhs_path{lhs.value};
     const std::filesystem::path rhs_path{rhs.value};
 
@@ -557,12 +557,12 @@ auto concatenate_paths(const config::Expression& lhs,
     };
 }
 
-auto config_has_packages(const Config& config, config::PackageType type) -> bool {
+static auto config_has_packages(const Config& config, config::PackageType type) -> bool {
     return std::any_of(config.packages.cbegin(), config.packages.cend(),
                        [type](const config::Package& pkg) -> bool { return pkg.type == type; });
 }
 
-auto config_target_options(const Config& config)
+static auto config_target_options(const Config& config)
     -> std::map<std::string, std::map<std::string, config::Option>> {
     std::map<std::string, std::map<std::string, config::Option>> target_opts;
 

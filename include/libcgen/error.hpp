@@ -1,5 +1,4 @@
-#ifndef CGEN_ERROR_HPP
-#define CGEN_ERROR_HPP
+#pragma once
 
 #include <string>
 
@@ -27,5 +26,3 @@ struct Error {
 };
 
 }  // namespace cgen
-
-#endif  // ifndef CGEN_ERROR_HPP

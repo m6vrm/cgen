@@ -7,17 +7,20 @@
 
 namespace cgen {
 
-auto node_clone(const YAML::Node& node) -> YAML::Node;
-auto node_find(const YAML::Node& map, const std::string& key) -> std::pair<YAML::Node, std::string>;
+static auto node_clone(const YAML::Node& node) -> YAML::Node;
+static auto node_find(const YAML::Node& map, const std::string& key)
+    -> std::pair<YAML::Node, std::string>;
 
-auto string_key_attribute(const std::string& key) -> std::pair<std::string, std::string_view>;
-auto string_replace_parameters(const std::string& str,
-                               const std::map<std::string, std::string, std::less<void>>& params,
-                               std::vector<std::string>& undefined_params) -> std::string;
+static auto string_key_attribute(const std::string& key)
+    -> std::pair<std::string, std::string_view>;
+static auto string_replace_parameters(
+    const std::string& str,
+    const std::map<std::string, std::string, std::less<void>>& params,
+    std::vector<std::string>& undefined_params) -> std::string;
 
-auto node_is_defined(const YAML::Node& node, const std::string& key) -> bool;
-void node_wrap_configs(YAML::Node node);
-void node_wrap_visibility(YAML::Node node);
+static auto node_is_defined(const YAML::Node& node, const std::string& key) -> bool;
+static void node_wrap_configs(YAML::Node node);
+static void node_wrap_visibility(YAML::Node node);
 
 /// Public
 
@@ -78,18 +81,6 @@ void node_replace_parameters(YAML::Node& node,
     }
 }
 
-void node_wrap_configs(const YAML::Node& node, const std::string& key) {
-    node_wrap_configs(node[key]);
-    node_wrap_configs(node[key + ":REPLACE"]);
-}
-
-void node_wrap_visibility(const YAML::Node& node, const std::string& key) {
-    node_wrap_visibility(node[key]);
-    node_wrap_visibility(node[key + ":REPLACE"]);
-}
-
-/// Private
-
 void node_trim_attributes(YAML::Node& node) {
     if (node.IsMap()) {
         for (auto it : node) {
@@ -104,7 +95,19 @@ void node_trim_attributes(YAML::Node& node) {
     }
 }
 
-auto node_clone(const YAML::Node& node) -> YAML::Node {
+void node_wrap_configs(const YAML::Node& node, const std::string& key) {
+    node_wrap_configs(node[key]);
+    node_wrap_configs(node[key + ":REPLACE"]);
+}
+
+void node_wrap_visibility(const YAML::Node& node, const std::string& key) {
+    node_wrap_visibility(node[key]);
+    node_wrap_visibility(node[key + ":REPLACE"]);
+}
+
+/// Private
+
+static auto node_clone(const YAML::Node& node) -> YAML::Node {
     if (node.IsMap()) {
         YAML::Node cloned_node{YAML::NodeType::Map};
 
@@ -123,8 +126,8 @@ auto node_clone(const YAML::Node& node) -> YAML::Node {
     }
 }
 
-auto node_find(const YAML::Node& map,
-               const std::string& key) -> std::pair<YAML::Node, std::string> {
+static auto node_find(const YAML::Node& map, const std::string& key)
+    -> std::pair<YAML::Node, std::string> {
     POOST_ASSERT(map.IsMap(), "node is not a map: {}", node_dump(map));
 
     const YAML::Node node = map[key];
@@ -149,7 +152,8 @@ auto node_find(const YAML::Node& map,
     return std::pair<YAML::Node, std::string>(node, "");
 }
 
-auto string_key_attribute(const std::string& key) -> std::pair<std::string, std::string_view> {
+static auto string_key_attribute(const std::string& key)
+    -> std::pair<std::string, std::string_view> {
     const std::string::size_type pos = key.find(':');
 
     if (pos != std::string::npos) {
@@ -160,9 +164,10 @@ auto string_key_attribute(const std::string& key) -> std::pair<std::string, std:
     }
 }
 
-auto string_replace_parameters(const std::string& str,
-                               const std::map<std::string, std::string, std::less<void>>& params,
-                               std::vector<std::string>& undefined_params) -> std::string {
+static auto string_replace_parameters(
+    const std::string& str,
+    const std::map<std::string, std::string, std::less<void>>& params,
+    std::vector<std::string>& undefined_params) -> std::string {
     if (str.empty()) {
         return str;
     }
@@ -231,11 +236,11 @@ auto string_replace_parameters(const std::string& str,
     return result;
 }
 
-auto node_is_defined(const YAML::Node& node, const std::string& key) -> bool {
+static auto node_is_defined(const YAML::Node& node, const std::string& key) -> bool {
     return node[key].IsDefined() || node[key + ":REPLACE"].IsDefined();
 }
 
-void node_wrap_configs(YAML::Node node) {
+static void node_wrap_configs(YAML::Node node) {
     if (!node.IsDefined()) {
         return;
     }
@@ -249,7 +254,7 @@ void node_wrap_configs(YAML::Node node) {
     node = defaults;
 }
 
-void node_wrap_visibility(YAML::Node node) {
+static void node_wrap_visibility(YAML::Node node) {
     if (!node.IsDefined()) {
         return;
     }

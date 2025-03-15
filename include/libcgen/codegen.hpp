@@ -1,12 +1,9 @@
-#ifndef CGEN_CODEGEN_HPP
-#define CGEN_CODEGEN_HPP
-
-#include "config.hpp"
+#pragma once
 
 #include <filesystem>
 #include <ostream>
 #include <string>
-#include <vector>
+#include "config.hpp"
 
 namespace cgen {
 
@@ -79,5 +76,3 @@ class CMakeGenerator {
 };
 
 }  // namespace cgen
-
-#endif  // ifndef CGEN_CODEGEN_HPP

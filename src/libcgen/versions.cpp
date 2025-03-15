@@ -12,7 +12,7 @@ struct Version {
     bool has_rc;
 };
 
-auto version_parse(const std::string& ver) -> Version;
+static auto version_parse(const std::string& ver) -> Version;
 
 /// Public
 
@@ -100,9 +100,8 @@ auto version_less(const std::string& lhs, const std::string& rhs) -> bool {
     return lhs.size() < rhs.size();
 }
 
-auto version_tag(const std::string& ver,
-                 const std::vector<std::string>& tags,
-                 bool ignore_rc) -> std::optional<std::string> {
+auto version_tag(const std::string& ver, const std::vector<std::string>& tags, bool ignore_rc)
+    -> std::optional<std::string> {
     std::vector<std::string> sorted_tags{tags};
     std::sort(sorted_tags.rbegin(), sorted_tags.rend(), version_less);
 
@@ -119,13 +118,13 @@ auto version_tag(const std::string& ver,
 
 /// Private
 
-void vector_remove_trailing_zeros(std::vector<int>& vector) {
+static void vector_remove_trailing_zeros(std::vector<int>& vector) {
     const auto zeroes_it =
         std::find_if(vector.crbegin(), vector.crend(), [](int val) -> bool { return val != 0; });
     vector.erase(zeroes_it.base(), vector.end());
 }
 
-auto version_parse(const std::string& ver) -> Version {
+static auto version_parse(const std::string& ver) -> Version {
     Version result{};
 
     enum {

@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -13,11 +12,11 @@
 #include <poost/log.hpp>
 #include <vector>
 
-inline constexpr char config_file[] = ".cgen.yml";
-inline constexpr char resolved_file[] = ".cgen.resolved";
+inline constexpr char config_file[] = "cgen.yml";
+inline constexpr char resolved_file[] = "cgen.resolved";
 inline constexpr char cmake_file[] = "CMakeLists.txt";
 
-auto use_colors() -> bool;
+static auto use_colors() -> bool;
 
 const poost::LogSettings log_common{
     .stream = &std::cerr,
@@ -44,22 +43,22 @@ struct Options {
     bool verbose;
 };
 
-auto command_generate() -> bool;
-auto command_update(const std::vector<std::filesystem::path>& paths) -> bool;
+static auto command_generate() -> bool;
+static auto command_update(const std::vector<std::filesystem::path>& paths) -> bool;
 
-auto config_read(cgen::Config& config,
-                 std::vector<cgen::Package>& pkgs,
-                 std::vector<cgen::Package>& resolved_pkgs) -> bool;
+static auto config_read(cgen::Config& config,
+                        std::vector<cgen::Package>& pkgs,
+                        std::vector<cgen::Package>& resolved_pkgs) -> bool;
 
-auto resolved_write(const std::vector<cgen::Package>& old_resolved_pkgs,
-                    const std::vector<cgen::Package>& new_resolved_pkgs) -> bool;
+static auto resolved_write(const std::vector<cgen::Package>& old_resolved_pkgs,
+                           const std::vector<cgen::Package>& new_resolved_pkgs) -> bool;
 
-auto cmake_write(const cgen::Config& config) -> bool;
+static auto cmake_write(const cgen::Config& config) -> bool;
 
-void errors_print(const std::vector<cgen::Error>& errors);
-auto arguments_parse(int argc, const char* argv[], Options& opts) -> ArgumentsParseResult;
+static void errors_print(const std::vector<cgen::Error>& errors);
+static auto arguments_parse(int argc, const char* argv[], Options& opts) -> ArgumentsParseResult;
 
-void print_usage(const char* argv0);
+static void print_usage(const char* argv0);
 
 auto main(int argc, const char* argv[]) -> int {
     POOST_INFO_EX(log_common, "cgen {}", cgen::version_string());
@@ -130,7 +129,7 @@ auto command_generate() -> bool {
     return errors.empty();
 }
 
-auto command_update(const std::vector<std::filesystem::path>& paths) -> bool {
+static auto command_update(const std::vector<std::filesystem::path>& paths) -> bool {
     // read config
     cgen::Config config{};
     std::vector<cgen::Package> pkgs;
@@ -158,9 +157,9 @@ auto command_update(const std::vector<std::filesystem::path>& paths) -> bool {
     return errors.empty();
 }
 
-auto config_read(cgen::Config& config,
-                 std::vector<cgen::Package>& pkgs,
-                 std::vector<cgen::Package>& resolved_pkgs) -> bool {
+static auto config_read(cgen::Config& config,
+                        std::vector<cgen::Package>& pkgs,
+                        std::vector<cgen::Package>& resolved_pkgs) -> bool {
     // open config
     std::ifstream config_in{config_file};
     if (config_in.fail()) {
@@ -217,8 +216,8 @@ auto config_read(cgen::Config& config,
     return true;
 }
 
-auto resolved_write(const std::vector<cgen::Package>& old_resolved_pkgs,
-                    const std::vector<cgen::Package>& new_resolved_pkgs) -> bool {
+static auto resolved_write(const std::vector<cgen::Package>& old_resolved_pkgs,
+                           const std::vector<cgen::Package>& new_resolved_pkgs) -> bool {
     if (old_resolved_pkgs.empty() && new_resolved_pkgs.empty()) {
         return true;
     }
@@ -231,7 +230,7 @@ auto resolved_write(const std::vector<cgen::Package>& old_resolved_pkgs,
     return !!out;
 }
 
-auto cmake_write(const cgen::Config& config) -> bool {
+static auto cmake_write(const cgen::Config& config) -> bool {
     POOST_INFO_EX(log_common, "generate and write cmake file: {}", cmake_file);
     std::ofstream out{cmake_file, std::ostream::trunc};
     cgen::CMakeGenerator cmake{out};
@@ -239,13 +238,13 @@ auto cmake_write(const cgen::Config& config) -> bool {
     return !!out;
 }
 
-void errors_print(const std::vector<cgen::Error>& errors) {
+static void errors_print(const std::vector<cgen::Error>& errors) {
     for (const cgen::Error& err : errors) {
         POOST_ERROR_EX(log_common, "{}", err.description());
     }
 }
 
-auto arguments_parse(int argc, const char* argv[], Options& opts) -> ArgumentsParseResult {
+static auto arguments_parse(int argc, const char* argv[], Options& opts) -> ArgumentsParseResult {
     ArgumentsParseResult result = ArgumentsParseResult::SuccessExit;
 
     poost::Args args{argc, argv};
@@ -289,18 +288,18 @@ auto arguments_parse(int argc, const char* argv[], Options& opts) -> ArgumentsPa
     return ArgumentsParseResult::SuccessContinue;
 }
 
-void print_usage(const char* argv0) {
+static void print_usage(const char* argv0) {
     POOST_INFO_EX(log_common,
                   "usage: {} [-g] [-u package ...] [-v] [-h]"
                   "\n"
-                  "\n      -g Generate CMakeLists.txt and fetch external packages"
-                  "\n      -u Update external packages"
-                  "\n      -v Verbose output"
-                  "\n      -h Show this help",
+                  "\n  -g  generate CMakeLists.txt and fetch external packages"
+                  "\n  -u  update external packages"
+                  "\n  -v  verbose output"
+                  "\n  -h  show this help",
                   argv0);
 }
 
-auto use_colors() -> bool {
+static auto use_colors() -> bool {
     // respect NO_COLOR environment variable
     // see: https://no-color.org
     const char* no_color = std::getenv("NO_COLOR");

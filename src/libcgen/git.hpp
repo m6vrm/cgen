@@ -8,9 +8,8 @@ namespace cgen {
 auto git_is_commit(const std::string& str, bool strict = true) -> bool;
 
 auto git_remote_tags(const std::string& url, std::vector<std::string>& tags) -> int;
-auto git_resolve_ref(const std::filesystem::path& repo,
-                     const std::string& ref,
-                     std::string& commit) -> int;
+auto git_resolve_ref(const std::filesystem::path& repo, const std::string& ref, std::string& commit)
+    -> int;
 auto git_reset_hard(const std::filesystem::path& repo, const std::string& ref) -> int;
 auto git_remove(const std::filesystem::path& path) -> int;
 

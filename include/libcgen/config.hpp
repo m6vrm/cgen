@@ -1,10 +1,6 @@
-#ifndef CGEN_CONFIG_HPP
-#define CGEN_CONFIG_HPP
-
-#include "error.hpp"
+#pragma once
 
 #include <yaml-cpp/yaml.h>
-
 #include <algorithm>
 #include <functional>
 #include <istream>
@@ -12,6 +8,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "error.hpp"
 
 namespace cgen {
 
@@ -187,5 +184,3 @@ struct Config {
 auto config_read(std::istream& in, int ver, std::vector<Error>& errors) -> Config;
 
 }  // namespace cgen
-
-#endif  // ifndef CGEN_CONFIG_HPP

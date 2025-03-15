@@ -5,7 +5,7 @@
 #include <version.hpp>
 
 inline const std::string CMAKE_LISTS_HEADER = R"(
-# Generated using cgen 1.1.2 — https://github.com/m6vrm/cgen
+# Generated using cgen 1.2.0 — https://github.com/m6vrm/cgen
 # DO NOT EDIT
 
 cmake_minimum_required(VERSION 3.11)

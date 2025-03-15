@@ -1,12 +1,10 @@
 #include "git.hpp"
-#include "exec.hpp"
-
-#include <poost/assert.hpp>
-
 #include <algorithm>
 #include <cctype>
 #include <cstdlib>
+#include <poost/assert.hpp>
 #include <sstream>
+#include "exec.hpp"
 
 namespace cgen {
 
@@ -37,9 +35,8 @@ auto git_remote_tags(const std::string& url, std::vector<std::string>& tags) -> 
     return status;
 }
 
-auto git_resolve_ref(const std::filesystem::path& repo,
-                     const std::string& ref,
-                     std::string& commit) -> int {
+auto git_resolve_ref(const std::filesystem::path& repo, const std::string& ref, std::string& commit)
+    -> int {
     std::string out;
     const int status = exec(out, {"git", "-C", repo, "rev-parse", "--verify", ref});
     if (status != EXIT_SUCCESS) {
