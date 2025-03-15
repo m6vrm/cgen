@@ -31,7 +31,7 @@ Requirements:
 Usage
 -----
 
-Create .cgen.yml configuration file in the root of the project and generate
+Create cgen.yml configuration file in the root of the project and generate
 CMakeLists.txt:
 
     cgen -g
