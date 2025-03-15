@@ -9,6 +9,7 @@ TEST_CASE("Log") {
         poost::LogSettings log_settings{
             .stream = &oss,
             .log_level = poost::LogLevel::ALL,
+            .prefix = nullptr,
             .use_colors = false,
             .print_location = true,
         };
@@ -22,18 +23,19 @@ TEST_CASE("Log") {
                          __FUNCTION__, "Hello");
 
         CHECK(oss.str() ==
-              "[TRACE] log_test.cpp(16) DOCTEST_ANON_FUNC_2: Hello\n"
-              "[INFO ] log_test.cpp(17) DOCTEST_ANON_FUNC_2: Hello\n"
-              "[DEBUG] log_test.cpp(18) DOCTEST_ANON_FUNC_2: Hello\n"
-              "[WARN ] log_test.cpp(19) DOCTEST_ANON_FUNC_2: Hello\n"
-              "[ERROR] log_test.cpp(20) DOCTEST_ANON_FUNC_2: Hello\n"
-              "[FATAL] log_test.cpp(21) DOCTEST_ANON_FUNC_2: Hello\n");
+              "[TRACE] log_test.cpp(17) DOCTEST_ANON_FUNC_2: Hello\n"
+              "[INFO ] log_test.cpp(18) DOCTEST_ANON_FUNC_2: Hello\n"
+              "[DEBUG] log_test.cpp(19) DOCTEST_ANON_FUNC_2: Hello\n"
+              "[WARN ] log_test.cpp(20) DOCTEST_ANON_FUNC_2: Hello\n"
+              "[ERROR] log_test.cpp(21) DOCTEST_ANON_FUNC_2: Hello\n"
+              "[FATAL] log_test.cpp(22) DOCTEST_ANON_FUNC_2: Hello\n");
     }
 
     SUBCASE("log level colors") {
         poost::LogSettings log_settings{
             .stream = &oss,
             .log_level = poost::LogLevel::ALL,
+            .prefix = nullptr,
             .use_colors = true,
             .print_location = true,
         };
@@ -47,18 +49,45 @@ TEST_CASE("Log") {
                          __FUNCTION__, "Hello");
 
         CHECK(oss.str() ==
-              "\x1b[37m[TRACE] log_test.cpp(41) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
-              "\x1b[32m[INFO ] log_test.cpp(42) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
-              "\x1b[34m[DEBUG] log_test.cpp(43) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
-              "\x1b[33m[WARN ] log_test.cpp(44) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
-              "\x1b[31m[ERROR] log_test.cpp(45) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
-              "\x1b[35m[FATAL] log_test.cpp(46) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n");
+              "\x1b[37m[TRACE] log_test.cpp(43) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[32m[INFO ] log_test.cpp(44) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[34m[DEBUG] log_test.cpp(45) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[33m[WARN ] log_test.cpp(46) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[31m[ERROR] log_test.cpp(47) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[35m[FATAL] log_test.cpp(48) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n");
+    }
+
+    SUBCASE("log prefix") {
+        poost::LogSettings log_settings{
+            .stream = &oss,
+            .log_level = poost::LogLevel::ALL,
+            .prefix = "PREFIX",
+            .use_colors = true,
+            .print_location = true,
+        };
+
+        POOST_TRACE_EX(log_settings, "Hello");
+        POOST_INFO_EX(log_settings, "Hello");
+        POOST_DEBUG_EX(log_settings, "Hello");
+        POOST_WARN_EX(log_settings, "Hello");
+        POOST_ERROR_EX(log_settings, "Hello");
+        poost::log_print(log_settings, poost::LogLevel::FATAL, __FILE_NAME__, __LINE__,
+                         __FUNCTION__, "Hello");
+
+        CHECK(oss.str() ==
+              "\x1b[37m[TRACE] PREFIX log_test.cpp(69) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[32m[INFO ] PREFIX log_test.cpp(70) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[34m[DEBUG] PREFIX log_test.cpp(71) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[33m[WARN ] PREFIX log_test.cpp(72) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[31m[ERROR] PREFIX log_test.cpp(73) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n"
+              "\x1b[35m[FATAL] PREFIX log_test.cpp(74) DOCTEST_ANON_FUNC_2:\x1b[0m Hello\n");
     }
 
     SUBCASE("log without location") {
         poost::LogSettings log_settings{
             .stream = &oss,
             .log_level = poost::LogLevel::ALL,
+            .prefix = nullptr,
             .use_colors = true,
             .print_location = false,
         };

@@ -8,6 +8,7 @@ auto main() -> int {
     poost::log::global = poost::LogSettings{
         .stream = &std::cerr,
         .log_level = poost::LogLevel::FATAL,
+        .prefix = nullptr,
         .use_colors = true,
         .print_location = true,
     };

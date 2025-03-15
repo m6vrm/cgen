@@ -17,6 +17,6 @@ struct fmt::formatter<EnumType> : fmt::formatter<std::underlying_type_t<EnumType
 template <>
 struct fmt::formatter<std::filesystem::path> : fmt::formatter<std::string_view> {
     auto format(const std::filesystem::path& path, fmt::format_context& context) const {
-        return formatter<std::string_view>::format(path.string(), context);
+        return fmt::formatter<std::string_view>::format(path.string(), context);
     }
 };

@@ -4,9 +4,7 @@
 
 TEST_CASE("Args") {
     const char* argv[] = {"test", "-ab", "-c", "-d", "value", "-e", "42"};
-    const int argc = sizeof(argv) / sizeof(argv[0]);
-
-    poost::Args args{argc, argv};
+    int argc = sizeof(argv) / sizeof(argv[0]);
 
     bool a = false;
     bool b = false;
@@ -14,9 +12,9 @@ TEST_CASE("Args") {
     std::string d;
     int e = 0;
 
-    char opt;
-    while ((opt = args.option()) != poost::args::end) {
-        switch (opt) {
+    poost::Args args{argc, argv};
+    for (char option = args.option(); option != poost::args::end; option = args.option()) {
+        switch (option) {
             case 'a':
                 a = true;
                 break;
@@ -33,7 +31,7 @@ TEST_CASE("Args") {
                 args.value(e);
                 break;
             default:
-                FAIL("unknown option");
+                FAIL("unknown option: ", option);
                 break;
         }
     }

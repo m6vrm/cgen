@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ostream>
 #include <string_view>
+#include <syncstream>
 #include "format.hpp"
 
 #define POOST_TRACE(...) POOST_TRACE_EX(poost::log::global, __VA_ARGS__)
@@ -53,13 +54,14 @@ enum class LogLevel {
 struct LogSettings {
     std::ostream* stream;
     LogLevel log_level;
+    const char* prefix;
     bool use_colors;
     bool print_location;
 };
 
 namespace log {
 
-extern LogSettings global;
+thread_local extern LogSettings global;
 
 }  // namespace log
 
@@ -74,21 +76,27 @@ void log_print(const LogSettings& settings,
                std::string_view function,
                fmt::format_string<Args...> format,
                Args&&... args) {
+    std::osyncstream stream{*settings.stream};
+
     if (settings.use_colors) {
-        *settings.stream << log_level_color(level);
+        stream << log_level_color(level);
     }
 
-    *settings.stream << fmt::format("[{:<5}]", log_level_label(level));
+    stream << fmt::format("[{:<5}]", log_level_label(level));
+
+    if (settings.prefix != nullptr) {
+        stream << fmt::format(" {}", settings.prefix);
+    }
 
     if (settings.print_location) {
-        *settings.stream << fmt::format(" {}({}) {}:", file, line, function);
+        stream << fmt::format(" {}({}) {}:", file, line, function);
     }
 
     if (settings.use_colors) {
-        *settings.stream << "\x1b[0m";
+        stream << "\x1b[0m";
     }
 
-    *settings.stream << " " << fmt::format(format, std::forward<Args>(args)...) << "\n";
+    stream << " " << fmt::format(format, std::forward<Args>(args)...) << "\n";
 }
 
 }  // namespace poost

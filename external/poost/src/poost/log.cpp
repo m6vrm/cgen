@@ -1,13 +1,15 @@
 #include <iostream>
 #include <log.hpp>
+#include <string_view>
 
 namespace poost {
 
 namespace log {
 
-LogSettings global{
+thread_local LogSettings global{
     .stream = &std::cerr,
     .log_level = LogLevel::INFO,
+    .prefix = nullptr,
     .use_colors = true,
     .print_location = false,
 };

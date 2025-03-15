@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <istream>
 #include <sstream>
 #include <string>
@@ -13,17 +14,19 @@ class Config {
    public:
     explicit Config(std::istream& is);
 
+    static Config load(const std::filesystem::path& path);
+
     template <typename T>
-    T value(const std::string& key, const T& fallback) {
-        for (auto& [config_key, config_value] : config_) {
-            if (config_key != key) {
+    T get(const std::string& at, const T& fallback) const {
+        for (auto& [key, value] : config_) {
+            if (key != at) {
                 continue;
             }
 
             if constexpr (std::is_same_v<T, std::string>) {
-                return config_value;
+                return value;
             } else {
-                return convert<T>(config_value);
+                return convert<T>(value);
             }
         }
 
@@ -32,7 +35,7 @@ class Config {
 
    private:
     template <typename T>
-    T convert(const std::string& string) {
+    T convert(const std::string& string) const {
         T result;
         std::istringstream iss{string};
         iss >> result;

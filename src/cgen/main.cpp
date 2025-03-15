@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -21,6 +22,7 @@ static auto use_colors() -> bool;
 const poost::LogSettings log_common{
     .stream = &std::cerr,
     .log_level = poost::LogLevel::INFO,
+    .prefix = nullptr,
     .use_colors = use_colors(),
     .print_location = false,
 };
@@ -80,6 +82,7 @@ auto main(int argc, const char* argv[]) -> int {
     poost::log::global = poost::LogSettings{
         .stream = &std::cerr,
         .log_level = opts.verbose ? poost::LogLevel::ALL : poost::LogLevel::FATAL,
+        .prefix = nullptr,
         .use_colors = use_colors(),
         .print_location = opts.verbose,
     };
@@ -248,8 +251,7 @@ static auto arguments_parse(int argc, const char* argv[], Options& opts) -> Argu
     ArgumentsParseResult result = ArgumentsParseResult::SuccessExit;
 
     poost::Args args{argc, argv};
-    char opt;
-    while ((opt = args.option()) != poost::args::end) {
+    for (char opt = args.option(); opt != poost::args::end; opt = args.option()) {
         switch (opt) {
             case 'g':
                 // generate
@@ -289,14 +291,14 @@ static auto arguments_parse(int argc, const char* argv[], Options& opts) -> Argu
 }
 
 static void print_usage(const char* argv0) {
-    POOST_INFO_EX(log_common,
-                  "usage: {} [-g] [-u package ...] [-v] [-h]"
-                  "\n"
-                  "\n  -g  generate CMakeLists.txt and fetch external packages"
-                  "\n  -u  update external packages"
-                  "\n  -v  verbose output"
-                  "\n  -h  show this help",
-                  argv0);
+    printf(
+        "usage: %s [-g] [-u package ...] [-v] [-h]"
+        "\n  -g  generate CMakeLists.txt and fetch external packages"
+        "\n  -u  update external packages"
+        "\n  -v  verbose output"
+        "\n  -h  show this help"
+        "\n",
+        argv0);
 }
 
 static auto use_colors() -> bool {
